@@ -812,8 +812,8 @@ function proposal_status_form_submit($form, &$form_state)
         /* sending email */
         $book_user = user_load($proposal_data->uid);
          $from = variable_get('textbook_companion_from_email', '');
-    $bcc = variable_get('textbook_companion_emails', '');
-    $cc = variable_get('textbook_companion_cc_emails', '');
+        $bcc = variable_get('textbook_companion_emails', '');
+        $cc = variable_get('textbook_companion_cc_emails', '');
         $params['all_code_submitted_status_changed']['proposal_id'] = $proposal_id;
         $params['all_code_submitted_status_changed']['user_id'] = $proposal_data->uid;
         $params['all_code_submitted_status_changed']['headers'] = array(
