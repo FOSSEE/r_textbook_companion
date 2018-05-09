@@ -826,7 +826,7 @@ function proposal_status_form_submit($form, &$form_state)
         'Bcc' => $bcc
     );
         $email_to = $book_user->mail;
-        var_dump($params['all_code_submitted_status_changed']['headers']);die;
+        //var_dump($params['all_code_submitted_status_changed']['headers']);die;
         if (!drupal_mail('textbook_companion', 'all_code_submitted_status_changed', $email_to, language_default(), $params, $from, TRUE))
             drupal_set_message('Error sending email message.', 'error');
         drupal_set_message('User has been notified of that code submission interface is now available .', 'status');
