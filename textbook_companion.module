@@ -2999,7 +2999,7 @@ FOSSEE,IIT Bombay', array(
 				'body' => t('
 Dear !user_name,
 
-Your interface for code submission has been enabled by the reviewer, you can now able to send more code for this book.
+Your interface for code submission has been enabled by the reviewer, you can now send more code for this book.
 
 Full Name : ' . $proposal_data->full_name . '
 Email : ' . $user_data->mail . '
