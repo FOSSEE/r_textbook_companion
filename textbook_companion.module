@@ -1797,7 +1797,23 @@ function book_proposal_form($form, &$form_state)
 		'#type' => 'select',
 		'#title' => t('Department/Branch'),
 		'#options' => _list_of_departments(),
-		'#required' => TRUE
+		'#required' => TRUE,
+		'#tree' => TRUE,
+	);
+	$form['other_branch'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Enter your Department/Branch name'),
+		'#size' => 50,
+		'#attributes' => array(
+			'placeholder' => t('Enter your Department/Branch name')
+		),
+		'#states' => array(
+			'visible' => array(
+				':input[name="branch"]' => array(
+					'value' => 'Others'
+				)
+			)
+		)
 	);
 	$form['university'] = array(
 		'#type' => 'textfield',
@@ -2362,10 +2378,15 @@ function book_proposal_form_submit($form, &$form_state, $directory_name = NULL)
 	{
 		$form_state['values']['version'] = $form_state['values']['other_version'];
 	} //$form_state['values']['version'] == 'Other version'
-	if ($form_state['values']['country'] == 'other')
+	if($form_state['values']['branch'] == 'Others') {
+		$form_state['values']['branch'] =$form_state['values']['other_branch'];
+	}
+	if ($form_state['values']['country'] == 'Others')
 	{
-		$form_state['values']['country'] = trim($form_state['values']['other_country']);
-		$form_state['values']['all_state'] = trim($form_state['values']['other_state']);
+		$form_state['values']['country'] = $form_state['values']['other_country'];
+		$form_state['values']['all_state'] = $form_state['values']['other_state'];
+		$form_state['values']['city'] = $form_state['values']['other_city'];
+		//$form_state['values']['pincode'] = $form_state['values']['other_pincode'];
 	} //$form_state['values']['country'] == 'other'
 	if (isset($_POST['reason']))
 	{
@@ -2392,7 +2413,7 @@ function book_proposal_form_submit($form, &$form_state, $directory_name = NULL)
 		":gender" => $form_state['values']['gender'],
 		":how_project" => $form_state['values']['how_project'],
 		":course" => trim($form_state['values']['course']),
-		":branch" => $form_state['values']['branch'],
+		":branch" => trim($form_state['values']['branch']),
 		":university" => trim($form_state['values']['university']),
 		":city" => trim($form_state['values']['city']),
 		":pincode" => $form_state['values']['pincode'],
@@ -3933,12 +3954,29 @@ function book_proposal_nonaicte_form($form, &$form_state)
 		'#maxlength' => 50,
 		'#required' => TRUE
 	);
-	$form['department'] = array(
+	$form['branch'] = array(
 		'#type' => 'select',
 		'#title' => t('Department/Branch'),
 		'#options' => _list_of_departments(),
-		'#required' => TRUE
+		'#required' => TRUE,
+		'#tree' => TRUE,
 	);
+	$form['other_branch'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Enter your Department/Branch name'),
+		'#size' => 50,
+		'#attributes' => array(
+			'placeholder' => t('Enter your Department/Branch name')
+		),
+		'#states' => array(
+			'visible' => array(
+				':input[name="branch"]' => array(
+					'value' => 'Others'
+				)
+			)
+		)
+	);
+	
 	$form['university'] = array(
 		'#type' => 'textfield',
 		'#title' => t('University/ Institute'),
