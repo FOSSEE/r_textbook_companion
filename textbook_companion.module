@@ -2858,7 +2858,7 @@ Year of publication : ' . $approved_preference_data->year . '
 
 Please ensure that ALL the guidelines for coding are strictly followed:
 
-http://om.fossee.in/textbook-companion/guidelines-coding
+http://r.fossee.in/textbook-companion/guidelines-coding
 
 
 Best Wishes,
@@ -2920,7 +2920,7 @@ Year of publication : ' . $approved_preference_data->year . '
 
 Your book is now available at following link to download.
 
-http://om.fossee.in/textbook-companion/textbook-run/' . $approved_preference_data->id . '
+https://r.fossee.in/textbook-companion/textbook-run/' . $approved_preference_data->id . '
 
 Now you should be able to propose a new book.
 
@@ -2954,7 +2954,7 @@ FOSSEE,IIT Bombay', array(
 			$approved_preference_data = $result->fetchObject();
 			$user_data = user_load($params['all_code_submitted']['user_id']);
 			$message['headers'] = $params['all_code_submitted']['headers'];
-			$message['subject'] = t('[!site_name][Textbook Companion] You have marked to submited code for all examples.', array(
+			$message['subject'] = t('[!site_name][Textbook Companion] You have marked to submitted code for all examples.', array(
 				'!site_name' => variable_get('site_name', '')
 			));
 			$message['body'] = array(
