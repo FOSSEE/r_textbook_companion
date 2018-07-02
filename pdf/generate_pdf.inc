@@ -144,9 +144,28 @@ function generate_pdf()
     $pdf->SetX(222);
     $pdf->Image($sign, $pdf->GetX()-130, $pdf->GetY()+5, 60, 0);
     $pdf->Image($pngAbsoluteFilePath, $pdf->GetX(), $pdf->GetY()+2, 30, 0);
-    $name = $data3->full_name;
-    $certificate_name = str_replace(' ', '_', $name);
-    $pdf->Output($certificate_name . '_R_TBC_Certificate.pdf', 'D');
+    //$name = $data3->full_name;
+    //$certificate_name = str_replace(' ', '_', $name);
+    //$pdf->Output($certificate_name . '_R_TBC_Certificate.pdf', 'D');
+    $pdf->SetFont('Arial', 'I', 8);
+    $pdf->SetTextColor(0, 0, 0);
+    $filename = str_replace(' ', '-', $data3->contributor_name) . '-R_TBC_Certificate.pdf';
+    $file     = $path . '/pdf/temp_certificate/' . $proposal_id . '_' . $filename;
+    $pdf->Output($file, 'F');
+    header("Content-Type: application/octet-stream");
+    header("Content-Disposition: attachment; filename=" . $filename);
+    header("Content-Type: application/octet-stream");
+    header("Content-Type: application/download");
+    header("Content-Description: File Transfer");
+    header("Content-Length: " . filesize($file));
+    flush();
+    $fp = fopen($file, "r");
+    while (!feof($fp)) {
+        echo fread($fp, 65536);
+        flush();
+    } //!feof($fp)
+    fclose($fp);
+    unlink($file);
     /*}
     else
     {
