@@ -1,7 +1,9 @@
 <?php
 function generate_pdf()
   {
+    //$mpath = drupal_get_path('module', 'textbook_companion');
     require('fpdf/fpdf.php');
+    require('phpqrcode/qrlib.php');
     global $user;
     $x = $user->uid;
     $proposal_id = arg(3);
@@ -20,6 +22,19 @@ function generate_pdf()
     $query->condition('id', $proposal_id);
     $result = $query->execute();
     $data3 = $result->fetchObject();
+    $query4            = db_query("SELECT COUNT( tce.id ) AS example_count FROM textbook_companion_example tce
+                        LEFT JOIN textbook_companion_chapter tcc ON tce.chapter_id = tcc.id
+                        LEFT JOIN textbook_companion_preference tcpe ON tcc.preference_id = tcpe.id
+                        LEFT JOIN textbook_companion_proposal tcpo ON tcpe.proposal_id = tcpo.id
+                        WHERE tcpo.proposal_status =3 AND tce.approval_status =1 AND tce.approval_status=1 AND tcpo.id = :prop_id", array(
+        ':prop_id' => $proposal_id
+    ));
+    $data4             = $query4->fetchObject();
+    if($data4->example_count == 0) {
+        drupal_set_message('Certificate is not available','error');
+        return;
+    }
+    $number_of_example = $data4->example_count;
     //var_dump($data3->gender);
     $gender = array(
         'salutation' => 'Mr. /Ms.',
@@ -50,78 +65,101 @@ function generate_pdf()
       {
         echo "Error!";
       }
-    $pdf->AddPage();
-    $pdf->SetMargins(18, 1, 18);
-    $pdf->Line(7.0, 7.0, 270.0, 7.0);
-    $pdf->Line(7.0, 7.0, 7.0, 210.0);
-    $pdf->Line(270.0, 210.0, 270.0, 7.0);
-    $pdf->Line(7.0, 210.0, 270.0, 210.0);
+    $pdf->SetTextColor(129, 80, 47);
+    $author = $data2->author; 
     $path = drupal_get_path('module', 'textbook_companion');
-    $pdf->Image($path . "/pdf/images/dwsim_logo.png", 10, 9, 0, 15);
-    $pdf->Image($path . "/pdf/images/fossee.png", 228, 9, 0, 15);
-    $pdf->SetFont('Arial', 'B', 25);
-    $pdf->Ln(30);
-    $pdf->Cell(240, 8, 'Certificate', 0, 1, 'C');
-    $pdf->Ln(5);
-    $pdf->SetFont('Arial', 'B', 12);
-    $pdf->Cell(240, 8, 'Textbook Companion', '0', '1', 'C');
-    $pdf->Ln(20);
-    //$pdf->Cell(240,8,'IIT Bombay', '0','1','C');
-    $pdf->SetFont('Arial', '', 12);
-    /*	if(strtolower($data3->branch)!="others")
-    {
-    $pdf->MultiCell(240,8,'This is to certify that '.$gender['salutation']." ".$data3->full_name.' from the Department of '.$data3->branch.', '.$data3->university.' has successfully completed Internship under Scilab Textbook Companion for a duration equivalent to six weeks. '.$gender['gender'].' has coded, in DWSIM, all the solved examples of the allotted textbook: '.$data2->book.' by '.$data2->author.'.', 0);
+    $pdf->AddPage();
+    $image_bg = $path . "/pdf/images/bg_cert.png";
+    $pdf->Image($image_bg, 0, 0, $pdf->w, $pdf->h);
+    $pdf->SetMargins(18, 1, 18);
+    $pdf->Ln(40);
+    $pdf->SetFont('Times', 'I', 16);
+    $pdf->SetTextColor(0, 0, 0);
+    $pdf->Cell(320, 10, 'This is to certify that', '0', '1', 'C');
+    $pdf->Ln(0);
+    $pdf->SetFont('Times', 'I', 20);
+    //$pdf->SetFont('Arial', 'BI', 25);
+    $pdf->SetTextColor(46, 103, 219);
+    $pdf->Cell(320, 12, $data3->full_name, '0', '1', 'C');
+    $pdf->Ln(0);
+    $pdf->SetFont('Times', 'I', 16);
+    $pdf->SetTextColor(0, 0, 0);
+        //$pdf->Cell(240, 8, 'from ' . $data3->university . ' has successfully', '0', '1', 'C');
+    $pdf->MultiCell(320, 10, 'from "' . $data3->university . '" has successfully completed a', '0','C');
+    $pdf->Ln(0);
+    $pdf->MultiCell(320, 10, 'R textbook companion by coding "' . $number_of_example . '" examples from the book', '0', 'C');
+    $pdf->Ln(0); 
+    $pdf->SetTextColor(46, 103, 219);
+    $pdf->Cell(320, 12,$data2->book, '0', '1', 'C');
+    $pdf->Ln(0);
+    $pdf->SetTextColor(0, 0, 0);
+    $pdf->MultiCell(320, 10, 'written by "' . $author . '"', '0', 'C');
+    $pdf->SetTextColor(0, 0, 0);
+    $pdf->Cell(320, 10, 'The work done is available at', '0', '1', 'C');
+    $pdf->Cell(320, 4, '', '0', '1', 'C');
+    $pdf->SetX(155);
+    $pdf->SetFont('', 'U');
+    $pdf->SetTextColor(46, 103, 219);
+    $pdf->write(0, 'https://r.fossee.in/', 'https://r.fossee.in/');
+    $pdf->Ln(0);
+    $UniqueString    = "";
+    $tempDir         = $path . "/pdf/temp_prcode/";
+    $query           = db_select('textbook_companion_qr_code');
+    $query->fields('textbook_companion_qr_code');
+    $query->condition('proposal_id', $proposal_id);
+    $result          = $query->execute();
+    $data            = $result->fetchObject();
+    $DBString        = $data->qr_code;
+    $proposal_get_id = $data->proposal_id;
+    if ($DBString == "" || $DBString == "null") {
+        $UniqueString = generateRandomString();
+        $query        = "
+                INSERT INTO textbook_companion_qr_code
+                (proposal_id,qr_code)
+                VALUES
+                (:proposal_id,:qr_code)
+                ";
+        $args         = array(
+            ":proposal_id" => $proposal_id,
+            ":qr_code" => $UniqueString,
+        );
+        $result       = db_query($query, $args, array(
+            'return' => Database::RETURN_INSERT_ID
+        ));
+    } //$DBString == "" || $DBString == "null"
+    else {
+        $UniqueString = $DBString;
     }
-    else
-    {*/
-    $pdf->MultiCell(240, 8, 'This is to certify that ' . $gender['salutation'] . " " . $data3->full_name . ' from ' . $data3->university . ' has successfully completed training under DWSIM Textbook Companion for a duration equivalent to six weeks. ' . $gender['gender'] . ' has coded, in DWSIM, all the solved examples of the allotted textbook: ' . $data2->book . ' by ' . $data2->author . '.', 0);
-    //}
-    $pdf->Cell(10, 10, 'The work done is available at ', '0', '0', 'L');
-    $pdf->SetX(75);
-    $pdf->SetFont('', 'U');
-    $pdf->SetTextColor(0, 0, 255);
-    $pdf->write(10, 'http://dwsim.fossee.in', 'http://dwsim.fossee.in');
-    $pdf->SetFont('', '');
-    $pdf->SetTextColor(0, 0, 0);
-    $pdf->write(10, '.', '.');
-    $pdf->Ln(10);
-    $pdf->SetFont('Arial', '', 12);
-    $pdf->SetTextColor(0, 0, 0);
-    $pdf->Cell(10, 10, 'This work was funded by the FOSSEE project, IIT Bombay (for more details visit', '0', '0', 'L');
-    $pdf->SetX(170);
-    $pdf->SetFont('', 'U');
-    $pdf->SetTextColor(0, 0, 255);
-    $pdf->write(10, 'http://fossee.in', 'http://fossee.in');
-    $pdf->SetX(198);
-    $pdf->SetFont('', '');
-    $pdf->SetTextColor(0, 0, 0);
-    $pdf->write(10, ').');
-    $pdf->SetY(-50);
-    $pdf->SetX(209);
-    $pdf->SetTextColor(0, 0, 0);
-    $pdf->SetFont('', 'B');
-    $pdf->Image($path . "/pdf/images/sign.png", 212, 151, 0, 15);
-    //$pdf->SetX(206);
-    $pdf->Cell(0, 7, 'Prof. Kannan M Moudgalya', 0, 1, 'L');
-    $pdf->SetX(195);
-    $pdf->Cell(0, 7, 'Principal Investigator - FOSSEE', 0, 1, 'L');
-    $pdf->SetX(195);
-    $pdf->Cell(0, 7, ' Dept. of Chemical Engineering', 0, 1, 'L');
-    $pdf->SetX(216);
-    $pdf->Cell(0, 7, 'IIT Bombay', 0, 1, 'L');
-    $cur_date = date('jS F, Y');
-    $pdf->SetY(180);
-    $pdf->SetFont('', '');
-    $pdf->Cell(200, 0, ' Date: ' . $cur_date . '', 0, 1, 'L');
-    //$pdf->Cell(200,0,' Date: 28th August, 2013',0,1,'L');
-    $pdf->Cell(200, 15, 'Email: contact-dwsim@sfossee.in', 0, 1, 'L');
+    $codeContents        = "https://r.fossee.in/textbook-companion/certificates/verify/" . $UniqueString;
+    $fileName            = 'generated_qrcode.png';
+    $pngAbsoluteFilePath = $tempDir . $fileName;
+    $urlRelativeFilePath = $path . "/pdf/temp_prcode/" . $fileName;
+    $sign = $path . "/pdf/images/sign.png";
+    QRcode::png($codeContents, $pngAbsoluteFilePath);
+    $pdf->Ln(5);
+    $pdf->SetFont('', 'BI');
+    $pdf->SetTextColor(46, 103, 219);
+    $pdf->Cell(228, 8, $UniqueString, '0', '1', 'R');
+    $pdf->SetY(138);
+    $pdf->SetX(222);
+    $pdf->Image($sign, $pdf->GetX()-130, $pdf->GetY()+5, 60, 0);
+    $pdf->Image($pngAbsoluteFilePath, $pdf->GetX(), $pdf->GetY()+2, 30, 0);
     $name = $data3->full_name;
     $certificate_name = str_replace(' ', '_', $name);
-    $pdf->Output($certificate_name . '_DWSIM_TBC_Certificate.pdf', 'D');
+    $pdf->Output($certificate_name . '_R_TBC_Certificate.pdf', 'D');
     /*}
     else
     {
     drupal_set_message('Your Book Is Still Under Review.', 'status');
     }*/
   }
-?>
+function generateRandomString($length = 5)
+{
+    $characters       = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString     = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    } //$i = 0; $i < $length; $i++
+    return $randomString;
+}  

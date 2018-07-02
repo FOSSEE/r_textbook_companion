@@ -712,6 +712,15 @@ function textbook_companion_menu()
 		),
 		'file' => 'pdf/generate_pdf.inc'
 	);
+	$items["certificates/verify"] = array(
+        "title" => "Certificate Verification",
+        "page callback" => "verify_certificates",
+        "access arguments" => array(
+            "verify certificates"
+        ),
+	'file' => 'pdf/verify_certificates.inc',
+       
+    );
 	$items['textbook-companion/manage-proposal/paper-submission'] = array(
 		'title' => 'Application Submission',
 		'description' => 'Application Submission',
@@ -805,6 +814,10 @@ function textbook_companion_permission()
 		"list all certificates" => array(
 			"title" => t("list all certificates"),
 			"description" => t("Allows users to list all certificates.")
+		),
+		"verify certificates" => array(
+			"title" => t("Verify certificates"),
+			"description" => t("Allows users to verify certificates.")
 		),
 		"generate pdf" => array(
 			"title" => t("Generate pdf"),
@@ -2858,7 +2871,7 @@ Year of publication : ' . $approved_preference_data->year . '
 
 Please ensure that ALL the guidelines for coding are strictly followed:
 
-http://r.fossee.in/textbook-companion/guidelines-coding
+https://r.fossee.in/textbook-companion/guidelines-coding
 
 
 Best Wishes,

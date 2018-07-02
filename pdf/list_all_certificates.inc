@@ -64,13 +64,6 @@ function _list_all_certificates()
     $exist_id = $result->fetchObject();
     if ($exist_id->id)
       {
-        if ($exist_id->id < 3)
-          {
-            drupal_set_message('<strong>You need to propose a book <a href="/proposal">Book Proposal</a></strong>', 'status');
-            return '';
-          }
-        else
-          {
             $search_rows = array();
             global $output;
             $output = '';
@@ -109,10 +102,9 @@ function _list_all_certificates()
                 return '';
               }
           }
-      }
     else
       {
-        drupal_set_message('<strong>You need to propose a book <a href="/proposal">Book Proposal</a></strong>', 'status');
+        drupal_set_message('<strong>You need to propose a book <a href="/textbook-companion/proposal">Book Proposal</a></strong>', 'status');
         return '';
       }
   }
