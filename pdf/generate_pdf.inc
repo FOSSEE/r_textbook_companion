@@ -1,13 +1,13 @@
 <?php
 function generate_pdf()
   {
-    //$mpath = drupal_get_path('module', 'textbook_companion');
-    require('fpdf/fpdf.php');
-    require('phpqrcode/qrlib.php');
+    $mpath = drupal_get_path('module', 'textbook_companion');
+    require($mpath.'/pdf/fpdf/fpdf.php');
+    require($mpath.'/pdf/phpqrcode/qrlib.php');
     global $user;
     $x = $user->uid;
     $proposal_id = arg(3);
-    /*$query2 = db_query("SELECT * FROM {textbook_companion_preference} WHERE approval_status=1 AND  proposal_id=".		$proposal_id);
+    /*$query2 = db_query("SELECT * FROM {textbook_companion_preference} WHERE approval_status=1 AND  proposal_id=".     $proposal_id);
     $data2 = db_fetch_object($query2);*/
     $query = db_select('textbook_companion_preference');
     $query->fields('textbook_companion_preference');
@@ -130,7 +130,7 @@ function generate_pdf()
     else {
         $UniqueString = $DBString;
     }
-    $codeContents        = "https://r.fossee.in/textbook-companion/certificates/verify/" . $UniqueString;
+    $codeContents        = "https://r.fossee.in/certificates/verify/" . $UniqueString;
     $fileName            = 'generated_qrcode.png';
     $pngAbsoluteFilePath = $tempDir . $fileName;
     $urlRelativeFilePath = $path . "/pdf/temp_prcode/" . $fileName;
@@ -171,7 +171,8 @@ function generate_pdf()
     {
     drupal_set_message('Your Book Is Still Under Review.', 'status');
     }*/
-  }
+
+   }
 function generateRandomString($length = 5)
 {
     $characters       = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
