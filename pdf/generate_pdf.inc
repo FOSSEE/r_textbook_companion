@@ -149,7 +149,7 @@ function generate_pdf()
     //$pdf->Output($certificate_name . '_R_TBC_Certificate.pdf', 'D');
     $pdf->SetFont('Arial', 'I', 8);
     $pdf->SetTextColor(0, 0, 0);
-    $filename = str_replace(' ', '-', $data3->contributor_name) . '-R_TBC_Certificate.pdf';
+    $filename = str_replace(' ', '-', $data3->full_name) . '-R_TBC_Certificate.pdf';
     $file     = $path . '/pdf/temp_certificate/' . $proposal_id . '_' . $filename;
     $pdf->Output($file, 'F');
     header("Content-Type: application/octet-stream");
