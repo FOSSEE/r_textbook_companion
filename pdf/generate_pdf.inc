@@ -130,7 +130,7 @@ function generate_pdf()
     else {
         $UniqueString = $DBString;
     }
-    $codeContents        = "https://r.fossee.in/certificates/verify/" . $UniqueString;
+    $codeContents        = "https://r.fossee.in/textbook-companion/certificates/verify/" . $UniqueString;
     $fileName            = 'generated_qrcode.png';
     $pngAbsoluteFilePath = $tempDir . $fileName;
     $urlRelativeFilePath = $path . "/pdf/temp_prcode/" . $fileName;
@@ -171,8 +171,7 @@ function generate_pdf()
     {
     drupal_set_message('Your Book Is Still Under Review.', 'status');
     }*/
-
-   }
+}
 function generateRandomString($length = 5)
 {
     $characters       = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
