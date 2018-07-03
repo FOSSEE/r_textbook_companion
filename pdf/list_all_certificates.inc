@@ -51,7 +51,14 @@ return '';
 } */
 function _list_all_certificates()
   {
+
     global $user;
+    if (!$user->uid)
+  {
+    drupal_set_message('Log in to download the certificate ', 'error');
+    drupal_goto('');
+    return;
+  }
     /*$query_id =db_query("SELECT id FROM textbook_companion_proposal WHERE proposal_status=3 AND uid=".$user->uid);
     $exist_id = db_fetch_object($query_id);*/
     $query = db_select('textbook_companion_proposal');

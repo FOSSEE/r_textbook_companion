@@ -93,7 +93,7 @@ function generate_pdf()
     $pdf->Cell(320, 12,$data2->book, '0', '1', 'C');
     $pdf->Ln(0);
     $pdf->SetTextColor(0, 0, 0);
-    $pdf->MultiCell(320, 10, 'written by "' . $author . '"', '0', 'C');
+    $pdf->MultiCell(320, 10, 'written by "' . $author . '".', '0', 'C');
     $pdf->SetTextColor(0, 0, 0);
     $pdf->Cell(320, 10, 'The work done is available at', '0', '1', 'C');
     $pdf->Cell(320, 4, '', '0', '1', 'C');
