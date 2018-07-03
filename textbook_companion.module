@@ -703,10 +703,10 @@ function textbook_companion_menu()
 	$items['textbook-companion/certificate/generate-pdf'] = array(
 		'title' => 'Download Certificate',
 		'description' => 'Download Certificate',
-		'page callback' => 'generate_pdf',
-		/*'page arguments' => array(
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array(
 			'generate_pdf'
-		),*/
+		),
 		'access arguments' => array(
 			'generate pdf'
 		),
