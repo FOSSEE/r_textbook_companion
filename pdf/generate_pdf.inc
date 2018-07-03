@@ -79,7 +79,7 @@ function generate_pdf()
     $pdf->Ln(0);
     $pdf->SetFont('Times', 'I', 20);
     //$pdf->SetFont('Arial', 'BI', 25);
-    $pdf->SetTextColor(46, 103, 219);
+    $pdf->SetTextColor(30, 100, 182);
     $pdf->Cell(320, 12, $data3->full_name, '0', '1', 'C');
     $pdf->Ln(0);
     $pdf->SetFont('Times', 'I', 16);
@@ -89,7 +89,7 @@ function generate_pdf()
     $pdf->Ln(0);
     $pdf->MultiCell(320, 10, 'R textbook companion by coding "' . $number_of_example . '" examples from the book', '0', 'C');
     $pdf->Ln(0); 
-    $pdf->SetTextColor(46, 103, 219);
+    $pdf->SetTextColor(30, 100, 182);
     $pdf->Cell(320, 12,$data2->book, '0', '1', 'C');
     $pdf->Ln(0);
     $pdf->SetTextColor(0, 0, 0);
@@ -99,7 +99,7 @@ function generate_pdf()
     $pdf->Cell(320, 4, '', '0', '1', 'C');
     $pdf->SetX(155);
     $pdf->SetFont('', 'U');
-    $pdf->SetTextColor(46, 103, 219);
+    $pdf->SetTextColor(30, 100, 182);
     $pdf->write(0, 'https://r.fossee.in/', 'https://r.fossee.in/');
     $pdf->Ln(0);
     $UniqueString    = "";
@@ -138,7 +138,7 @@ function generate_pdf()
     QRcode::png($codeContents, $pngAbsoluteFilePath);
     $pdf->Ln(5);
     $pdf->SetFont('', 'BI');
-    $pdf->SetTextColor(46, 103, 219);
+    $pdf->SetTextColor(30, 100, 182);
     $pdf->Cell(228, 8, $UniqueString, '0', '1', 'R');
     $pdf->SetY(138);
     $pdf->SetX(222);
