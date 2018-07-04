@@ -712,6 +712,15 @@ function textbook_companion_menu()
 		),
 		'file' => 'pdf/generate_pdf.inc'
 	);
+	$items["textbook-companion/certificates/verify"] = array(
+        "title" => "Certificate Verification",
+        "page callback" => "verify_certificates",
+        "access arguments" => array(
+            "verify certificates"
+        ),
+	'file' => 'pdf/verify_certificates.inc',
+       
+    );
 	$items['textbook-companion/manage-proposal/paper-submission'] = array(
 		'title' => 'Application Submission',
 		'description' => 'Application Submission',
@@ -805,6 +814,10 @@ function textbook_companion_permission()
 		"list all certificates" => array(
 			"title" => t("list all certificates"),
 			"description" => t("Allows users to list all certificates.")
+		),
+		"verify certificates" => array(
+			"title" => t("Verify certificates"),
+			"description" => t("Allows users to verify certificates.")
 		),
 		"generate pdf" => array(
 			"title" => t("Generate pdf"),
@@ -2858,7 +2871,7 @@ Year of publication : ' . $approved_preference_data->year . '
 
 Please ensure that ALL the guidelines for coding are strictly followed:
 
-http://r.fossee.in/textbook-companion/guidelines-coding
+https://r.fossee.in/textbook-companion/guidelines-coding
 
 
 Best Wishes,
@@ -2909,8 +2922,6 @@ University/Institute : ' . $proposal_data->university . '
 College Teacher / Professor : ' . $proposal_data->faculty . '
 Reviewer : ' . $proposal_data->reviewer . '
 Expected date of completion : ' . date('d-m-Y', $proposal_data->completion_date) . '
-
-
 Title of the book : ' . $approved_preference_data->book . '
 Author name : ' . $approved_preference_data->author . '
 ISBN No. : ' . $approved_preference_data->isbn . '
@@ -2918,9 +2929,8 @@ Publisher and Place : ' . $approved_preference_data->publisher . '
 Edition : ' . $approved_preference_data->edition . '
 Year of publication : ' . $approved_preference_data->year . '
 
-Your book is now available at following link to download.
-
-https://r.fossee.in/textbook-companion/textbook-run/' . $approved_preference_data->id . '
+Your book is now available at following link to download at https://r.fossee.in/textbook-companion/textbook-run/' . $approved_preference_data->id . '
+You may download your certificate from http://r.fossee.in/textbook-companion/certificate after logging in your account.
 
 Now you should be able to propose a new book.
 
