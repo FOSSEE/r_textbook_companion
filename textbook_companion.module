@@ -712,7 +712,7 @@ function textbook_companion_menu()
 		),
 		'file' => 'pdf/generate_pdf.inc'
 	);
-	$items["textbook-companion/certificates/verify"] = array(
+	$items["certificates/verify"] = array(
         "title" => "Certificate Verification",
         "page callback" => "verify_certificates",
         "access arguments" => array(
