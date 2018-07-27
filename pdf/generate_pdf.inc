@@ -78,7 +78,7 @@ function generate_pdf()
     $pdf->Cell(320, 10, 'This is to certify that', '0', '1', 'C');
     $pdf->Ln(0);
     $pdf->SetFont('Times', 'I', 20);
-    //$pdf->SetFont('Arial', 'BI', 25);
+    //$pdf->SetFont('Times', 'BI', 25);
     $pdf->SetTextColor(30, 100, 182);
     $pdf->Cell(320, 12, $data3->full_name, '0', '1', 'C');
     $pdf->Ln(0);
@@ -147,7 +147,7 @@ function generate_pdf()
     //$name = $data3->full_name;
     //$certificate_name = str_replace(' ', '_', $name);
     //$pdf->Output($certificate_name . '_R_TBC_Certificate.pdf', 'D');
-    $pdf->SetFont('Arial', 'I', 8);
+    $pdf->SetFont('Times', 'I', 8);
     $pdf->SetTextColor(0, 0, 0);
     $filename = str_replace(' ', '-', $data3->full_name) . '-R_TBC_Certificate.pdf';
     $file     = $path . '/pdf/temp_certificate/' . $proposal_id . '_' . $filename;
