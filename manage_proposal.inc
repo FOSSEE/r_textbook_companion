@@ -23,11 +23,11 @@ function _proposal_pending()
         return '';
     }
     $pending_header = array(
-		'Date of Submission',
-		'Contributor Name',
-		'Proposed Date of Completion',
-		'Action'
-	);
+        'Date of Submission',
+        'Contributor Name',
+        'Proposed Date of Completion',
+        'Action'
+    );
     $output = theme('table', array(
         'header' => $pending_header,
         'rows' => $pending_rows
@@ -125,8 +125,8 @@ function _proposal_all()
         'Date of Submission',
         'Title of the Book',
         'Contributor Name',        
-		'Actual Date of Completion',
-		'Proposed Date of Completion',
+        'Actual Date of Completion',
+        'Proposed Date of Completion',
         'Status',
         'Action'
     );
@@ -314,13 +314,13 @@ function proposal_approval_form($form, &$form_state)
         }
         
      $form['proposed_completion_date'] = array(
-		'#type' => 'item',
-		'#markup' => $proposed_completion_date,
-		
-		'#title' => t('Proposed Date of Completion')
-	);
-	 if($row->completion_date != 0){
-	$actual_completion_date = date('d-m-Y', $row->completion_date);
+        '#type' => 'item',
+        '#markup' => $proposed_completion_date,
+        
+        '#title' => t('Proposed Date of Completion')
+    );
+     if($row->completion_date != 0){
+    $actual_completion_date = date('d-m-Y', $row->completion_date);
         }
         else{
         $actual_completion_date = "-----";
@@ -757,6 +757,11 @@ function proposal_status_form($from, $form_state)
             '#value' => 0
         );
     }}
+    $form['review_no'] = array(
+        '#type' => 'item',
+        '#title' =>t('No. of reviews'),
+        '#markup' => $preference_q_status->review_no,
+        );
     if ($proposal_data->proposal_status == 0) {
         $form['approve'] = array(
             '#type' => 'item',
@@ -803,12 +808,19 @@ function proposal_status_form_submit($form, &$form_state)
     }
     if ($form_state['values']['submit_all_code'] == 1) {
         /*db_query("UPDATE {textbook_companion_proposal} SET proposal_status = 3 WHERE id = %d", $proposal_id);*/
+        $query = db_select('textbook_companion_preference');
+        $query->fields('textbook_companion_preference');
+        $query->condition('proposal_id', $proposal_id);
+        $query->orderBy('pref_number', 'ASC');
+        $preference_q_status = $query->execute()->fetchObject();
+        $review_no = $preference_q_status->review_no+1;
         $query = db_update('textbook_companion_preference');
-        $query->fields(array(
-            'submited_all_examples_code' => 0
-        ));
-        $query->condition('id', $proposal_id);
-        $num_updated = $query->execute();
+    $query->fields(array(
+        'submited_all_examples_code' => 0,
+        'review_no' => $review_no
+    ));
+    $query->condition('proposal_id', $proposal_id);
+    $num_updated = $query->execute();
         /* sending email */
         $book_user = user_load($proposal_data->uid);
         $from = variable_get('textbook_companion_from_email', '');
