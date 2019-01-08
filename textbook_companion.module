@@ -2964,7 +2964,7 @@ FOSSEE,IIT Bombay', array(
 			$approved_preference_data = $result->fetchObject();
 			$user_data = user_load($params['all_code_submitted']['user_id']);
 			$message['headers'] = $params['all_code_submitted']['headers'];
-			$message['subject'] = t('[!site_name][Textbook Companion] You have marked to submitted code for all examples.', array(
+			$message['subject'] = t('[!site_name][Textbook Companion] You have marked that you have submitted the code for all examples.', array(
 				'!site_name' => variable_get('site_name', '')
 			));
 			$message['body'] = array(
