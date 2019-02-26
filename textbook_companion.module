@@ -2011,7 +2011,7 @@ function book_proposal_form($form, &$form_state)
 		'#type' => 'textarea',
 		'#size' => 255,
 		'#maxlength' => 255,
-		'#description'=>t('<span style="color:red;">Maximum charater limit is 255 characters.</span>'),
+		'#description'=>t('<span style="color:red;">Maximum character limit is 255 characters</span>'),
 		'#states' => array(
 			'visible' => array(
 				':input[name="reason[Other reason]"]' => array(
