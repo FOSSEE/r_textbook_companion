@@ -1816,10 +1816,11 @@ function book_proposal_form($form, &$form_state)
 	$form['other_branch'] = array(
 		'#type' => 'textfield',
 		'#title' => t('Enter your Department/Branch name'),
-		'#size' => 50,
+		'#size' => 100,
 		'#attributes' => array(
 			'placeholder' => t('Enter your Department/Branch name')
 		),
+		'#description' => t('<span style="color:red;">Maximum character limit for branch name is 100 characters</span>'),
 		'#states' => array(
 			'visible' => array(
 				':input[name="branch"]' => array(
@@ -1927,7 +1928,7 @@ function book_proposal_form($form, &$form_state)
 		'#title' => t('Pincode'),
 		'#size' => 30,
 		'#maxlength' => 6,
-		'#required' => False,
+		'#required' => True,
 		'#attributes' => array(
 			'placeholder' => 'Enter pincode....'
 		)
@@ -2008,8 +2009,9 @@ function book_proposal_form($form, &$form_state)
 	);
 	$form['other_reason'] = array(
 		'#type' => 'textarea',
-		'#size' => 300,
-		'#maxlength' => 300,
+		'#size' => 255,
+		'#maxlength' => 255,
+		'#description'=>t('<span style="color:red;">Maximum character limit is 255 characters</span>'),
 		'#states' => array(
 			'visible' => array(
 				':input[name="reason[Other reason]"]' => array(
@@ -2322,6 +2324,14 @@ function book_proposal_form_validate($form, &$form_state)
 	/*****************************************************************************
 	
 	}*/
+	if (isset($form_state['values']['reason']))
+	{
+		$my_reason = $form_state['values']['other_reason'];
+		if($my_reason>255)
+		{
+			form_set_error('other_reason', t('Maximum limit is 255 characters'));
+		}
+	}
 	if ($form_state['values']['version'] == 'Other version')
 	{
 		if ($form_state['values']['other_version'] == '')
@@ -2329,6 +2339,16 @@ function book_proposal_form_validate($form, &$form_state)
 			form_set_error('other_version', t('Please provide valid version'));
 		} //$form_state['values']['other_version'] == ''
 	} //$form_state['values']['version'] == 'Other version'
+	if($form_state['values']['branch'] == 'Others') {
+		if (strlen($form_state['values']['other_branch'])<10)
+		{
+			form_set_error('other_branch',t('The minimum charater limit is 10'));
+		}
+		else if (strlen($form_state['values']['other_branch'])>100) 
+		{
+			form_set_error('other_branch',t('The maximum character limit is 100'));
+		}
+	}
 	if (isset($_FILES['files']))
 	{
 		/* check if atleast one source or result file is uploaded */
@@ -2411,6 +2431,7 @@ function book_proposal_form_submit($form, &$form_state, $directory_name = NULL)
 		{
 			$my_reason = implode(", ", $_POST['reason']);
 			$my_reason = $my_reason . "-" . " " . $form_state['values']['other_reason'];
+
 		}
 		$form_state['values']['reason'] = $my_reason;
 	} //isset($_POST['reason'])
