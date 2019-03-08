@@ -934,6 +934,19 @@ function proposal_edit_form($form, &$form_state, $nonaicte_book)
     $preference3_q = $query->execute();
     $preference3_data = $preference3_q->fetchObject();
     /*************************************************************************/
+    $form['name_title'] = array(
+        '#type' => 'select',
+        '#title' => t('Title'),
+        '#options' => array(
+            'Dr' => 'Dr',
+            'Prof' => 'Prof',
+            'Mr' => 'Mr',
+            'Mrs' => 'Mrs',
+            'Ms' => 'Ms'
+        ),
+        '#required' => TRUE,
+        '#default_value' => $proposal_data->name_title
+    );
     $form['full_name'] = array(
         '#type' => 'textfield',
         '#title' => t('Full Name'),
@@ -1411,6 +1424,7 @@ function proposal_edit_form_submit($form, &$form_state)
     }
     $query = db_update('textbook_companion_proposal');
     $query->fields(array(
+        'name_title' => $form_state['values']['name_title'],
         'full_name' => $form_state['values']['full_name'],
         'mobile' => $form_state['values']['mobile'],
         'how_project' => $form_state['values']['how_project'],

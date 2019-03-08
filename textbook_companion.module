@@ -1756,6 +1756,18 @@ function book_proposal_form($form, &$form_state)
 		'#type' => 'item',
 		'#markup' => '<font color="red"><b>Please fill up this form carefully as the details entered here will be exactly written in the Textbook Companion</b></font>'
 	);
+	$form['name_title'] = array(
+		'#type' => 'select',
+		'#title' => t('Title'),
+		'#options' => array(
+			'Dr' => 'Dr',
+			'Prof' => 'Prof',
+			'Mr' => 'Mr',
+			'Mrs' => 'Mrs',
+			'Ms' => 'Ms'
+		),
+		'#required' => TRUE
+	);
 	$form['full_name'] = array(
 		'#type' => 'textfield',
 		'#title' => t('Full Name'),
@@ -1777,7 +1789,7 @@ function book_proposal_form($form, &$form_state)
 		'#maxlength' => 15,
 		'#required' => TRUE
 	);
-	$form['gender'] = array(
+/*	$form['gender'] = array(
 		'#type' => 'radios',
 		'#title' => t('Gender'),
 		'#options' => array(
@@ -1785,7 +1797,7 @@ function book_proposal_form($form, &$form_state)
 			'F' => 'Female'
 		),
 		'#required' => TRUE
-	);
+	);*/
 	$form['how_project'] = array(
 		'#type' => 'select',
 		'#title' => t('How did you come to know about this project'),
@@ -2003,7 +2015,7 @@ function book_proposal_form($form, &$form_state)
 	);
 	$form['reason'] = array(
 		'#type' => 'checkboxes',
-		'#title' => t('Reasons'),
+		'#title' => t('Reasons for selecting this book'),
 		'#options' => $reason,
 		'#required' => TRUE
 	);
@@ -2033,7 +2045,7 @@ function book_proposal_form($form, &$form_state)
 		'#size' => 500,
 		'#maxlength' => 500,
 		'#attributes' => array(
-			'placeholder' => 'Links of the syllabus must be provided....'
+			'placeholder' => 'Please mention link(s) of the syllabus where this book has been recommended by University/ College/ Institute'
 		)
 	);
 	$form['form_type'] = array(
@@ -2436,15 +2448,15 @@ function book_proposal_form_submit($form, &$form_state, $directory_name = NULL)
 		$form_state['values']['reason'] = $my_reason;
 	} //isset($_POST['reason'])
 	$query = "INSERT INTO {textbook_companion_proposal}
-    (uid, approver_uid, full_name, mobile, gender, how_project, course, branch, university,city,pincode,state,country, faculty, reviewer,reference, completion_date, creation_date, approval_date, proposal_status, r_version, operating_system, teacher_email,reason,samplefilepath,proposal_type,proposed_completion_date) VALUES (:uid, :approver_uid, :full_name, :mobile, :gender, :how_project, :course, :branch, :university, :city,:pincode,:state,:country, :faculty, :reviewer,:reference, :completion_date,
+    (uid, approver_uid, name_title, full_name, mobile, how_project, course, branch, university,city,pincode,state,country, faculty, reviewer,reference, completion_date, creation_date, approval_date, proposal_status, r_version, operating_system, teacher_email,reason,samplefilepath,proposal_type,proposed_completion_date) VALUES (:uid, :approver_uid, :name_title, :full_name, :mobile, :how_project, :course, :branch, :university, :city,:pincode,:state,:country, :faculty, :reviewer,:reference, :completion_date,
  :creation_date, :approval_date, :proposal_status, :r_version, :operating_system,
 :teacher_email,:reason,:samplefilepath,:proposal_type, :proposed_completion_date)";
 	$args = array(
 		":uid" => $user->uid,
 		":approver_uid" => 0,
+		":name_title" => $form_state['values']['name_title'],
 		":full_name" => trim(ucwords(strtolower($form_state['values']['full_name']))),
 		":mobile" => trim($form_state['values']['mobile']),
-		":gender" => $form_state['values']['gender'],
 		":how_project" => $form_state['values']['how_project'],
 		":course" => trim($form_state['values']['course']),
 		":branch" => trim($form_state['values']['branch']),
@@ -2730,7 +2742,7 @@ function textbook_companion_mail($key, &$message, $params)
 				'body' => t('
 Dear !user_name,
 
-We have received your proposal for R Textbook Companion with the following details:
+This is to inform you that we have received your proposal for R Textbook Companion (TBC) with the following details:
 
 Full Name : ' . $proposal_data->full_name . '
 Email : ' . $user_data->mail . '
@@ -2753,10 +2765,7 @@ Publisher and Place : ' . $preference1_data->publisher . '
 Edition : ' . $preference1_data->edition . '
 Year of publication : ' . $preference1_data->year . '
 
-
-
-
-Your proposal is under review. You will soon receive an email when your proposal has been approved/ disapproved. Thank you for your submission.
+Your proposal is under review. You will soon receive an email when your proposal has been approved/ disapproved. Thank you for your submission.    
 
 Best Wishes,
 
@@ -2797,38 +2806,12 @@ FOSSEE,IIT Bombay', array(
 				'body' => t('
 Dear !user_name,
 
-We regret to inform you that all the uploaded examples including the book 
-with following details have been deleted permanently.
+We regret to inform you that your book proposal for R Textbook Companion (TBC) has been disapproved due to following reason. 
 
-Full Name : ' . $proposal_data->full_name . '
-Email : ' . $user_data->mail . '
-Mobile : ' . $proposal_data->mobile . '
-Course : ' . $proposal_data->course . '
-Department/Branch : ' . $proposal_data->branch . '
-University/Institute : ' . $proposal_data->university . '
-City : ' . $proposal_data->city . '
-State : ' . $proposal_data->state . '
-
-Expected date of completion : ' . date('d-m-Y', $proposal_data->completion_date) . '
-
-Reason : ' . $proposal_data->reason . '
-
-
-Reference : ' . $proposal_data->reference . '
-
-Your Book Preferences :
-
-Book Preference 1 :-
 Title of the book : ' . $preference1_data->book . '
-Author name : ' . $preference1_data->author . '
-ISBN No. : ' . $preference1_data->isbn . '
-Publisher and Place : ' . $preference1_data->publisher . '
-Edition : ' . $preference1_data->edition . '
-Year of publication : ' . $preference1_data->year . '
-
 Reason for disapproval: ' . $proposal_data->message . '
 
-You are welcome to submit a new proposal.
+Please try to re-submit it after incorporating the comments given above. Please note that the records for this book proposal have been deleted so that you can submit the proposal again.
 
 Best Wishes,
 
@@ -2867,21 +2850,11 @@ FOSSEE,IIT Bombay', array(
 				'body' => t('
 Dear !user_name,
 
-Congratulations! Your proposal for R Textbook Companion with the following details is approved.
+Congratulations! Your proposal for R Textbook Companion (TBC) with the following details is approved. Please start writing code for all the solved examples of your book and upload on https://r.fossee.in/. 
 
-Full Name : ' . $proposal_data->full_name . '
-Email : ' . $user_data->mail . '
-Mobile : ' . $proposal_data->mobile . '
-Course : ' . $proposal_data->course . '
-Department/Branch : ' . $proposal_data->branch . '
-University/Institute : ' . $proposal_data->university . '
-College Teacher / Professor : ' . $proposal_data->faculty . '
-Reviewer : ' . $proposal_data->reviewer . '
-Expected date of completion : ' . date('d-m-Y', $proposal_data->completion_date) . '
+Please ensure that ALL the guidelines for coding are strictly followed:
 
-Reason : ' . $proposal_data->reason . '
-
-Reference : ' . $proposal_data->reference . '
+https://r.fossee.in/textbook-companion/guidelines-coding
 
 Title of the book : ' . $approved_preference_data->book . '
 Author name : ' . $approved_preference_data->author . '
@@ -2889,11 +2862,6 @@ ISBN No. : ' . $approved_preference_data->isbn . '
 Publisher and Place : ' . $approved_preference_data->publisher . '
 Edition : ' . $approved_preference_data->edition . '
 Year of publication : ' . $approved_preference_data->year . '
-
-Please ensure that ALL the guidelines for coding are strictly followed:
-
-https://r.fossee.in/textbook-companion/guidelines-coding
-
 
 Best Wishes,
 
