@@ -2740,7 +2740,7 @@ function textbook_companion_mail($key, &$message, $params)
 			));
 			$message['body'] = array(
 				'body' => t('
-Dear' . $proposal_data->full_name . ',
+Dear ' . $proposal_data->full_name . ',
 
 This is to inform you that we have received your proposal for R Textbook Companion (TBC) with the following details:
 
@@ -2801,7 +2801,7 @@ FOSSEE, IIT Bombay', array(
 			));
 			$message['body'] = array(
 				'body' => t('
-Dear' . $proposal_data->full_name . ',
+Dear ' . $proposal_data->full_name . ',
 
 We regret to inform you that your book proposal for R Textbook Companion (TBC) has been disapproved due to following reason. 
 
@@ -2845,7 +2845,7 @@ FOSSEE, IIT Bombay', array(
 			));
 			$message['body'] = array(
 				'body' => t('
-Dear' . $proposal_data->full_name . ',
+Dear ' . $proposal_data->full_name . ',
 
 Congratulations! Your proposal for R Textbook Companion (TBC) with the following details is approved. Please start writing code for all the solved examples of your book and upload on https://r.fossee.in/. 
 
@@ -2895,7 +2895,7 @@ FOSSEE, IIT Bombay', array(
 			));
 			$message['body'] = array(
 				'body' => t('
-Dear' . $proposal_data->full_name . ',
+Dear ' . $proposal_data->full_name . ',
 
 The textbook companion on the following book has been completed successfully by you:
 
@@ -2955,7 +2955,7 @@ FOSSEE, IIT Bombay', array(
 			));
 			$message['body'] = array(
 				'body' => t('
-Dear' . $proposal_data->full_name . ',
+Dear ' . $proposal_data->full_name . ',
 
 You have submitted codes for all examples:
 
@@ -3014,7 +3014,7 @@ FOSSEE, IIT Bombay', array(
 			));
 			$message['body'] = array(
 				'body' => t('
-Dear' . $proposal_data->full_name . ',
+Dear ' . $proposal_data->full_name . ',
 
 Your interface for code submission has been enabled by the reviewer, you can now send more code for this book.
 
@@ -3075,7 +3075,7 @@ FOSSEE, IIT Bombay', array(
 			));
 			$message['body'] = array(
 				'body' => t('
-Dear' . $proposal_data->full_name . ',
+Dear ' . $proposal_data->full_name . ',
 
 You have uploaded the following solution :
 
@@ -3123,7 +3123,7 @@ FOSSEE, IIT Bombay', array(
 			));
 			$message['body'] = array(
 				'body' => t('
-Dear' . $proposal_data->full_name . ',
+Dear ' . $proposal_data->full_name . ',
 
 You have updated the following example:
 
@@ -3171,7 +3171,7 @@ FOSSEE, IIT Bombay', array(
 			));
 			$message['body'] = array(
 				'body' => t('
-Dear' . $proposal_data->full_name . ',
+Dear ' . $proposal_data->full_name . ',
 
 Reviewer have updated the following example:
 
@@ -3218,7 +3218,7 @@ FOSSEE, IIT Bombay', array(
 			));
 			$message['body'] = array(
 				'body' => t('
-Dear' . $proposal_data->full_name . ',
+Dear ' . $proposal_data->full_name . ',
 
 Your example for R Textbook Companion with the following details is approved.
 
@@ -3259,7 +3259,7 @@ FOSSEE, IIT Bombay', array(
 			));
 			$message['body'] = array(
 				'body' => t('
-Dear' . $proposal_data->full_name . ',
+Dear ' . $proposal_data->full_name . ',
 
 Your following example has been disapproved:
 
@@ -3288,7 +3288,7 @@ FOSSEE, IIT Bombay', array(
 			));
 			$message['body'] = array(
 				'body' => t('
-Dear !user_name,
+Dear ' . $proposal_data->full_name . ',
 
 Your following pending example has been deleted :
 
@@ -3316,7 +3316,7 @@ FOSSEE, IIT Bombay', array(
 			));
 			$message['body'] = array(
 				'body' => t('
-Dear !user_name,
+Dear ' . $proposal_data->full_name . ',
 
 You have uploaded following dependency files:
     ' . $dependency_files . '
@@ -3339,7 +3339,7 @@ FOSSEE, IIT Bombay', array(
 			));
 			$message['body'] = array(
 				'body' => t('
-Dear' . $proposal_data->full_name . ',
+Dear ' . $proposal_data->full_name . ',
 
 We have received your following feedback
 
@@ -3368,7 +3368,7 @@ FOSSEE, IIT Bombay', array(
 			));
 			$message['body'] = array(
 				'body' => t('
-Dear !user_name,
+Dear ' . $proposal_data->full_name . ',
 
 We have received your Internship Form Application for the book 
 
@@ -3394,7 +3394,7 @@ FOSSEE, IIT Bombay', array(
 			));
 			$message['body'] = array(
 				'body' => t('
-Dear !user_name,
+Dear ' . $proposal_data->full_name . ',
 
 We have received your Copyright Form Application for the book 
 
@@ -3419,7 +3419,7 @@ FOSSEE, IIT Bombay', array(
 			));
 			$message['body'] = array(
 				'body' => t('
-Dear !user_name,
+Dear ' . $proposal_data->full_name . ',
 
 We have received your Undertaking Form Application for the book 
 
@@ -3444,7 +3444,7 @@ FOSSEE, IIT Bombay', array(
 			));
 			$message['body'] = array(
 				'body' => t('
-Dear !user_name,
+Dear ' . $proposal_data->full_name . ',
 
 A Remark has been given.Please check your Contact Detail Form
 
@@ -3470,7 +3470,7 @@ FOSSEE,IIT Bombay', array(
 			));
 			$message['body'] = array(
 				'body' => t('
-Dear !user_name,
+Dear ' . $proposal_data->full_name . ',
 
 We have Sent Cheque for the following book proposed
 
