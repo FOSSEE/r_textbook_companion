@@ -2685,6 +2685,7 @@ function textbook_companion_mail($key, &$message, $params)
 {
 	global $user;
 	// $language = $message['lianguage'];
+	
 	$tbc_bcc_emails = array(
 		'Bcc' => variable_get('textbook_companion_emails', '')
 	);
@@ -3068,6 +3069,12 @@ FOSSEE, IIT Bombay', array(
 			$query->range(0, 1);
 			$result = $query->execute();
 			$preference_data = $result->fetchObject();
+			$query = db_select('textbook_companion_proposal');
+			$query->fields('textbook_companion_proposal');
+			$query->condition('id', $preference_data->proposal_id);
+			$query->range(0, 1);
+			$result = $query->execute();
+			$proposal_data = $result->fetchObject();
 			$user_data = user_load($params['example_uploaded']['user_id']);
 			$message['headers'] = $params['example_uploaded']['headers'];
 			$message['subject'] = t('[!site_name] You have uploaded example for Textbook Companion', array(
@@ -3116,6 +3123,12 @@ FOSSEE, IIT Bombay', array(
 			$query->range(0, 1);
 			$result = $query->execute();
 			$preference_data = $result->fetchObject();
+			$query = db_select('textbook_companion_proposal');
+			$query->fields('textbook_companion_proposal');
+			$query->condition('id', $preference_data->proposal_id);
+			$query->range(0, 1);
+			$result = $query->execute();
+			$proposal_data = $result->fetchObject();
 			$user_data = user_load($params['example_updated']['user_id']);
 			$message['headers'] = $params['example_updated']['headers'];
 			$message['subject'] = t('[!site_name] You have updated example for Textbook Companion', array(
@@ -3164,6 +3177,12 @@ FOSSEE, IIT Bombay', array(
 			$query->range(0, 1);
 			$result = $query->execute();
 			$preference_data = $result->fetchObject();
+			$query = db_select('textbook_companion_proposal');
+			$query->fields('textbook_companion_proposal');
+			$query->condition('id', $preference_data->proposal_id);
+			$query->range(0, 1);
+			$result = $query->execute();
+			$proposal_data = $result->fetchObject();
 			$user_data = user_load($params['example_updated_admin']['user_id']);
 			$message['headers'] = $params['example_updated_admin']['headers'];
 			$message['subject'] = t('[!site_name] Reviewer have updated example for Textbook Companion ', array(
@@ -3211,6 +3230,12 @@ FOSSEE, IIT Bombay', array(
 			$query->range(0, 1);
 			$result = $query->execute();
 			$preference_data = $result->fetchObject();
+			$query = db_select('textbook_companion_proposal');
+			$query->fields('textbook_companion_proposal');
+			$query->condition('id', $preference_data->proposal_id);
+			$query->range(0, 1);
+			$result = $query->execute();
+			$proposal_data = $result->fetchObject();
 			$user_data = user_load($params['example_approved']['user_id']);
 			$message['headers'] = $params['example_approved']['headers'];
 			$message['subject'] = t('[!site_name] Your uploaded example has been approved for Textbook Companion', array(
@@ -3253,6 +3278,12 @@ FOSSEE, IIT Bombay', array(
 			$query->range(0, 1);
 			$result = $query->execute();
 			$preference_data = $result->fetchObject();
+			$query = db_select('textbook_companion_proposal');
+			$query->fields('textbook_companion_proposal');
+			$query->condition('id', $preference_data->proposal_id);
+			$query->range(0, 1);
+			$result = $query->execute();
+			$proposal_data = $result->fetchObject();
 			$message['headers'] = $params['example_disapproved']['headers'];
 			$message['subject'] = t('[!site_name] Your uploaded example has been disapproved for Textbook Companion', array(
 				'!site_name' => variable_get('site_name', '')
@@ -3282,14 +3313,34 @@ FOSSEE, IIT Bombay', array(
 		case 'example_deleted_user':
 
 			$user_data = user_load($params['example_deleted_user']['user_id']);
+			//var_dump($user_data);die;
+			$preference_id = $params['example_deleted_user']['preference_id'];
+			$chapter_id = $params['example_deleted_user']['chapter_id'];
+			$query = db_select('textbook_companion_chapter');
+			$query->fields('textbook_companion_chapter');
+			$query->condition('id', $chapter_id);
+			$query->range(0, 1);
+			$result = $query->execute();
+			$chapter_data = $result->fetchObject();
+			$query = db_select('textbook_companion_preference');
+			$query->fields('textbook_companion_preference');
+			$query->condition('id', $preference_id);
+			$query->range(0, 1);
+			$result = $query->execute();
+			$preference_data = $result->fetchObject();
+			$query = db_select('textbook_companion_proposal');
+			$query->fields('textbook_companion_proposal');
+			$query->condition('id', $preference_data->proposal_id);
+			$query->range(0, 1);
+			$result = $query->execute();
+			$proposal_data = $result->fetchObject();
 			$message['headers'] = $params['example_deleted_user']['headers'];
 			$message['subject'] = t('[!site_name] User has deleted pending example for Textbook Companion', array(
 				'!site_name' => variable_get('site_name', '')
 			));
 			$message['body'] = array(
 				'body' => t('
-Dear ' . $proposal_data->full_name . ',
-
+Dear !user_name,
 Your following pending example has been deleted :
 
 Title of the Book: ' . $params['example_deleted_user']['book_title'] . '
