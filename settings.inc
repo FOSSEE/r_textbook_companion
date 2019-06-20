@@ -40,7 +40,7 @@ function textbook_companion_settings_form($form, &$form_state)
     );
     $form['extensions']['dataset'] = array(
         '#type' => 'textfield',
-        '#title' => t('Allowed source file extensions'),
+        '#title' => t('Allowed dataset file extensions'),
         '#description' => t('A comma separated list WITHOUT SPACE of source file extensions that are permitted to be uploaded on the server'),
         '#size' => 50,
         '#maxlength' => 255,
