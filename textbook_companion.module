@@ -272,7 +272,7 @@ function textbook_companion_menu()
 		'file' => 'code.inc',
 		'weight' => 2
 	);
-	/* $items['textbook_companion/code/upload_dep'] = array(
+	$items['textbook-companion/code/upload-dep'] = array(
 	'title' => 'Upload Dependency',
 	'description' => 'Upload Dependency Files',
 	'page callback' => 'drupal_get_form',
@@ -282,7 +282,7 @@ function textbook_companion_menu()
 	'file' => 'dependency.inc',
 	'weight' => 3,
 	);
-	$items['textbook_companion/code/edit_dep'] = array(
+	/*$items['textbook_companion/code/edit_dep'] = array(
 	'title' => 'Edit Dependency',
 	'description' => 'Edit Dependency File',
 	'page callback' => 'edit_dependency',
