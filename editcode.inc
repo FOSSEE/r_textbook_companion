@@ -461,8 +461,8 @@ function upload_examples_edit_form_submit($form, &$form_state)
               }
           }
         }
-        else if($_FILES['files']['name']['upload_dataset'])
-        {
+    else if($_FILES['files']['name']['upload_dataset'])
+      {
         if ($cur_dataset_id > 0)
           {
             if (!delete_file($cur_dataset_id))
