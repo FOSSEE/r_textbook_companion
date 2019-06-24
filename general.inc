@@ -239,8 +239,8 @@ function list_examples()
                 case 'S':
                     $file_type = 'Main or Source';
                     break;
-                case 'R':
-                    $file_type = 'Result';
+                case 'D':
+                    $file_type = 'Dataset';
                     break;
                 case 'X':
                     $file_type = 'xcos';

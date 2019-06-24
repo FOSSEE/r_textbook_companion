@@ -145,6 +145,11 @@ $form['book_details']['pref_id'] = array(
         '#size' => 48,
         '#description' => t('Separate filenames with underscore. No spaces or any special characters allowed in filename.') . '<br />' . t('<span style="color:red;">Allowed file extensions : ') . variable_get('textbook_companion_source_extensions', '') . '</span>'
     );
+    $form['upload_dataset'] = array(
+        '#type' => 'file',
+        '#title' => t('Upload the dataset used for this example'),
+        '#description' => t('Separate filenames with underscore. No spaces or any special characters allowed in filename.') . '<br />' . t('<span style="color:red;">Allowed file extensions : ') . variable_get('textbook_companion_dataset_extensions', '') . '</span>'
+    );
     $form['submit'] = array(
         '#type' => 'submit',
         '#value' => t('Submit')
@@ -165,15 +170,30 @@ function upload_examples_form_validate($form, &$form_state)
         form_set_error('example_number', t('Invalid Example Number. Example Number can contain only alphabets and numbers sepereated by dot.'));
     if (isset($_FILES['files']))
       {
+
         /* check if atleast one source or result file is uploaded */
-        if (!($_FILES['files']['name']['sourcefile1']))
-            form_set_error('sourcefile1', t('Please upload source file.'));
+        if ($_FILES['files']['name']['sourcefile1'] || $_FILES['files']['name']['upload_dataset'])
+           // form_set_error('sourcefile1', t('Please upload source file.'));
         /* check for valid filename extensions */
         foreach ($_FILES['files']['name'] as $file_form_name => $file_name)
           {
             if ($file_name)
               {
-                $allowed_extensions_str = variable_get('textbook_companion_source_extensions', '');
+                if (strstr($file_form_name, 'sourcefile1'))
+                        $file_type = 'S';
+                else if (strstr($file_form_name, 'upload_dataset'))
+                        $file_type = 'D';
+                $allowed_extensions_str = '';
+                switch ($file_type)
+                    {
+                        case 'S':
+                            $allowed_extensions_str = variable_get('textbook_companion_source_extensions', '');
+                            break;
+                        case 'D':
+                            $allowed_extensions_str = variable_get('textbook_companion_dataset_extensions', '');
+                            break;
+                    }
+                //$allowed_extensions_str = variable_get('textbook_companion_source_extensions', '');
                 $allowed_extensions = explode(',', $allowed_extensions_str);
                 $temp_ext = explode('.', strtolower($_FILES['files']['name'][$file_form_name]));
                 $temp_extension = end($temp_ext);
@@ -396,53 +416,88 @@ case 5:
     }
     }*/
     /* uploading files */
+   // var_dump($_FILES['files']['name']);die;
     foreach ($_FILES['files']['name'] as $file_form_name => $file_name)
       {
         if ($file_name)
           {
             /* checking file type */
-            $file_type = 'S';
-            if (file_exists($root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
-              {
-                drupal_set_message(t("Error uploading file. File !filename already exists.", array(
-                    '!filename' => $_FILES['files']['name'][$file_form_name]
-                )), 'error');
-                return;
-              }
-            /* uploading file */
-            if (move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
-              {
-                /* for uploaded files making an entry in the database */
-                /*db_query("INSERT INTO {textbook_companion_example_files} (example_id, filename, filepath, filemime, filesize, filetype, timestamp)
-                VALUES (%d, '%s', '%s', '%s', %d, '%s', %d)",
-                $example_id,
-                $_FILES['files']['name'][$file_form_name],
-                $dest_path . $_FILES['files']['name'][$file_form_name],
-                $_FILES['files']['type'][$file_form_name],
-                $_FILES['files']['size'][$file_form_name],
-                $file_type,
-                time()
-                );*/
-                $query = "INSERT INTO {textbook_companion_example_files} (example_id, filename, filepath,filemime, filesize, filetype, timestamp)
-          VALUES (:example_id, :filename ,:filepath,:filemime, :filesize, :filetype, :timestamp)";
-                $args = array(
-                    ":example_id" => $example_id,
-                    ":filename" => $_FILES['files']['name'][$file_form_name],
-                    ":filepath" => $filepath . $_FILES['files']['name'][$file_form_name],
-                    ":filemime" => 'application/zip',
-                    ":filesize" => $_FILES['files']['size'][$file_form_name],
-                    ":filetype" => $file_type,
-                    ":timestamp" => time()
-                );
-                $result = db_query($query, $args, array(
-                    'return' => Database::RETURN_INSERT_ID
-                ));
-                drupal_set_message($file_name . ' uploaded successfully.', 'status');
-              }
-            else
-              {
-                drupal_set_message('Error uploading file : ' . $dest_path . '/' . $file_name, 'error');
-              }
+            if (strstr($file_form_name, 'sourcefile1'))
+            {
+                $file_type = 'S';
+            } //strstr($file_form_name, 'upload_flowsheet_developed_process')
+            else if (strstr($file_form_name, 'upload_dataset'))
+            {
+                $file_type = 'D';
+            }
+
+            //$file_type = 'S';
+            switch ($file_type) {
+                case 'S':
+                    if (file_exists($root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
+                      {
+                        drupal_set_message(t("Error uploading file. File !filename already exists.", array(
+                            '!filename' => $_FILES['files']['name'][$file_form_name]
+                        )), 'error');
+                        return;
+                      }
+                    /* uploading file */
+                    if (move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
+                      {
+                        $query = "INSERT INTO {textbook_companion_example_files} (example_id, filename, filepath,filemime, filesize, filetype, timestamp)
+                  VALUES (:example_id, :filename ,:filepath,:filemime, :filesize, :filetype, :timestamp)";
+                        $args = array(
+                            ":example_id" => $example_id,
+                            ":filename" => $_FILES['files']['name'][$file_form_name],
+                            ":filepath" => $filepath . $_FILES['files']['name'][$file_form_name],
+                            ":filemime" => 'application/R',
+                            ":filesize" => $_FILES['files']['size'][$file_form_name],
+                            ":filetype" => $file_type,
+                            ":timestamp" => time()
+                        );
+                        $result = db_query($query, $args, array(
+                            'return' => Database::RETURN_INSERT_ID
+                        ));
+                        drupal_set_message($file_name . ' uploaded successfully.', 'status');
+                      }
+                    else
+                      {
+                        drupal_set_message('Error uploading file : ' . $dest_path . '/' . $file_name, 'error');
+                      }
+                      break;
+                case 'D':
+                    if (file_exists($root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
+                      {
+                        drupal_set_message(t("Error uploading file. File !filename already exists.", array(
+                            '!filename' => $_FILES['files']['name'][$file_form_name]
+                        )), 'error');
+                        return;
+                      }
+                    /* uploading file */
+                    if (move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
+                      {
+                        $query = "INSERT INTO {textbook_companion_example_files} (example_id, filename, filepath,filemime, filesize, filetype, timestamp)
+                  VALUES (:example_id, :filename ,:filepath,:filemime, :filesize, :filetype, :timestamp)";
+                        $args = array(
+                            ":example_id" => $example_id,
+                            ":filename" => $_FILES['files']['name'][$file_form_name],
+                            ":filepath" => $filepath . $_FILES['files']['name'][$file_form_name],
+                            ":filemime" => 'application/csv',
+                            ":filesize" => $_FILES['files']['size'][$file_form_name],
+                            ":filetype" => $file_type,
+                            ":timestamp" => time()
+                        );
+                        $result = db_query($query, $args, array(
+                            'return' => Database::RETURN_INSERT_ID
+                        ));
+                        drupal_set_message($file_name . ' uploaded successfully.', 'status');
+                      }
+                    else
+                      {
+                        drupal_set_message('Error uploading file : ' . $dest_path . '/' . $file_name, 'error');
+                      }
+                      break;
+            }
           }
       }
   

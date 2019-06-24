@@ -31,6 +31,8 @@ function upload_examples_edit_form($form, &$form_state)
     /* get examples files */
     $source_file = "";
     $source_id = 0;
+    $dataset_file = "";
+    $dataset_id = 0;
     $result1_file = "";
     $result1_id = 0;
     $result2_file = "";
@@ -50,6 +52,12 @@ function upload_examples_edit_form($form, &$form_state)
           {
             $source_file = l($example_files_data->filename, 'textbook-companion/download/file/' . $example_files_data->id);
             $source_file_id = $example_files_data->id;
+            //var_dump($source_file);die;
+          }
+        else if ($example_files_data->filetype == "D")
+          {
+            $dataset_file = l($example_files_data->filename, 'textbook-companion/download/file/' . $example_files_data->id);
+            $dataset_file_id = $example_files_data->id;
             //var_dump($source_file);die;
           }
       }
@@ -167,7 +175,10 @@ function upload_examples_edit_form($form, &$form_state)
         $form['sourcefile']['cur_source_checkbox'] = array(
             '#type' => 'checkbox',
             '#title' => t('Delete Existing Main or Source File'),
-            '#description' => 'Check to delete the existing Main or Source file.'
+            '#description' => 'Check to delete the existing Main or Source file.',
+            '#attributes' => array(
+                            'onClick' => 'return confirm("Are you sure you want to delete the example?")'
+                        )
         );
         $form['sourcefile']['sourcefile1'] = array(
             '#type' => 'file',
@@ -189,6 +200,48 @@ function upload_examples_edit_form($form, &$form_state)
             '#description' => t('Allowed file extensions : ') . variable_get('textbook_companion_source_extensions', '')
         );
       }
+    $form['dataset'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Dataset Files'),
+        '#collapsible' => FALSE,
+        '#collapsed' => FALSE
+    );
+    if ($dataset_file)
+      {
+        $form['dataset']['cur_dataset'] = array(
+            '#type' => 'item',
+            '#title' => t('Existing Dataset File'),
+            '#markup' => $dataset_file
+        );
+        $form['dataset']['cur_dataset_checkbox'] = array(
+            '#type' => 'checkbox',
+            '#title' => t('Delete Existing Dataset File'),
+            '#description' => 'Check to delete the existing Dataset file.',
+            '#attributes' => array(
+                            'onClick' => 'return confirm("Are you sure you want to delete the example?")'
+                        )
+        );
+        $form['dataset']['upload_dataset'] = array(
+            '#type' => 'file',
+            '#title' => t('Upload New Dataset File'),
+            '#size' => 48,
+            '#description' => t("Upload new Dataset file above if you want to replace the existing file. Leave blank if you want to keep using the existing file. <br />") . t('Allowed file extensions : ') . variable_get('textbook_companion_dataset_extensions', '')
+        );
+        $form['dataset']['cur_dataset_file_id'] = array(
+            '#type' => 'hidden',
+            '#value' => $dataset_file_id
+        );
+      }
+    else
+      {
+        $form['dataset']['upload_dataset'] = array(
+            '#type' => 'file',
+            '#title' => t('Upload New Dataset File'),
+            '#size' => 48,
+            '#description' => t('Allowed file extensions : ') . variable_get('textbook_companion_dataset_extensions', '')
+        );
+      }
+    
     $form['submit'] = array(
         '#type' => 'submit',
         '#value' => t('Submit')
@@ -211,25 +264,18 @@ function upload_examples_edit_form_validate($form, &$form_state)
             if ($file_name)
               {
                 /* checking file type */
-                if (strstr($file_form_name, 'source'))
+                if (strstr($file_form_name, 'sourcefile1'))
                     $file_type = 'S';
-                else if (strstr($file_form_name, 'result'))
-                    $file_type = 'R';
-                else if (strstr($file_form_name, 'xcos'))
-                    $file_type = 'X';
-                else
-                    $file_type = 'U';
+                else if (strstr($file_form_name, 'upload_dataset'))
+                    $file_type = 'D';
                 $allowed_extensions_str = '';
                 switch ($file_type)
                 {
                     case 'S':
                         $allowed_extensions_str = variable_get('textbook_companion_source_extensions', '');
                         break;
-                    case 'R':
-                        $allowed_extensions_str = variable_get('textbook_companion_result_extensions', '');
-                        break;
-                    case 'X':
-                        $allowed_extensions_str = variable_get('textbook_companion_xcos_extensions', '');
+                    case 'D':
+                        $allowed_extensions_str = variable_get('textbook_companion_dataset_extensions', '');
                         break;
                 }
                 $allowed_extensions = explode(',', $allowed_extensions_str);
@@ -245,45 +291,6 @@ function upload_examples_edit_form_validate($form, &$form_state)
               }
           }
       }
-    /* add javascript again for automatic book title, check if example uploaded, dependency selection effects */
-    /*$chapter_name_js = " $(document).ready(function() {
-    $('#edit-number').change(function() {
-    $.get('" . base_path() . "textbook-companion/ajax/chapter-title/' + $('#edit-number').val() + '/' + " . $row->pre_id . ", function(data) {
-    $('#edit-name').val(data);
-    });
-    });
-    $('#edit-example-number').change(function() {
-    $.get('" . base_path() . "textbook-companion/ajax/example-exists/' + $('#edit-number').val() + '/' + $('#edit-example-number').val(), function(data) {
-    if (data) {
-    alert(data);
-    }
-    });
-    });
-    $('#edit-existing-depfile-dep-book-title').change(function() {
-    
-    var dep_selected = ''; 
-    /* showing and hiding relevant files */
-    /*$('.form-checkboxes .option').hide();
-    $('.form-checkboxes .option').each(function(index) {
-    var activeClass = $('#edit-existing-depfile-dep-book-title').val();
-    if ($(this).children().hasClass(activeClass)) {
-    $(this).show();
-    }
-    if ($(this).children().attr('checked') == true) {
-    dep_selected += $(this).children().next().text() + '<br />';
-    }
-    });
-    /* showing list of already existing dependencies */
-    /* $('#existing_depfile_selected').html(dep_selected);
-    
-    });
-    
-    $('.form-checkboxes .option').change(function() {
-    $('#edit-existing-depfile-dep-book-title').trigger('change');
-    });
-    $('#edit-existing-depfile-dep-book-title').trigger('change');
-    });";
-    drupal_add_js($chapter_name_js, 'inline', 'header');*/
   }
 function upload_examples_edit_form_submit($form, &$form_state)
   {
@@ -385,13 +392,15 @@ function upload_examples_edit_form_submit($form, &$form_state)
     $query->condition('id', $example_id);
     $num_updated = $query->execute();
     /* handle source file */
-    if (isset($form_state['values']['cur_source_file_id']))
+    if (isset($form_state['values']['cur_source_file_id']) || isset($form_state['values']['cur_dataset_file_id']))
       {
         $cur_file_id = $form_state['values']['cur_source_file_id'];
+        $cur_dataset_id = $form_state['values']['cur_dataset_file_id'];
       }
     else
       {
         $cur_file_id = isset($form_state['values']['cur_source_file_id']);
+         $cur_dataset_id = isset($form_state['values']['cur_dataset_file_id']);
       }
     //var_dump($cur_file_id);die;
     if ($cur_file_id > 0)
@@ -419,6 +428,28 @@ function upload_examples_edit_form_submit($form, &$form_state)
               }
           }
       }
+    if ($cur_dataset_id > 0)
+      {
+        $query = db_select('textbook_companion_example_files');
+        $query->fields('textbook_companion_example_files');
+        $query->condition('id', $cur_dataset_id);
+        $query->condition('example_id', $example_data->id);
+        $result = $query->execute();
+        $file_data = $result->fetchObject();
+        if (!$file_data)
+          {
+            drupal_set_message("Error deleting example dataset file. File not present in database.", 'error');
+            return;
+          }
+        if (($form_state['values']['cur_dataset_checkbox'] == 1) && (!$_FILES['files']['name']['upload_dataset']))
+          {
+            if (!delete_file($cur_dataset_id))
+              {
+                drupal_set_message("Error deleting example dataset file.", 'error');
+                return;
+              }
+          }
+      }
     if ($_FILES['files']['name']['sourcefile1'])
       {
         if ($cur_file_id > 0)
@@ -429,47 +460,103 @@ function upload_examples_edit_form_submit($form, &$form_state)
                 return;
               }
           }
-        if (file_exists($root_path . $dest_path . $_FILES['files']['name']['sourcefile1']))
+        }
+    else if($_FILES['files']['name']['upload_dataset'])
+      {
+        if ($cur_dataset_id > 0)
           {
-            drupal_set_message(t("Error uploading source file. File !filename already exists.", array(
-                '!filename' => $_FILES['files']['name']['sourcefile1']
-            )), 'error');
-            return;
-          }
-        /* uploading file */
-        if (move_uploaded_file($_FILES['files']['tmp_name']['sourcefile1'], $root_path . $dest_path . $_FILES['files']['name']['sourcefile1']))
-          {
-            /* for uploaded files making an entry in the database */
-            /*db_query("INSERT INTO {textbook_companion_example_files} (example_id, filename, filepath, filemime, filesize, filetype, timestamp)
-            VALUES (%d, '%s', '%s', '%s', %d, '%s', %d)",
-            $example_data->id,
-            $_FILES['files']['name']['sourcefile1'],
-            $dest_path . $_FILES['files']['name']['sourcefile1'],
-            $_FILES['files']['type']['sourcefile1'],
-            $_FILES['files']['size']['sourcefile1'],
-            'S',
-            time()
-            );*/
-            $query = "INSERT INTO {textbook_companion_example_files} (example_id, filename, filepath, filemime, filesize, filetype, 		timestamp) VALUES (:example_id, :filename, :filepath, :filemime, :filesize, :filetype,:timestamp)";
-            $args = array(
-                ":example_id" => $example_data->id,
-                ":filename" => $_FILES['files']['name']['sourcefile1'],
-                ":filepath" => $filepath . $_FILES['files']['name']['sourcefile1'],
-                ":filemime" => 'application/dwxml',
-                ":filesize" => $_FILES['files']['size']['sourcefile1'],
-                ":filetype" => 'S',
-                ":timestamp" => time()
-            );
-            $result = db_query($query, $args, array(
-                'return' => Database::RETURN_INSERT_ID
-            ));
-            drupal_set_message($_FILES['files']['name']['sourcefile1'] . ' uploaded successfully.', 'status');
-          }
-        else
-          {
-            drupal_set_message('Error uploading file : ' . $dest_path . '/' . $_FILES['files']['name']['sourcefile1'], 'error');
+            if (!delete_file($cur_dataset_id))
+              {
+                drupal_set_message("Error removing previous dataset file.", 'error');
+                return;
+              }
           }
       }
+      foreach ($_FILES['files']['name'] as $file_form_name => $file_name)
+      {
+        if ($file_name)
+          {
+            /* checking file type */
+            if (strstr($file_form_name, 'sourcefile1'))
+            {
+                $file_type = 'S';
+            } //strstr($file_form_name, 'upload_flowsheet_developed_process')
+            else if (strstr($file_form_name, 'upload_dataset'))
+            {
+                $file_type = 'D';
+            }
+
+            //$file_type = 'S';
+            switch ($file_type) {
+                case 'S':
+                    if (file_exists($root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
+                      {
+                        drupal_set_message(t("Error uploading file. File !filename already exists.", array(
+                            '!filename' => $_FILES['files']['name'][$file_form_name]
+                        )), 'error');
+                        return;
+                      }
+                    /* uploading file */
+                    if (move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
+                      {
+                        $query = "INSERT INTO {textbook_companion_example_files} (example_id, filename, filepath,filemime, filesize, filetype, timestamp)
+                  VALUES (:example_id, :filename ,:filepath,:filemime, :filesize, :filetype, :timestamp)";
+                        $args = array(
+                            ":example_id" => $example_id,
+                            ":filename" => $_FILES['files']['name'][$file_form_name],
+                            ":filepath" => $filepath . $_FILES['files']['name'][$file_form_name],
+                            ":filemime" => 'application/R',
+                            ":filesize" => $_FILES['files']['size'][$file_form_name],
+                            ":filetype" => $file_type,
+                            ":timestamp" => time()
+                        );
+                        $result = db_query($query, $args, array(
+                            'return' => Database::RETURN_INSERT_ID
+                        ));
+                        drupal_set_message($file_name . ' uploaded successfully.', 'status');
+                      }
+                    else
+                      {
+                        drupal_set_message('Error uploading file : ' . $dest_path . '/' . $file_name, 'error');
+                      }
+                      break;
+                case 'D':
+                    if (file_exists($root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
+                      {
+                        drupal_set_message(t("Error uploading file. File !filename already exists.", array(
+                            '!filename' => $_FILES['files']['name'][$file_form_name]
+                        )), 'error');
+                        return;
+                      }
+                    /* uploading file */
+                    if (move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
+                      {
+                        $query = "INSERT INTO {textbook_companion_example_files} (example_id, filename, filepath,filemime, filesize, filetype, timestamp)
+                  VALUES (:example_id, :filename ,:filepath,:filemime, :filesize, :filetype, :timestamp)";
+                        $args = array(
+                            ":example_id" => $example_id,
+                            ":filename" => $_FILES['files']['name'][$file_form_name],
+                            ":filepath" => $filepath . $_FILES['files']['name'][$file_form_name],
+                            ":filemime" => 'application/csv',
+                            ":filesize" => $_FILES['files']['size'][$file_form_name],
+                            ":filetype" => $file_type,
+                            ":timestamp" => time()
+                        );
+                        $result = db_query($query, $args, array(
+                            'return' => Database::RETURN_INSERT_ID
+                        ));
+                        drupal_set_message($file_name . ' uploaded successfully.', 'status');
+                      }
+                    else
+                      {
+                        drupal_set_message('Error uploading file : ' . $dest_path . '/' . $file_name, 'error');
+                      }
+                      break;
+            }
+          }
+      }
+  
+    drupal_set_message('Example uploaded successfully.', 'status');
     /* sending email */
     $email_to = $user->mail;
     $from = variable_get('textbook_companion_from_email', '');

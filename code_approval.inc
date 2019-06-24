@@ -1372,7 +1372,7 @@ function ajax_bulk_example_files_callback($form, $form_state)
             $form['example_files']['#markup'] = $example_files;
             $commands[] = ajax_command_replace('#ajax_example_files_list', drupal_render($form['example_files']));
             $commands[] = ajax_command_html('#ajax_download_selected_example', l('Download Example', 'textbook-companion/download/example/' . $example_list_default_value));
-            $commands[] = ajax_command_html('#ajax_edit_selected_example', l('Edit Example', 'code_approval/editcode/' . $example_list_default_value));
+            $commands[] = ajax_command_html('#ajax_edit_selected_example', l('Edit Example', 'textbook-companion/code-approval/editcode/' . $example_list_default_value));
             $form['example_actions']['#options'] = _bulk_list_example_actions();
             $commands[] = ajax_command_replace('#ajax_selected_example_action', drupal_render($form['example_actions']));
             //$commands[] = ajax_command_html('#ajax_selected_example_action', '' );
