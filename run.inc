@@ -522,10 +522,6 @@ function _book_information($preference_id)
 }
 function _html_book_info($preference_id)
 {
-    /*$book_details = db_fetch_object(db_query("SELECT
-    preference.book as preference_book, preference.author as preference_author, preference.isbn as preference_isbn, preference.publisher as preference_publisher, preference.edition as preference_edition, preference.year as preference_year,
-    proposal.full_name as proposal_full_name, proposal.faculty as proposal_faculty, proposal.reviewer as proposal_reviewer, proposal.course as proposal_course, proposal.branch as proposal_branch, proposal.university as proposal_university
-    FROM {textbook_companion_proposal} proposal LEFT JOIN {textbook_companion_preference} preference ON proposal.id = preference.proposal_id WHERE preference.id=".$preference_id));*/
     $query = db_select('textbook_companion_proposal', 'proposal');
     $query->addField('preference', 'book', 'preference_book');
     $query->addField('preference', 'author', 'preference_author');
