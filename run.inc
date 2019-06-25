@@ -51,6 +51,10 @@ function textbook_companion_run_form($form, &$form_state)
             '#type' => 'item',
             '#markup' => '<div id="ajax-download-book-replace">' . l('Download', 'textbook-companion/download/book/' . $book_default_value) . ' ' . t('(Download the R codes for all the solved examples)') . '</div>'
         );
+        $form['download_pdf'] = array(
+            '#type' => 'item',
+            '#markup' => '<div id="ajax-download-book-pdf-replace">' . l('Download PDF', 'textbook-companion/generate-book/' . $book_default_value) . ' ' . t('(Download the PDF file containing R codes for all the solved examples)') . '</div>'
+        );
         /*$book_pref_id_array = array("19");
         if(in_array($book_default_value, $book_pref_id_array)){
         $form['freeeda_download_book'] = array(
@@ -60,7 +64,7 @@ function textbook_companion_run_form($form, &$form_state)
         }*/
         /* $form['download_pdf'] = array(
         '#type' => 'item',
-        '#markup' => '<div id="ajax-download-book-pdf-replace">'.l('Download PDF', 'textbook_companion/generate_book/' . $book_default_value) . ' ' . t('(Download the PDF file containing eSim codes for all the solved examples)').'</div>',
+        '#markup' => '<div id="ajax-download-book-pdf-replace">'.l('Download PDF', 'textbook-companion/generate-book/' . $book_default_value) . ' ' . t('(Download the PDF file containing eSim codes for all the solved examples)').'</div>',
         );*/
         $form['chapter'] = array(
             '#type' => 'select',
@@ -148,6 +152,10 @@ function textbook_companion_run_form($form, &$form_state)
             '#type' => 'item',
             '#markup' => '<div id="ajax-download-freeeda-book-replace"></div>'
         );
+        $form['download_pdf'] = array(
+            '#type' => 'item',
+            '#markup' => '<div id="ajax-download-book-pdf-replace"></div>'
+        );
         /* $form['download_pdf'] = array(
         '#type' => 'item',
         '#markup' => '<div id="ajax-download-book-pdf-replace"></div>',
@@ -225,6 +233,7 @@ function ajax_book_list_callback($form, $form_state)
         $commands[] = ajax_command_html("#ajax-example-list-replace", '');
         $commands[] = ajax_command_html("#ajax-book-details-replace", '');
         $commands[] = ajax_command_html("#ajax-download-book-replace", '');
+        $commands[] = ajax_command_html("#ajax-download-book-pdf-replace", '');
         $commands[] = ajax_command_html("#ajax-download-freeeda-book-replace", '');
         $commands[] = ajax_command_html("#ajax-download-chapter-replace", '');
         $commands[] = ajax_command_html("#ajax-download-example-code-replace", '');
@@ -251,6 +260,7 @@ function ajax_chapter_list_callback($form, $form_state)
         } else {
             $commands[] = ajax_command_html("#ajax-download-freeeda-book-replace", '');
         }
+        $commands[] = ajax_command_html("#ajax-download-book-pdf-replace", l('Download PDF', 'textbook-companion/generate-book/' . $book_list_default_value) . ' ' . t('(Download the PDF file containing Scilab codes for all the solved examples)'));
         $commands[] = ajax_command_replace("#ajax-chapter-list-replace", drupal_render($form['chapter']));
         $commands[] = ajax_command_html("#ajax-example-list-replace", '');
         $commands[] = ajax_command_html("#ajax-download-example-code-replace", '');
@@ -262,6 +272,7 @@ function ajax_chapter_list_callback($form, $form_state)
         $commands[] = ajax_command_replace("#ajax-chapter-list-replace", drupal_render($form['chapter']));
         $commands[] = ajax_command_html("#ajax-chapter-list-replace", '');
         $commands[] = ajax_command_html("#ajax-download-book-replace", '');
+        $commands[] = ajax_command_html("#ajax-download-book-pdf-replace", '');
         $commands[] = ajax_command_html("#ajax-download-chapter-replace", '');
         $commands[] = ajax_command_html("#ajax-download-freeeda-book-replace", '');
         $commands[] = ajax_command_html("#ajax-example-list-replace", '');

@@ -1,9 +1,9 @@
 #!/bin/bash
 clear
-Bk_details=$1
-Contrib_details=$2
+CBk_details=$1
+CContrib_details=$2
 Data_all=$3
-Dep_dat=$4
+#Dep_dat=$4
 
 CURDIR=$PWD;
 
@@ -24,8 +24,8 @@ fi
 
 
 IFS_old="$IFS"
-IFS=# read col1 col2 col3 col4 col5 col6 col7 col8 < $Contrib_details;
-IFS=# read colB1 colB2 colB3 colB4 colB5 colB6 colB7 < $Bk_details;
+IFS=# read col1 col2 col3 col4 col5 col6 col7 col8 < "$CContrib_details";
+IFS=# read colB1 colB2 colB3 colB4 colB5 colB6 colB7 < "$CBk_details";
 col1=${col1/&/\\&};
 col2=${col2/&/\\&};
 col3=${col3/&/\\&};
@@ -152,7 +152,7 @@ fi
 
 j=$col1
 done < database_sort
-rm Figure_files
+#rm Figure_files
 
 
 if [  -s $Dep_dat ]

@@ -134,7 +134,7 @@ fi
 
 j=$col1
 done < database_sort
-rm Figure_files
+#rm Figure_files
 
 
 if [  -s $Dep_dat ]
