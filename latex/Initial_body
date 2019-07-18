@@ -9,7 +9,7 @@
 
 \lstset{ %configuring the display of scilab codes
              tabsize=4,
-             language=scilab,
+             language=R,
              basicstyle=\ttfamily,
              aboveskip={1\baselineskip},
              showstringspaces=false,

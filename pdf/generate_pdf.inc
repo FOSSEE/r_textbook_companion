@@ -85,7 +85,7 @@ function generate_pdf()
     $pdf->SetFont('Times', 'I', 16);
     $pdf->SetTextColor(0, 0, 0);
         //$pdf->Cell(240, 8, 'from ' . $data3->university . ' has successfully', '0', '1', 'C');
-    $pdf->MultiCell(320, 10, 'from "' . $data3->university . '" has successfully completed a', '0','C');
+    $pdf->MultiCell(320, 10, wordwrap('from "' . $data3->university . '" has successfully completed a', 80), '0','C');
     $pdf->Ln(0);
     $pdf->MultiCell(320, 10, 'R textbook companion by coding "' . $number_of_example . '" examples from the book', '0', 'C');
     $pdf->Ln(0); 
