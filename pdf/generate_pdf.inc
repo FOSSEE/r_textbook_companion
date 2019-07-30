@@ -72,7 +72,7 @@ function generate_pdf()
     $image_bg = $path . "/pdf/images/bg_cert.png";
     $pdf->Image($image_bg, 0, 0, $pdf->w, $pdf->h);
     $pdf->SetMargins(18, 1, 18);
-    $pdf->Ln(40);
+    $pdf->Ln(25);
     $pdf->SetFont('Times', 'I', 16);
     $pdf->SetTextColor(0, 0, 0);
     $pdf->Cell(320, 10, 'This is to certify that', '0', '1', 'C');
@@ -136,14 +136,14 @@ function generate_pdf()
     $urlRelativeFilePath = $path . "/pdf/temp_prcode/" . $fileName;
     $sign = $path . "/pdf/images/sign.png";
     QRcode::png($codeContents, $pngAbsoluteFilePath);
-    $pdf->Ln(5);
+    $pdf->Ln(20);
     $pdf->SetFont('', 'BI');
     $pdf->SetTextColor(30, 100, 182);
     $pdf->Cell(228, 8, $UniqueString, '0', '1', 'R');
-    $pdf->SetY(138);
+    $pdf->SetY(148);
     $pdf->SetX(222);
-    $pdf->Image($sign, $pdf->GetX()-130, $pdf->GetY()+5, 60, 0);
-    $pdf->Image($pngAbsoluteFilePath, $pdf->GetX(), $pdf->GetY()+2, 30, 0);
+    $pdf->Image($sign, $pdf->GetX()-130, $pdf->GetY()+6, 60, 0);
+    $pdf->Image($pngAbsoluteFilePath, $pdf->GetX(), $pdf->GetY()+1, 30, 0);
     //$name = $data3->full_name;
     //$certificate_name = str_replace(' ', '_', $name);
     //$pdf->Output($certificate_name . '_R_TBC_Certificate.pdf', 'D');
