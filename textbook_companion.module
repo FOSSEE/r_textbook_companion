@@ -272,7 +272,7 @@ function textbook_companion_menu()
 		'file' => 'code.inc',
 		'weight' => 2
 	);
-	$items['textbook-companion/code/upload-dep'] = array(
+	/*$items['textbook-companion/code/upload-dep'] = array(
 	'title' => 'Upload Dependency',
 	'description' => 'Upload Dependency Files',
 	'page callback' => 'drupal_get_form',
@@ -281,7 +281,7 @@ function textbook_companion_menu()
 	'type' => MENU_LOCAL_TASK,
 	'file' => 'dependency.inc',
 	'weight' => 3,
-	);
+	);*/
 	/*$items['textbook_companion/code/edit_dep'] = array(
 	'title' => 'Edit Dependency',
 	'description' => 'Edit Dependency File',
@@ -4499,6 +4499,42 @@ function _list_of_cities()
 	} //$city_list_data = $city_list->fetchObject()
 	return $city;
 }
+/*
+function  _tbc_list_of_main_categories()
+{
+	$maincategory = array();
+	$query = db_select('tbc_maincategory');
+	$query->fields('tbc_maincategory');
+	$query->orderBy('id', 'ASC');
+	$maincategory_list = $query->execute();
+	while ($maincategory_list_data = $maincategory_list->fetchObject())
+	{
+		$maincategory[$maincategory_list_data->maincategory_name] = $maincategory_list_data->maincategory_name;
+	} //$software_version_list_data = $software_version_list->fetchObject()
+	return $maincategory;
+}
+
+function  _tbc_list_of_sub_categories()
+{
+	$maincategory = array();
+	$query = db_select('tbc_maincategory');
+	$query->fields('tbc_maincategory');
+	$query->orderBy('id', 'ASC');
+	$maincategory_list = $query->execute();
+	$maincategory_id = $maincategory_list->fetchObject()->id;
+	$subcategory = array();
+	$query = db_select('tbc_subcategory');
+	$query->fields('tbc_subcategory');
+	$query->condition('maincategory_id', $maincategory_id);
+	$query->orderBy('id', 'ASC');
+	$subcategory_list = $query->execute();
+	while ($subcategory_list_data = $subcategory_list->fetchObject())
+	{
+		$subcategory[$subcategory_list_data->subcategory_name] = $subcategory_list_data->subcategory_name;
+	} //$software_version_list_data = $software_version_list->fetchObject()
+	return $subcategory;
+} */
+
 /*************************************************************************/
 /***** Function To convert only first charater of string in uppercase ****/
 /*************************************************************************/
