@@ -1435,7 +1435,7 @@ function default_value_for_selections($id)
         '#value' => l(t('Cancel'), 'textbook-companion/manage-proposal/category')
     );
     return $form;
-}
+}*/
 
 function _tbc_list_of_subcategories($maincategory_id)
 {
@@ -1450,7 +1450,7 @@ function _tbc_list_of_subcategories($maincategory_id)
         $subcategory[$subcategory_list_data->id] = $subcategory_list_data->subcategory_name;
     } //$software_version_list_data = $software_version_list->fetchObject()
     return $subcategory;
-}
+}/*
 function category_edit_form_submit($form, &$form_state)
 {
     /* get current proposal 
