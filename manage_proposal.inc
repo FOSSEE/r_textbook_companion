@@ -140,7 +140,6 @@ function _category_all()
 {
     /* get pending proposals to be approved */
     $preference_rows = array();
-    /*$preference_q = db_query("SELECT * FROM {textbook_companion_preference} WHERE approval_status = 1 ORDER BY id DESC");*/
     $query = db_select('textbook_companion_preference');
     $query->fields('textbook_companion_preference');
     $query->condition('approval_status', 1);
@@ -152,43 +151,31 @@ function _category_all()
                 $category_data = 'Not Selected';
                 break;
             case 1:
-                $category_data = 'Fluid Mechanics';
+                $category_data = 'Statistics';
                 break;
             case 2:
-                $category_data = 'Control Theory & Control Systems';
+                $category_data = 'Engineering';
                 break;
             case 3:
-                $category_data = 'Chemical Engineering';
+                $category_data = 'Business Management';
                 break;
             case 4:
-                $category_data = 'Thermodynamics';
+                $category_data = 'Economics';
                 break;
             case 5:
-                $category_data = 'Mechanical Engineering';
+                $category_data = 'Psychology';
                 break;
             case 6:
-                $category_data = 'Signal Processing';
+                $category_data = 'Business Statistics';
                 break;
             case 7:
-                $category_data = 'Digital Communications';
+                $category_data = 'Medical';
                 break;
             case 8:
-                $category_data = 'Electrical Technology';
+                $category_data = 'Bio Science';
                 break;
             case 9:
-                $category_data = 'Mathematics & Pure Science';
-                break;
-            case 10:
-                $category_data = 'Analog Electronics';
-                break;
-            case 11:
-                $category_data = 'Digital Electronics';
-                break;
-            case 12:
-                $category_data = 'Computer Programming';
-                break;
-            case 13:
-                $category_data = 'Others';
+                $category_data = 'Mathematics';
                 break;
             default:
                 $category_data = 'Unknown';
@@ -469,22 +456,6 @@ function proposal_approval_form_submit($form, &$form_state)
         ));
         $query->condition('proposal_id', $proposal_id);
         $num_updated = $query->execute();
-        /* unlock all the aicte books */
-        /*$query = "
-        UPDATE textbook_companion_aicte
-        SET status = 0, uid = 0, proposal_id = 0, preference_id = 0
-        WHERE proposal_id = {$proposal_id}
-        ";
-        db_query($query);*/
-        /*$query = db_update('textbook_companion_aicte');
-        $query->fields(array(
-        'status' => 0,
-        'uid' => 0,
-        'proposal_id' => 0,
-        'preference_id' => 0,
-        ));
-        $query->condition('proposal_id', $proposal_id);
-        $num_updated = $query->execute();*/
         /* sending email */
         $book_user = user_load($row->uid);
         $email_to = $book_user->mail;
@@ -885,7 +856,7 @@ function proposal_status_form_submit($form, &$form_state)
 /******************************************************************************/
 /**************************** PROPOSAL EDIT FORM ******************************/
 /******************************************************************************/
-function proposal_edit_form($form, &$form_state, $nonaicte_book)
+function proposal_edit_form($form, &$form_state)
 {
     global $user;
     /* get current proposal */
@@ -895,21 +866,19 @@ function proposal_edit_form($form, &$form_state, $nonaicte_book)
     $query->fields('textbook_companion_proposal');
     $query->condition('id', $proposal_id);
     $proposal_q = $query->execute();
-    if ($proposal_q) {
-        $proposal_data = $proposal_q->fetchObject();
-        if (!$proposal_data) {
+    $proposal_data = $proposal_q->fetchObject();
+    /*if (!$proposal_data) {
             drupal_set_message(t('Invalid proposal selected. Please try again.'), 'error');
-            drupal_goto('textbook-companion/manage-proposal');
+            //drupal_goto('textbook-companion/manage-proposal');
             return;
         }
-    } else {
-        drupal_set_message(t('Invalid proposal selected. Please try again.'), 'error');
-        drupal_goto('textbook-companion/manage-proposal');
-        return;
-    }
+    else {
+        //drupal_set_message(t('Invalid proposal selected. Please try again.'), 'error');
+        //drupal_goto('textbook-companion/manage-proposal');
+       // return;
+    }*/
     $user_data = user_load($proposal_data->uid);
-    /* $preference1_q = db_query("SELECT * FROM {textbook_companion_preference} WHERE proposal_id = %d AND pref_number = %d LIMIT 1", $proposal_id, 1);
-    $preference1_data = db_fetch_object($preference1_q);*/
+  //  var_dump($user_data->mail);die;
     $query = db_select('textbook_companion_preference');
     $query->fields('textbook_companion_preference');
     $query->condition('proposal_id', $proposal_id);
@@ -917,23 +886,9 @@ function proposal_edit_form($form, &$form_state, $nonaicte_book)
     $query->range(0, 1);
     $preference1_q = $query->execute();
     $preference1_data = $preference1_q->fetchObject();
-    /********************************************************************/
-    $query = db_select('textbook_companion_preference');
-    $query->fields('textbook_companion_preference');
-    $query->condition('proposal_id', $proposal_id);
-    $query->condition('pref_number', 2);
-    $query->range(0, 1);
-    $preference2_q = $query->execute();
-    $preference2_data = $preference2_q->fetchObject();
-    /**************************************************************************/
-    $query = db_select('textbook_companion_preference');
-    $query->fields('textbook_companion_preference');
-    $query->condition('proposal_id', $proposal_id);
-    $query->condition('pref_number', 3);
-    $query->range(0, 1);
-    $preference3_q = $query->execute();
-    $preference3_data = $preference3_q->fetchObject();
-    /*************************************************************************/
+    $form['#attributes'] = array(
+        'enctype' => "multipart/form-data"
+    );
     $form['name_title'] = array(
         '#type' => 'select',
         '#title' => t('Title'),
@@ -1207,135 +1162,46 @@ function proposal_edit_form($form, &$form_state, $nonaicte_book)
         '#required' => TRUE,
         '#default_value' => $preference1_data->year
     );
-    if ($preference2_data) {
-        $form['preference2'] = array(
-            '#type' => 'fieldset',
-            '#title' => t('Book Preference 2'),
-            '#collapsible' => TRUE,
-            '#collapsed' => FALSE
-        );
-        $form['preference2']['book2'] = array(
-            '#type' => 'textfield',
-            '#title' => t('Title of the book'),
-            '#size' => 30,
-            '#maxlength' => 100,
-            '#required' => TRUE,
-            '#default_value' => $preference2_data->book
-        );
-        $form['preference2']['author2'] = array(
-            '#type' => 'textfield',
-            '#title' => t('Author Name'),
-            '#size' => 30,
-            '#maxlength' => 100,
-            '#required' => TRUE,
-            '#default_value' => $preference2_data->author
-        );
-        $form['preference2']['isbn2'] = array(
-            '#type' => 'textfield',
-            '#title' => t('ISBN No'),
-            '#size' => 30,
-            '#maxlength' => 25,
-            '#required' => TRUE,
-            '#default_value' => $preference2_data->isbn
-        );
-        $form['preference2']['publisher2'] = array(
-            '#type' => 'textfield',
-            '#title' => t('Publisher & Place'),
-            '#size' => 30,
-            '#maxlength' => 50,
-            '#required' => TRUE,
-            '#default_value' => $preference2_data->publisher
-        );
-        $form['preference2']['edition2'] = array(
-            '#type' => 'textfield',
-            '#title' => t('Edition'),
-            '#size' => 4,
-            '#maxlength' => 2,
-            '#required' => TRUE,
-            '#default_value' => $preference2_data->edition
-        );
-        $form['preference2']['year2'] = array(
-            '#type' => 'textfield',
-            '#title' => t('Year of pulication'),
-            '#size' => 4,
-            '#maxlength' => 4,
-            '#required' => TRUE,
-            '#default_value' => $preference2_data->year
-        );
-    }
-    if ($preference3_data) {
-        $form['preference3'] = array(
-            '#type' => 'fieldset',
-            '#title' => t('Book Preference 3'),
-            '#collapsible' => TRUE,
-            '#collapsed' => FALSE
-        );
-        $form['preference3']['book3'] = array(
-            '#type' => 'textfield',
-            '#title' => t('Title of the book'),
-            '#size' => 30,
-            '#maxlength' => 100,
-            '#required' => TRUE,
-            '#default_value' => $preference3_data->book
-        );
-        $form['preference3']['author3'] = array(
-            '#type' => 'textfield',
-            '#title' => t('Author Name'),
-            '#size' => 30,
-            '#maxlength' => 100,
-            '#required' => TRUE,
-            '#default_value' => $preference3_data->author
-        );
-        $form['preference3']['isbn3'] = array(
-            '#type' => 'textfield',
-            '#title' => t('ISBN No'),
-            '#size' => 30,
-            '#maxlength' => 25,
-            '#required' => TRUE,
-            '#default_value' => $preference3_data->isbn
-        );
-        $form['preference3']['publisher3'] = array(
-            '#type' => 'textfield',
-            '#title' => t('Publisher & Place'),
-            '#size' => 30,
-            '#maxlength' => 50,
-            '#required' => TRUE,
-            '#default_value' => $preference3_data->publisher
-        );
-        $form['preference3']['edition3'] = array(
-            '#type' => 'textfield',
-            '#title' => t('Edition'),
-            '#size' => 4,
-            '#maxlength' => 2,
-            '#required' => TRUE,
-            '#default_value' => $preference3_data->edition
-        );
-        $form['preference3']['year3'] = array(
-            '#type' => 'textfield',
-            '#title' => t('Year of pulication'),
-            '#size' => 4,
-            '#maxlength' => 4,
-            '#required' => TRUE,
-            '#default_value' => $preference3_data->year
-        );
-    }
-    /* hidden fields */
     $form['hidden_preference_id1'] = array(
         '#type' => 'hidden',
-        '#value' => $preference1_data->id
+        '#default_value' => $preference1_data->id
     );
-    /* $form['hidden_preference_id2'] = array(
-    '#type' => 'hidden',
-    '#value' => $preference2_data->id
-    );
-    $form['hidden_preference_id3'] = array(
-    '#type' => 'hidden',
-    '#value' => $preference3_data->id
-    );*/
+    //var_dump($proposal_id);die;
     $form['hidden_proposal_id'] = array(
         '#type' => 'hidden',
-        '#value' => $proposal_id
+        '#default_value' => $proposal_id
     );
+    //var_dump($preference1_data->category);die;
+    $form['main_category'] = array(
+        '#type' => 'select',
+        '#title' => t('Select the main category'),
+        '#default_value' => $preference1_data->category,
+        '#options' => _tbc_list_of_main_categories(),
+        '#tree' => TRUE,
+        '#ajax' => array(
+            'callback' => 'ajax_subcategory_list_callback',
+            'wrapper' => 'ajax-subcategory-list-replace',
+         //   'method' => 'replace',
+        ),
+    );
+    $main_category = isset($form_state['values']['main_category']) ? $form_state['values']['main_category'] : $preference1_data->category;
+    $form['subcategory'] = array(
+        '#type' => 'select',
+        '#title' => 'List of subcategory',
+        '#prefix' => '<div id="ajax-subcategory-list-replace">',
+        '#suffix' => '</div>',
+        '#options' => _tbc_list_of_subcategories($main_category),
+        '#multiple' => TRUE,
+        '#default_value' => default_value_for_selections($preference1_data->id),
+        '#states' => array(
+            'invisible' => array(
+                ':input[name="main_category"]' => array(
+                    'value' => 0
+                )
+            )
+        )
+    );
+    /* hidden fields */
     $form['submit'] = array(
         '#type' => 'submit',
         '#value' => t('Submit')
@@ -1346,6 +1212,11 @@ function proposal_edit_form($form, &$form_state, $nonaicte_book)
     );
     return $form;
 }
+function ajax_subcategory_list_callback($form, &$form_state)
+{
+    return $form['subcategory'];
+}
+
 function proposal_edit_form_validate($form, &$form_state)
 {
     if ($form_state['values']['book1'] && $form_state['values']['author1']) {
@@ -1354,26 +1225,6 @@ function proposal_edit_form_validate($form, &$form_state)
         if (_dir_name($bk1, $auth1, $form_state['values']['hidden_preference_id1']) != NULL) {
             $form_state['values']['dir_name1'] = _dir_name($bk1, $auth1, $form_state['values']['hidden_preference_id1']);
         }
-    }
-    /*if ($form_state['values']['book2'] && $form_state['values']['author2'])
-    {
-    $bk2 = trim($form_state['values']['book2']);
-    $auth2 = trim($form_state['values']['author2']);
-    
-    if (_dir_name($bk2, $auth2, $form_state['values']['hidden_preference_id2']) != NULL)
-    {
-    $form_state['values']['dir_name2'] = _dir_name($bk2, $auth2, $form_state['values']['hidden_preference_id2']);
-    }
-    }
-    if ($form_state['values']['book3'] && $form_state['values']['author3'])
-    {
-    $bk3 = trim($form_state['values']['book3']);
-    $auth3 = trim($form_state['values']['author3']);
-    
-    if (_dir_name($bk3, $auth3, $form_state['values']['hidden_preference_id3']) != NULL)
-    {
-    $form_state['values']['dir_name3'] = _dir_name($bk3, $auth3, $form_state['values']['hidden_preference_id3']);
-    }
     }
     /* mobile */
     if (!preg_match('/^[0-9\ \+]{0,15}$/', $form_state['values']['mobile']))
@@ -1407,6 +1258,11 @@ function proposal_edit_form_validate($form, &$form_state)
             form_set_error('older', t('Please provide valid version'));
         }
     }
+    if ($form_state['values']['subcategory'])
+    {
+        $subcategory = implode("| ", $_POST['subcategory']);
+        $form_state['values']['subcategory'] = trim($subcategory);
+    } 
     return;
 }
 function proposal_edit_form_submit($form, &$form_state)
@@ -1462,82 +1318,69 @@ function proposal_edit_form_submit($form, &$form_state)
             'publisher' => $form_state['values']['publisher1'],
             'edition' => $form_state['values']['edition1'],
             'year' => $form_state['values']['year1'],
+            'category' => $form_state['values']['main_category'],
+            'subcategory' => $form_state['values']['subcategory'],
             'directory_name' => $form_state['values']['dir_name1']
         ));
         $query->condition('id', $preference1_id);
         $num_updated = $query->execute();
     }
-    /**************************************************************/
-    /**$query = db_select('textbook_companion_preference');
-    $query->fields('textbook_companion_preference');
-    $query->condition('proposal_id', $proposal_id);
-    $query->condition('pref_number', 2);
-    $query->range(0, 1);
-    $preference2_q = $query->execute();
-    $preference2_data = $preference2_q->fetchObject();
-    $preference2_id = $preference2_data->id;
-    if ($preference2_data)
-    {
-    del_book_pdf($preference2_data->id);        
-    RenameDir($preference2_id, $form_state['values']['dir_name2']);
-    $query = db_update('textbook_companion_preference');
-    $query->fields(array(
-    'book' => $form_state['values']['book2'],
-    'author' => $form_state['values']['author2'],
-    'isbn' => $form_state['values']['isbn2'],
-    'publisher' => $form_state['values']['publisher2'],
-    'edition' => $form_state['values']['edition2'],
-    'year' => $form_state['values']['year2'],
-    'directory_name' => $form_state['values']['dir_name2']
-    ));
-    $query->condition('id', $preference2_id);
-    $num_updated = $query->execute();
-    }
-    /*****************************************************************/
-    /**$query = db_select('textbook_companion_preference');
-    $query->fields('textbook_companion_preference');
-    $query->condition('proposal_id', $proposal_id);
-    $query->condition('pref_number', 3);
-    $query->range(0, 1);
-    $preference3_q = $query->execute();
-    $preference3_data = $preference3_q->fetchObject();
-    $preference3_id = $preference3_data->id;
-    if ($preference3_data)
-    {
-    del_book_pdf($preference3_data->id);        
-    RenameDir($preference3_id, $form_state['values']['dir_name3']);
-    $query = db_update('textbook_companion_preference');
-    $query->fields(array(
-    'book' => $form_state['values']['book3'],
-    'author' => $form_state['values']['author3'],
-    'isbn' => $form_state['values']['isbn3'],
-    'publisher' => $form_state['values']['publisher3'],
-    'edition' => $form_state['values']['edition3'],
-    'year' => $form_state['values']['year3'],
-    'directory_name' => $form_state['values']['dir_name3']
-    ));
-    $query->condition('id', $preference3_id);
-    $num_updated = $query->execute();
-    }**/
     drupal_set_message(t('Proposal Updated'), 'status');
+}
+function default_value_for_selections($id)
+{
+    $subcategory_list_data = new stdClass();
+    $query = db_select('textbook_companion_preference');
+    $query->fields('textbook_companion_preference');
+    $query->condition('id', $id);
+    $default_subcategory = $query->execute()->fetchObject();
+    $subcategory = array();
+    $subcategory_value = explode('| ', $default_subcategory->subcategory);
+    $subcategory_list = 0;
+    foreach ($subcategory_value as $subcategory_list_data->$subcategory_list)
+    {
+    $query = db_select('tbc_subcategory');
+    $query->fields('tbc_subcategory');
+    $query->condition('id', $subcategory_value);
+    //$query->orderBy('id', 'ASC');
+    $subcategory_list_1 = $query->execute();
+    while ($subcategory_list_data_1 = $subcategory_list_1->fetchObject())
+    {
+        $subcategory[$subcategory_list_data_1->id] = $subcategory_list_data_1->id;
+        $subcategory_list++;
+    }
+    }
+    //var_dump($subcategory);die;
+    return $subcategory;
 }
 /******************************************************************************/
 /**************************** CATEGORY EDIT FORM ******************************/
 /******************************************************************************/
-function category_edit_form($from, $form_state)
+/*function category_edit_form($form, &$form_state)
 {
-    /* get current proposal */
-    $preference_id = arg(3);
-    /*$preference_q = db_query("SELECT * FROM {textbook_companion_preference} WHERE id = %d", $preference_id);
-    $preference_data = db_fetch_object($preference_q);*/
+    /* get current proposal 
+    $preference_id = arg(4);
     $query = db_select('textbook_companion_preference');
     $query->fields('textbook_companion_preference');
     $query->condition('id', $preference_id);
-    $result = $query->execute();
+    $preference_q = $query->execute();
+    $preference_data = $preference_q->fetchObject();
     if (!$preference_data) {
         drupal_set_message(t('Invalid book selected. Please try again.'), 'error');
         drupal_goto('textbook-companion/manage-proposal/category');
         return;
+    }
+    if ($preference_id)
+    {
+        $query = db_select('textbook_companion_preference');
+        $query->fields('textbook_companion_preference');
+        $query->condition('id', $preference_id);
+        $result = $query->execute()->fetchObject();
+        $category_default_value = $result->category;
+    } //$url_book_pref_id
+    else
+    {
+        $category_default_value = 0;
     }
     $form['book'] = array(
         '#type' => 'item',
@@ -1572,9 +1415,16 @@ function category_edit_form($from, $form_state)
     $form['category'] = array(
         '#type' => 'select',
         '#title' => t('Category'),
-        '#options' => _tbc_list_of_categories(),
+        '#options' => _tbc_list_of_main_categories(),
         '#required' => TRUE,
-        '#default_value' => $preference_data->category
+        '#default_value' => $category_default_value,
+    );    
+   // $maincategory_value = isset($form_state['values']['category']) ? $form_state['values']['category'] : '';
+    $form['subcategory'] = array(
+        '#type' => 'select',
+        '#title' => 'List of subcategory',
+        '#options' => _tbc_list_of_subcategories($category_default_value),
+      //  '#default_value' => isset($form_state['values']['category']) ? $form_state['values']['category'] : '',
     );
     $form['submit'] = array(
         '#type' => 'submit',
@@ -1586,12 +1436,28 @@ function category_edit_form($from, $form_state)
     );
     return $form;
 }
+
+function _tbc_list_of_subcategories($maincategory_id)
+{
+    $subcategory = array();
+    $query = db_select('tbc_subcategory');
+    $query->fields('tbc_subcategory');
+    $query->condition('maincategory_id', $maincategory_id);
+    $query->orderBy('id', 'ASC');
+    $subcategory_list = $query->execute();
+    while ($subcategory_list_data = $subcategory_list->fetchObject())
+    {
+        $subcategory[$subcategory_list_data->id] = $subcategory_list_data->subcategory_name;
+    } //$software_version_list_data = $software_version_list->fetchObject()
+    return $subcategory;
+}
 function category_edit_form_submit($form, &$form_state)
 {
-    /* get current proposal */
-    $preference_id = (int) arg(3);
+    /* get current proposal 
+
+    $preference_id = (int) arg(4);
     /*$preference_q = db_query("SELECT * FROM {textbook_companion_preference} WHERE id = %d", $preference_id);
-    $preference_data = db_fetch_object($preference_q);*/
+    $preference_data = db_fetch_object($preference_q);
     $query = db_select('textbook_companion_preference');
     $query->fields('textbook_companion_preference');
     $query->condition('id', $preference_id);
@@ -1602,7 +1468,7 @@ function category_edit_form_submit($form, &$form_state)
         drupal_goto('textbook-companion/manage-proposal/category');
         return;
     }
-    /*db_query("UPDATE {textbook_companion_preference} SET category = %d WHERE id = %d", $form_state['values']['category'], $preference_data->id);*/
+    /*db_query("UPDATE {textbook_companion_preference} SET category = %d WHERE id = %d", $form_state['values']['category'], $preference_data->id);
     $query = db_update('textbook_companion_preference');
     $query->fields(array(
         'category' => $form_state['values']['category']
