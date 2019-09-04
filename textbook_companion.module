@@ -6,6 +6,27 @@ function textbook_companion_menu()
 {
 	$items = array();
 	/* users */
+	$items['Completed_Books'] = array(
+		'title' => 'Completed Books',
+		'page callback' => 'tbc_completed_books_display_new_category_all',
+		'access arguments' => array(
+		'display books in progress'
+		),
+		'type' => MENU_LOCAL_TASK,
+		'file' => 'display_books.inc'
+	);
+	$items['textbook_run'] = array(
+		'title' => 'Download Codes',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array(
+			'textbook_companion_book_run_form'
+		),
+		'access arguments' => array(
+			'access content'
+		),
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'textbook_run.inc'
+	);
 	$items['textbook-companion/proposal'] = array(
 		'title' => 'Book Proposal Form',
 		'description' => 'Book Proposal Form.',
