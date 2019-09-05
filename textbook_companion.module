@@ -2757,7 +2757,7 @@ function textbook_companion_mail($key, &$message, $params)
 			$preference3_data = $result->fetchObject();
 			$user_data = user_load($params['proposal_received']['user_id']);
 			$message['headers'] = $params['proposal_received']['headers'];
-			$message['subject'] = t('[!site_name] Your textbook companion book proposal has been received', array(
+			$message['subject'] = t('[!site_name][Textbook Companion] Your textbook companion book proposal has been received', array(
 				'!site_name' => variable_get('site_name', '')
 			));
 			$message['body'] = array(
@@ -2818,7 +2818,7 @@ FOSSEE, IIT Bombay', array(
 			$preference1_data = $result->fetchObject();
 			$user_data = user_load($params['proposal_disapproved']['user_id']);
 			$message['headers'] = $params['proposal_disapproved']['headers'];
-			$message['subject'] = t('[!site_name] Your textbook companion book proposal has been disapproved', array(
+			$message['subject'] = t('[!site_name][Textbook Companion] Your textbook companion book proposal has been disapproved', array(
 				'!site_name' => variable_get('site_name', '')
 			));
 			$message['body'] = array(
@@ -2862,7 +2862,7 @@ FOSSEE, IIT Bombay', array(
 			$approved_preference_data = $result->fetchObject();
 			$user_data = user_load($params['proposal_approved']['user_id']);
 			$message['headers'] = $params['proposal_approved']['headers'];
-			$message['subject'] = t('[!site_name] Your book proposal has been approved', array(
+			$message['subject'] = t('[!site_name][Textbook Companion] Your book proposal has been approved', array(
 				'!site_name' => variable_get('site_name', '')
 			));
 			$message['body'] = array(
@@ -2912,7 +2912,7 @@ FOSSEE, IIT Bombay', array(
 			$approved_preference_data = $result->fetchObject();
 			$user_data = user_load($params['proposal_completed']['user_id']);
 			$message['headers'] = $params['proposal_completed']['headers'];
-			$message['subject'] = t('[!site_name] Congratulations on the completion of the Textbook Companion.', array(
+			$message['subject'] = t('[!site_name][Textbook Companion] Congratulations on the completion of the Textbook Companion.', array(
 				'!site_name' => variable_get('site_name', '')
 			));
 			$message['body'] = array(
@@ -2937,7 +2937,7 @@ Publisher and Place: ' . $approved_preference_data->publisher . '
 Edition: ' . $approved_preference_data->edition . '
 Year of publication: ' . $approved_preference_data->year . '
 
-Your book is now available at following link to download at https://r.fossee.in/textbook-companion/textbook-run/' . $approved_preference_data->id . '
+Your book is now available at following link to download at https://r.fossee.in/textbook-companion/completed-books' . '
 You may download your certificate from http://r.fossee.in/textbook-companion/certificate after logging in your account.
 
 Now you should be able to propose a new book.
@@ -3098,7 +3098,7 @@ FOSSEE, IIT Bombay', array(
 			$proposal_data = $result->fetchObject();
 			$user_data = user_load($params['example_uploaded']['user_id']);
 			$message['headers'] = $params['example_uploaded']['headers'];
-			$message['subject'] = t('[!site_name] You have uploaded example for Textbook Companion', array(
+			$message['subject'] = t('[!site_name][Textbook Companion] You have uploaded example for Textbook Companion', array(
 				'!site_name' => variable_get('site_name', '')
 			));
 			$message['body'] = array(
@@ -3152,7 +3152,7 @@ FOSSEE, IIT Bombay', array(
 			$proposal_data = $result->fetchObject();
 			$user_data = user_load($params['example_updated']['user_id']);
 			$message['headers'] = $params['example_updated']['headers'];
-			$message['subject'] = t('[!site_name] You have updated example for Textbook Companion', array(
+			$message['subject'] = t('[!site_name][Textbook Companion] You have updated example for Textbook Companion', array(
 				'!site_name' => variable_get('site_name', '')
 			));
 			$message['body'] = array(
@@ -3206,7 +3206,7 @@ FOSSEE, IIT Bombay', array(
 			$proposal_data = $result->fetchObject();
 			$user_data = user_load($params['example_updated_admin']['user_id']);
 			$message['headers'] = $params['example_updated_admin']['headers'];
-			$message['subject'] = t('[!site_name] Reviewer have updated example for Textbook Companion ', array(
+			$message['subject'] = t('[!site_name][Textbook Companion] Reviewer have updated example for Textbook Companion ', array(
 				'!site_name' => variable_get('site_name', '')
 			));
 			$message['body'] = array(
@@ -3259,7 +3259,7 @@ FOSSEE, IIT Bombay', array(
 			$proposal_data = $result->fetchObject();
 			$user_data = user_load($params['example_approved']['user_id']);
 			$message['headers'] = $params['example_approved']['headers'];
-			$message['subject'] = t('[!site_name] Your uploaded example has been approved for Textbook Companion', array(
+			$message['subject'] = t('[!site_name][Textbook Companion] Your uploaded example has been approved for Textbook Companion', array(
 				'!site_name' => variable_get('site_name', '')
 			));
 			$message['body'] = array(
@@ -3306,7 +3306,7 @@ FOSSEE, IIT Bombay', array(
 			$result = $query->execute();
 			$proposal_data = $result->fetchObject();
 			$message['headers'] = $params['example_disapproved']['headers'];
-			$message['subject'] = t('[!site_name] Your uploaded example has been disapproved for Textbook Companion', array(
+			$message['subject'] = t('[!site_name][Textbook Companion] Your uploaded example has been disapproved for Textbook Companion', array(
 				'!site_name' => variable_get('site_name', '')
 			));
 			$message['body'] = array(
@@ -3406,7 +3406,7 @@ FOSSEE, IIT Bombay', array(
 
 			$user_data = user_load($params['feedback_received']['user_id']);
 			$message['headers'] = $params['feedback_received']['headers'];
-			$message['subject'] = t('[!site_name] We have received your feedback', array(
+			$message['subject'] = t('[!site_name][Textbook Companion] We have received your feedback', array(
 				'!site_name' => variable_get('site_name', '')
 			));
 			$message['body'] = array(
@@ -3461,7 +3461,7 @@ FOSSEE, IIT Bombay', array(
 
 			$user_data = user_load($params['copyrighttransferform']['user_id']);
 			$message['headers'] = $params['copyrighttransferform']['headers'];
-			$message['subject'] = t('[!site_name] We have received your feedback', array(
+			$message['subject'] = t('[!site_name][Textbook Companion] We have received your feedback', array(
 				'!site_name' => variable_get('site_name', '')
 			));
 			$message['body'] = array(
@@ -3486,7 +3486,7 @@ FOSSEE, IIT Bombay', array(
 		case 'undertakingform':
 			$user_data = user_load($params['undertakingform']['user_id']);
 			$message['headers'] = $params['undertakingform']['headers'];
-			$message['subject'] = t('[!site_name] We have received your feedback', array(
+			$message['subject'] = t('[!site_name][Textbook Companion] We have received your feedback', array(
 				'!site_name' => variable_get('site_name', '')
 			));
 			$message['body'] = array(
