@@ -327,9 +327,6 @@ function ajax_example_files_callback($form, $form_state)
                     case 'R':
                         $example_file_type = 'Result file';
                         break;
-                    case 'X':
-                        $example_file_type = 'xcos file';
-                        break;
                     default:
                         $example_file_type = 'Unknown';
                         break;
