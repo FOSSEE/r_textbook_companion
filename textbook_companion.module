@@ -88,7 +88,7 @@ function textbook_companion_menu()
 		'weight' => 2,
 		'file' => 'manage_proposal.inc'
 	);
-	/*$items['manage_proposal/category'] = array(
+	/*$items['textbook-companion/manage-proposal/category'] = array(
 	'title' => 'Categorize',
 	'description' => 'Categorize Books',
 	'page callback' => '_category_all',
@@ -149,7 +149,7 @@ function textbook_companion_menu()
 		'type' => MENU_CALLBACK,
 		'file' => 'manage_proposal.inc'
 	);
-	/*$items['manage_proposal/category/edit'] = array(
+	/*$items['textbook-companion/manage-proposal/category/edit'] = array(
 	'title' => 'Edit Category',
 	'description' => 'Edit category',
 	'page callback' => 'drupal_get_form',
@@ -866,183 +866,6 @@ function textbook_companion_permission()
 		)
 	);
 }
-/* Aicte books pickup before the proposal form */
-/*function textbook_companion_aicte_proposal_form($form_state) {
-/* $query = "
-SELECT * FROM textbook_companion_aicte
-WHERE status = 0 AND selected = 0
-";
-$result = db_query($query);*/
-/* $query = "
-SELECT * FROM textbook_companion_aicte
-WHERE status = :status AND selected = :selected
-";
-$args = array(
-':status' => 0,
-':selected' => 0,
-);
-$result = db_query($query,$args); */
-/*	$query = db_select('textbook_companion_aicte');
-$query->fields('textbook_companion_aicte');
-$query->condition('status', 0);
-$query->condition('selected', 0);
-$result = $query->execute();
-
-$form = array();
-$form["wrapper"] = array(
-"#type" => "fieldset",
-"#prefix" => "<div id='aicte-form-wrapper'>",
-"#suffix" => "</div>",
-);
-// $num_rows = mysql_num_rows($result);
-$num_rows = $query->countQuery();
-if ($num_rows > 0) {
-while($row = $result->fetchObject()) {
-/* fixing title string */
-/*   $title = "";
-$edition = "";
-$year = "";
-$title = "{$row->book} by {$row->author}";
-if($row->edition) {
-$edition = "<i>ed</i>: {$row->edition}";
-}
-if($row->year) {
-if($row->edition) {
-$year = ", <i>pub</i>: {$row->year}";
-} else {
-$year = "<i>pub</i>: {$row->year}";
-}
-}
-if($edition or $year) {
-$title .= "({$edition} {$year})";
-}
-$form["wrapper"][$row->id] = array(
-"#type" => "checkbox",
-"#title" => $title,
-"#prefix" => "<div class='title'>",
-"#suffix" => "</div>",
-);
-}
-}
-$form["submit"] = array(
-"#type" => "submit",
-"#value" => "Submit Book Selections"
-);
-return $form;
-}*/
-/*function textbook_companion_aicte_proposal_form_validate($form, &$form_state) {
-/*$query = "
-SELECT * FROM textbook_companion_aicte
-WHERE status = 0 AND selected = 0
-";
-$result = db_query($query);*/
-/*$query = db_select('textbook_companion_aicte');
-$query->fields('textbook_companion_aicte');
-$query->condition('status', 0);
-$query->condition('selected', 0);
-$result = $query->execute();
-
-$count = 0;
-$selections = array();
-while($row = $result->fetchObject()) {
-if($form_state["values"][$row->id] == 1) {
-$count++;
-array_push($selections, $row->id);
-}
-}
-/* user can choose only 3 books to propose */
-/* if($count != 3) {
-form_set_error("", "Please select exactly <strong>3</strong> books. You currently selected <strong>{$count}</strong>");
-} else {
-$form_state["values"]["selections"] = $selections;
-}
-}*/
-/*function textbook_companion_aicte_proposal_form_submit($form, &$form_state) {
-global $user;
-$selections = $form_state["values"]["selections"];
-var_dump($selections);    
-variable_set("aicte_".$user->uid, $selections);
-drupal_goto("proposal");
-}*/
-/*function textbook_companion_aicte_report_form($form_state) {
-/*$query = "
-SELECT * FROM textbook_companion_aicte
-WHERE status = 0
-ORDER BY book
-";
-$result = db_query($query);*/
-/*$query = db_select('textbook_companion_aicte');
-$query->fields('textbook_companion_aicte');
-$query->condition('status', 0);
-$query->orderBy('book', 'ASC');
-$result = $query->execute();
-
-$books = array();
-$books[0] = "Please select a book";
-while($row = $result->fetchObject()) {
-$books[$row->id] = "{$row->book} ({$row->author})";
-}
-$form = array();
-$form["name"] = array(
-"#type" => "textfield",
-"#title" => "Name",
-"#description" => t("Please enter your name."),
-);
-$form["email"] = array(
-"#type" => "textfield",
-"#title" => "Email",
-"#description" => t("Please enter your valid email id."),
-);
-$form["number"] = array(
-"#type" => "textfield",
-"#title" => "Number",
-"#description" => t("Please enter your valid phone number."),
-);
-$form["book"] = array(
-"#type" => "select",
-"#title" => "AICTE Book",
-"#description" => t("Please select a book."),
-"#options" => $books
-);
-$form["comment"] = array(
-"#type" => "textarea",
-"#title" => "Any other comment?",
-"#description" => t("Please enter your query (if any)")
-);
-$form["submit"] = array(
-"#type" => "submit",
-"#value" => "Submit"
-);
-return $form;
-}
-*/
-/*function textbook_companion_aicte_report_form_submit($form, &$form_state) {
-$v = $form_state["values"];
-
-/*$query = "
-INSERT INTO textbook_companion_aicte_report
-(aicte_id, name, number, email, comment)
-VALUES
-(%d, '%s', '%s', '%s', '%s')
-";
-$result = db_query($query, 
-$v["book"], $v["name"], $v["number"], $v["email"], $v["comment"]
-);*/
-/*$query = "INSERT INTO textbook_companion_aicte_report
-(aicte_id, name, number, email, comment)
-VALUES (:aicte_id, :name, :number, :email, :comment)";
-$args = array(
-":aicte_id" => $v["book"],
-":name" => $v["name"],
-":number" => $v["number"],
-":email" =>$v["email"],
-":comment" => $v["comment"]
-);
-$result = db_query($query, $args, array('return' => Database::RETURN_INSERT_ID));
-
-drupal_set_message("Thank you for reporting.", "status");
-}
-*/
 function textbook_companion_aicte_proposal_all()
 {
 	global $user;
@@ -1265,510 +1088,6 @@ function textbook_companion_proposal_all()
 	// drupal_goto("aicte_proposal");
 	return $page_content;
 }
-/*function book_proposal_form($form, $form_state)
-{
-global $user;
-$form = array();
-$form['imp_notice'] = array(
-'#type' => 'item',
-'#markup' => '<font color="red"><b>Please fill up this form carefully as the details entered here will be exactly written in the Textbook Companion</b></font>'
-);
-$form['full_name'] = array(
-'#type' => 'textfield',
-'#title' => t('Full Name'),
-'#size' => 30,
-'#maxlength' => 50,
-'#required' => TRUE
-);
-$form['email_id'] = array(
-'#type' => 'textfield',
-'#title' => t('Email'),
-'#size' => 30,
-'#value' => $user->mail,
-'#disabled' => TRUE
-);
-$form['mobile'] = array(
-'#type' => 'textfield',
-'#title' => t('Mobile No.'),
-'#size' => 30,
-'#maxlength' => 15,
-'#required' => TRUE
-);
-$form['gender'] = array(
-'#type' => 'radios',
-'#title' => t('Gender'),
-'#options' => array(
-'M' => 'Male',
-'F' => 'Female'
-),
-'#required' => TRUE
-);
-$form['how_project'] = array(
-'#type' => 'select',
-'#title' => t('How did you come to know about this project'),
-'#options' => array(
-'r Website' => 'r Website',
-'Friend' => 'Friend',
-'Professor/Teacher' => 'Professor/Teacher',
-'Mailing List' => 'Mailing List',
-'Poster in my/other college' => 'Poster in my/other college',
-'Others' => 'Others'
-),
-'#required' => TRUE
-);
-$form['course'] = array(
-'#type' => 'textfield',
-'#title' => t('Course'),
-'#size' => 30,
-'#maxlength' => 50,
-'#required' => TRUE
-);
-$form['branch'] = array(
-'#type' => 'select',
-'#title' => t('Department/Branch'),
-'#options' => _list_of_departments(),
-'#required' => TRUE
-);
-$form['university'] = array(
-'#type' => 'textfield',
-'#title' => t('University/ Institute'),
-'#size' => 80,
-'#maxlength' => 200,
-'#required' => TRUE,
-'#attributes' => array(
-'placeholder' => 'Insert full name of your institute/ university.... '
-)
-);
-$form['country'] = array(
-'#type' => 'select',
-'#title' => t('Country'),
-'#options' => array(
-'India' => 'India',
-'Others' => 'Others'
-),
-'#required' => TRUE,
-'#tree' => TRUE,
-'#validated' => TRUE
-);
-$form['other_country'] = array(
-'#type' => 'textfield',
-'#title' => t('Other than India'),
-'#size' => 100,
-'#attributes' => array(
-'placeholder' => t('Enter your country name')
-),
-'#states' => array(
-'visible' => array(
-':input[name="country"]' => array(
-'value' => 'Others'
-)
-)
-)
-);
-$form['other_state'] = array(
-'#type' => 'textfield',
-'#title' => t('State other than India'),
-'#size' => 100,
-'#attributes' => array(
-'placeholder' => t('Enter your state/region name')
-),
-'#states' => array(
-'visible' => array(
-':input[name="country"]' => array(
-'value' => 'Others'
-)
-)
-)
-);
-$form['other_city'] = array(
-'#type' => 'textfield',
-'#title' => t('City other than India'),
-'#size' => 100,
-'#attributes' => array(
-'placeholder' => t('Enter your city name')
-),
-'#states' => array(
-'visible' => array(
-':input[name="country"]' => array(
-'value' => 'Others'
-)
-)
-)
-);
-$form['all_state'] = array(
-'#type' => 'select',
-'#title' => t('State'),
-'#selected' => array(
-'' => '-select-'
-),
-'#options' => _list_of_states(),
-'#validated' => TRUE,
-'#states' => array(
-'visible' => array(
-':input[name="country"]' => array(
-'value' => 'India'
-)
-)
-)
-);
-$form['city'] = array(
-'#type' => 'select',
-'#title' => t('City'),
-'#options' => _list_of_cities(),
-'#states' => array(
-'visible' => array(
-':input[name="country"]' => array(
-'value' => 'India'
-)
-)
-)
-);
-$form['pincode'] = array(
-'#type' => 'textfield',
-'#title' => t('Pincode'),
-'#size' => 30,
-'#maxlength' => 6,
-'#required' => False,
-'#attributes' => array(
-'placeholder' => 'Enter pincode....'
-)
-);
-/***************************************************************************/
-/*  $form['hr'] = array(
-'#type' => 'item',
-'#markup' => '<hr>'
-);
-$form['faculty'] = array(
-'#type' => 'hidden',
-'#value' => 'None',
-'#title' => t('College Teacher/Professor'),
-'#size' => 30,
-'#maxlength' => 50,
-'#required' => TRUE
-);
-$form['faculty_email'] = array(
-'#type' => 'hidden',
-'#value' => 'None',
-'#title' => t('Teacher/Professor Email Id'),
-'#value' => '@email.com',
-'#size' => 30,
-'#maxlength' => 50
-);
-$form['reviewer'] = array(
-'#type' => 'hidden',
-'#value' => 'None',
-'#title' => t('Reviewer'),
-'#size' => 30,
-'#maxlength' => 50
-);
-
-$form['version'] = array(
-'#type' => 'select',
-'#title' => t('Version'),
-'#options' => _list_of_software_version(),
-'#required' => TRUE
-);
-$form['other_version'] = array(
-'#type' => 'textfield',
-'#size' => 30,
-'#maxlength' => 50,
-//'#required' => TRUE,
-'#description' => t('Specify the Older version used'),
-'#states' => array(
-'visible' => array(
-':input[name="version"]' => array(
-'value' => 'Other version'
-)
-)
-)
-);
-$form['completion_date'] = array(
-'#type' => 'textfield',
-'#title' => t('Expected Date of Completion'),
-'#description' => t('Input date format should be DD-MM-YYYY. Eg: 23-03-2011'),
-'#size' => 10,
-'#maxlength' => 10
-);
-$form['operating_system'] = array(
-'#type' => 'textfield',
-'#title' => t('Operating System'),
-'#required' => TRUE,
-'#size' => 30,
-'#maxlength' => 50
-);
-$reason = array(
-'Used in more than one University' => t('Used in more than one University'),
-'The book has multiple editions' => t('The book has multiple editions'),
-'Extremely useful' => t('Extremely useful'),
-'Other reason' => t('Any other reason state below')
-);
-$form['reason'] = array(
-'#type' => 'hidden',
-'#default_value' => 'Not available'        
-);
-/*$form['reason'] = array(
-'#type' => 'checkboxes',
-'#title' => t('Reasons'),
-'#options' => $reason,
-'#required' => TRUE
-);
-$form['other_reason'] = array(
-'#type' => 'textarea',
-'#size' => 300,
-'#maxlength' => 300,
-'#states' => array(
-'visible' => array(
-':input[name="reason[Other reason]"]' => array(
-'checked' => TRUE
-)
-)
-)
-//'#required' => FALSE,
-);*/
-/*$form['proposal_type'] = array(
-'#type' => 'hidden',
-'#default_value' => '0',
-'#required' => FALSE
-);
-$form['reference'] = array(
-'#type' => 'hidden',
-'#default_value' => 'Not available',
-);
-/*$form['reference'] = array(
-'#type' => 'textarea',
-'#title' => t('Reference'),
-'#required' => TRUE,
-'#size' => 500,
-'#maxlength' => 500,
-'#attributes' => array(
-'placeholder' => 'Links of the syllabus must be provided....'
-)
-);*/
-/*$form['scilab_version'] = array(
-'#type' => 'textfield',
-'#title' => t('Scilab Version'),
-'#required' => TRUE,
-'#size' => 10,
-'#maxlength' => 10,
-);*/
-/*$form['form_type'] = array(
-'#type' => 'hidden',
-'#value' => 1
-);
-$form['preference1'] = array(
-'#type' => 'fieldset',
-'#title' => t('Book Preference 1'),
-'#collapsible' => TRUE,
-'#collapsed' => FALSE
-);
-$form['preference1']['book1'] = array(
-'#type' => 'textfield',
-'#title' => t('Title of the book'),
-'#size' => 30,
-'#maxlength' => 100,
-'#required' => TRUE
-);
-$form['preference1']['author1'] = array(
-'#type' => 'textfield',
-'#title' => t('Author Name'),
-'#size' => 30,
-'#maxlength' => 100,
-'#required' => TRUE
-//'#value' => $row1->author,
-//'#disabled' => ($row1->author?TRUE:FALSE),
-);
-$form['preference1']['isbn1'] = array(
-'#type' => 'textfield',
-'#title' => t('ISBN No'),
-'#size' => 30,
-'#maxlength' => 25,
-'#required' => TRUE
-// '#value' => $row1->isbn,
-// '#disabled' => ($row1->isbn?TRUE:FALSE),
-);
-$form['preference1']['publisher1'] = array(
-'#type' => 'textfield',
-'#title' => t('Publisher & Place'),
-'#size' => 30,
-'#maxlength' => 50,
-'#required' => TRUE
-//'#value' => $row1->publisher,
-);
-$form['preference1']['edition1'] = array(
-'#type' => 'textfield',
-'#title' => t('Edition'),
-'#size' => 4,
-'#maxlength' => 2,
-'#required' => TRUE
-//'#value' => $row1->edition,
-);
-$form['preference1']['year1'] = array(
-'#type' => 'textfield',
-'#title' => t('Year of pulication'),
-'#size' => 4,
-'#maxlength' => 4,
-'#required' => TRUE
-//'#value' => $row1->year,
-);
-$form['preference2'] = array(
-'#type' => 'fieldset',
-'#title' => t('Book Preference 2'),
-'#collapsible' => TRUE,
-'#collapsed' => FALSE
-);
-$form['preference2']['book2'] = array(
-'#type' => 'textfield',
-'#title' => t('Title of the book'),
-'#size' => 30,
-'#maxlength' => 100,
-'#required' => TRUE
-//'#value' => $row2->book,
-//'#disabled' => ($row2->book?TRUE:FALSE),
-);
-$form['preference2']['author2'] = array(
-'#type' => 'textfield',
-'#title' => t('Author Name'),
-'#size' => 30,
-'#maxlength' => 100,
-'#required' => TRUE
-//'#value' => $row2->author,
-//'#disabled' => ($row2->author?TRUE:FALSE),
-);
-$form['preference2']['isbn2'] = array(
-'#type' => 'textfield',
-'#title' => t('ISBN No'),
-'#size' => 30,
-'#maxlength' => 25,
-'#required' => TRUE
-// '#value' => $row2->isbn,
-// '#disabled' => ($row2->isbn?TRUE:FALSE),
-);
-$form['preference2']['publisher2'] = array(
-'#type' => 'textfield',
-'#title' => t('Publisher & Place'),
-'#size' => 30,
-'#maxlength' => 50,
-'#required' => TRUE
-//'#value' => $row2->publisher,
-);
-$form['preference2']['edition2'] = array(
-'#type' => 'textfield',
-'#title' => t('Edition'),
-'#size' => 4,
-'#maxlength' => 2,
-'#required' => TRUE
-//'#value' => $row2->edition,
-);
-$form['preference2']['year2'] = array(
-'#type' => 'textfield',
-'#title' => t('Year of pulication'),
-'#size' => 4,
-'#maxlength' => 4,
-'#required' => TRUE
-//'#value' => $row2->year,
-);
-$form['preference3'] = array(
-'#type' => 'fieldset',
-'#title' => t('Book Preference 3'),
-'#collapsible' => TRUE,
-'#collapsed' => FALSE
-);
-$form['preference3']['book3'] = array(
-'#type' => 'textfield',
-'#title' => t('Title of the book'),
-'#size' => 30,
-'#maxlength' => 100,
-'#required' => TRUE
-//'#value' => $row3->book,
-//'#disabled' => ($row3->book?TRUE:FALSE),
-);
-$form['preference3']['author3'] = array(
-'#type' => 'textfield',
-'#title' => t('Author Name'),
-'#size' => 30,
-'#maxlength' => 100,
-'#required' => TRUE
-//'#value' => $row3->author,
-// '#disabled' => ($row3->author?TRUE:FALSE),
-);
-$form['preference3']['isbn3'] = array(
-'#type' => 'textfield',
-'#title' => t('ISBN No'),
-'#size' => 30,
-'#maxlength' => 25,
-'#required' => TRUE
-//'#value' => $row3->isbn,
-//'#disabled' => ($row3->isbn?TRUE:FALSE),
-);
-$form['preference3']['publisher3'] = array(
-'#type' => 'textfield',
-'#title' => t('Publisher & Place'),
-'#size' => 30,
-'#maxlength' => 50,
-'#required' => TRUE
-// '#value' => $row3->publisher,
-);
-$form['preference3']['edition3'] = array(
-'#type' => 'textfield',
-'#title' => t('Edition'),
-'#size' => 4,
-'#maxlength' => 2,
-'#required' => TRUE
-//'#value' => $row3->edition,
-);
-$form['preference3']['year3'] = array(
-'#type' => 'textfield',
-'#title' => t('Year of pulication'),
-'#size' => 4,
-'#maxlength' => 4,
-'#required' => TRUE
-//'#value' => $row3->year,
-);
-/*$form['termconditions'] = array(
-'#type' => 'checkboxes',
-'#title' => t('Terms And Conditions'),
-'#options' => array(
-'status' => t('<a href="term-and-conditions" target="_blank">I agree to the Terms and Conditions</a>'),),
-'#required' => TRUE,
-);*/
-/*$form['samplefile'] = array(
-'#type' => 'fieldset',
-'#title' => t('Sample Source Files'),
-'#collapsible' => FALSE,
-'#collapsed' => FALSE
-);*/
-/*$form['samplefile']['samplefile1'] = array(
-'#type' => 'file',
-'#title' => t('Upload sample source file'),
-'#size' => 48,
-'#description' => t('Separate filenames with underscore. No spaces or any special characters allowed in filename.') . '<br />' . t('<span style="color:red;">Allowed file extensions : ') . variable_get('textbook_companion_source_extensions', '') . '</span>'
-);*/
-/*$form['submit'] = array(
-'#type' => 'submit',
-'#value' => t('Submit')
-);
-$form['dir_name1'] = array(
-'#type' => 'hidden',
-'#value' => 'None'
-);
-$form['dir_name2'] = array(
-'#type' => 'hidden',
-'#value' => 'None'
-);
-$form['dir_name3'] = array(
-'#type' => 'hidden',
-'#value' => 'None'
-);
-/* #value fix for #default_value bug drupal6  
-foreach(array("preference1", "preference2", "preference3") as $preference) {
-foreach($form[$preference] as $key => $value) {
-if(!$form[$preference][$key]["#value"]) {
-unset($form[$preference][$key]["#value"]);
-}
-}
-}*/
-/* return $form;
-}*/
 function book_proposal_form($form, &$form_state)
 {
 	global $user;
@@ -2128,127 +1447,12 @@ function book_proposal_form($form, &$form_state)
 		'#required' => TRUE
 		//'#value' => $row1->year,
 	);
-	/*$form['preference2'] = array(
-	'#type' => 'fieldset',
-	'#title' => t('Book Preference 2'),
-	'#collapsible' => TRUE,
-	'#collapsed' => FALSE
+	$form['preference1']['category'] = array(
+		'#type' => 'select',
+		'#title' => t('Select the category'),
+		'#options' => _tbc_list_of_main_categories(),
+		'#required' => TRUE
 	);
-	$form['preference2']['book2'] = array(
-	'#type' => 'textfield',
-	'#title' => t('Title of the book'),
-	'#size' => 30,
-	'#maxlength' => 100,
-	'#required' => TRUE
-	//'#value' => $row2->book,
-	//'#disabled' => ($row2->book?TRUE:FALSE),
-	);
-	$form['preference2']['author2'] = array(
-	'#type' => 'textfield',
-	'#title' => t('Author Name'),
-	'#size' => 30,
-	'#maxlength' => 100,
-	'#required' => TRUE
-	//'#value' => $row2->author,
-	//'#disabled' => ($row2->author?TRUE:FALSE),
-	);
-	$form['preference2']['isbn2'] = array(
-	'#type' => 'textfield',
-	'#title' => t('ISBN No'),
-	'#size' => 30,
-	'#maxlength' => 25,
-	'#required' => TRUE
-	// '#value' => $row2->isbn,
-	// '#disabled' => ($row2->isbn?TRUE:FALSE),
-	);
-	$form['preference2']['publisher2'] = array(
-	'#type' => 'textfield',
-	'#title' => t('Publisher & Place'),
-	'#size' => 30,
-	'#maxlength' => 50,
-	'#required' => TRUE
-	//'#value' => $row2->publisher,
-	);
-	$form['preference2']['edition2'] = array(
-	'#type' => 'textfield',
-	'#title' => t('Edition'),
-	'#size' => 4,
-	'#maxlength' => 2,
-	'#required' => TRUE
-	//'#value' => $row2->edition,
-	);
-	$form['preference2']['year2'] = array(
-	'#type' => 'textfield',
-	'#title' => t('Year of pulication'),
-	'#size' => 4,
-	'#maxlength' => 4,
-	'#required' => TRUE
-	//'#value' => $row2->year,
-	);
-	$form['preference3'] = array(
-	'#type' => 'fieldset',
-	'#title' => t('Book Preference 3'),
-	'#collapsible' => TRUE,
-	'#collapsed' => FALSE
-	);
-	$form['preference3']['book3'] = array(
-	'#type' => 'textfield',
-	'#title' => t('Title of the book'),
-	'#size' => 30,
-	'#maxlength' => 100,
-	'#required' => TRUE
-	//'#value' => $row3->book,
-	//'#disabled' => ($row3->book?TRUE:FALSE),
-	);
-	$form['preference3']['author3'] = array(
-	'#type' => 'textfield',
-	'#title' => t('Author Name'),
-	'#size' => 30,
-	'#maxlength' => 100,
-	'#required' => TRUE
-	//'#value' => $row3->author,
-	// '#disabled' => ($row3->author?TRUE:FALSE),
-	);
-	$form['preference3']['isbn3'] = array(
-	'#type' => 'textfield',
-	'#title' => t('ISBN No'),
-	'#size' => 30,
-	'#maxlength' => 25,
-	'#required' => TRUE
-	//'#value' => $row3->isbn,
-	//'#disabled' => ($row3->isbn?TRUE:FALSE),
-	);
-	$form['preference3']['publisher3'] = array(
-	'#type' => 'textfield',
-	'#title' => t('Publisher & Place'),
-	'#size' => 30,
-	'#maxlength' => 50,
-	'#required' => TRUE
-	// '#value' => $row3->publisher,
-	);
-	$form['preference3']['edition3'] = array(
-	'#type' => 'textfield',
-	'#title' => t('Edition'),
-	'#size' => 4,
-	'#maxlength' => 2,
-	'#required' => TRUE
-	//'#value' => $row3->edition,
-	);
-	$form['preference3']['year3'] = array(
-	'#type' => 'textfield',
-	'#title' => t('Year of pulication'),
-	'#size' => 4,
-	'#maxlength' => 4,
-	'#required' => TRUE
-	//'#value' => $row3->year,
-	);
-	/*$form['termconditions'] = array(
-	'#type' => 'checkboxes',
-	'#title' => t('Terms And Conditions'),
-	'#options' => array(
-	'status' => t('<a href="term-and-conditions" target="_blank">I agree to the Terms and Conditions</a>'),),
-	'#required' => TRUE,
-	);*/
 	$form['samplefile'] = array(
 		'#type' => 'fieldset',
 		'#title' => t('Sample Source Files'),
@@ -2269,14 +1473,6 @@ function book_proposal_form($form, &$form_state)
 		'#type' => 'hidden',
 		'#value' => 'None'
 	);
-	/* #value fix for #default_value bug drupal6  
-	foreach(array("preference1", "preference2", "preference3") as $preference) {
-	foreach($form[$preference] as $key => $value) {
-	if(!$form[$preference][$key]["#value"]) {
-	unset($form[$preference][$key]["#value"]);
-	}
-	}
-	}*/
 	return $form;
 }
 function book_proposal_form_validate($form, &$form_state)
@@ -2319,44 +1515,7 @@ function book_proposal_form_validate($form, &$form_state)
 			$form_state['values']['dir_name1'] = _dir_name($bk1, $auth1, $pref_id);
 		} //_dir_name($bk1, $auth1, $pref_id) != NULL
 	} //$form_state['values']['book1'] && $form_state['values']['author1']
-	/*****************************************************************************
-	if (!preg_match('/^[0-9\-xX]+$/', $form_state['values']['isbn2']))
-	form_set_error('isbn2', t('Invalid ISBN for Book Preference 2'));
-	if (!preg_match('/^[1-9][0-9]{0,1}$/', $form_state['values']['edition2']))
-	form_set_error('edition2', t('Invalid edition for Book Preference 2'));
-	if (!preg_match('/^[1-3][0-9][0-9][0-9]$/', $form_state['values']['year2']))
-	form_set_error('year2', t('Invalid year of pulication for Book Preference 2'));
-	if ((int) $form_state['values']['year2'] > $cur_year)
-	form_set_error('year2', t('Year of pulication should be not in the future for Book Preference 2'));
-	if ($form_state['values']['book2'] && $form_state['values']['author2']) {
-	$bk2 = trim($form_state['values']['book2']);
-	$auth2 = trim($form_state['values']['author2']);
-	//var_dump(_dir_name($bk1, $auth1))
-	$pref_id = NULL;
-	if (_dir_name($bk2, $auth2, $pref_id) != NULL) {
-	$form_state['values']['dir_name2'] = _dir_name($bk2, $auth2, $pref_id);
-	}
-	/*****************************************************************************
-	}
-	if (!preg_match('/^[0-9\-xX]+$/', $form_state['values']['isbn3']))
-	form_set_error('isbn3', t('Invalid ISBN for Book Preference 3'));
-	if (!preg_match('/^[1-9][0-9]{0,1}$/', $form_state['values']['edition3']))
-	form_set_error('edition3', t('Invalid edition for Book Preference 3'));
-	if (!preg_match('/^[1-3][0-9][0-9][0-9]$/', $form_state['values']['year3']))
-	form_set_error('year3', t('Invalid year of pulication for Book Preference 3'));
-	if ((int) $form_state['values']['year3'] > $cur_year)
-	form_set_error('year3', t('Year of pulication should be not in the future for Book Preference 3'));
-	if ($form_state['values']['book3'] && $form_state['values']['author3']) {
-	$bk3 = trim($form_state['values']['book3']);
-	$auth3 = trim($form_state['values']['author3']);
-	//var_dump(_dir_name($bk1, $auth1))
-	$pref_id = NULL;
-	if (_dir_name($bk1, $auth1, $pref_id) != NULL) {
-	$form_state['values']['dir_name3'] = _dir_name($bk3, $auth3, $pref_id);
-	}
-	/*****************************************************************************
 	
-	}*/
 	if (isset($form_state['values']['reason']))
 	{
 		$my_reason = $form_state['values']['other_reason'];
@@ -2546,26 +1705,12 @@ function book_proposal_form_submit($form, &$form_state, $directory_name = NULL)
 	/* inserting first book preference */
 	if ($form_state['values']['book1'])
 	{
-		/*$result = db_query("INSERT INTO {textbook_companion_preference}
-		(proposal_id, pref_number, book, author, isbn, publisher, edition, year, category, approval_status) VALUES
-		(%d, %d, '%s', '%s', '%s', '%s', '%s', '%s', %d, %d)",
-		$proposal_id,
-		1,
-		ucwords(strtolower($form_state['values']['book1'])),
-		ucwords(strtolower($form_state['values']['author1'])),
-		$form_state['values']['isbn1'],
-		ucwords(strtolower($form_state['values']['publisher1'])),
-		$form_state['values']['edition1'],
-		$form_state['values']['year1'],
-		0,
-		0
-		);*/
 		$bk1 = trim($form_state['values']['book1']);
 		$auth1 = trim($form_state['values']['author1']);
 		$pref_id = NULL;
 		$directory_name = _dir_name($bk1, $auth1, $pref_id);
 		$query = "INSERT INTO {textbook_companion_preference}
-      (proposal_id, pref_number, book, author, isbn, publisher, edition, year, category, approval_status, directory_name) VALUES (:proposal_id, :pref_number, :book, :author, :isbn, :publisher, :edition, :year, :category, :approval_status, :directory_name)
+      (proposal_id, pref_number, book, author, isbn, publisher, edition, year, category, subcategory, approval_status, directory_name) VALUES (:proposal_id, :pref_number, :book, :author, :isbn, :publisher, :edition, :year, :category, :subcategory, :approval_status, :directory_name)
 	";
 		$args = array(
 			":proposal_id" => $proposal_id,
@@ -2576,7 +1721,8 @@ function book_proposal_form_submit($form, &$form_state, $directory_name = NULL)
 			":publisher" => trim(ucwords(strtolower($form_state['values']['publisher1']))),
 			":edition" => trim($form_state['values']['edition1']),
 			":year" => trim($form_state['values']['year1']),
-			":category" => 0,
+			":category" => $form_state['values']['category'],
+			':subcategory' => 0,
 			":approval_status" => 0,
 			":directory_name" => $form_state['values']['dir_name1']
 		);
@@ -2588,96 +1734,6 @@ function book_proposal_form_submit($form, &$form_state, $directory_name = NULL)
 			drupal_set_message(t('Error receiving your first book preference.'), 'error');
 		} //!$result
 	} //$form_state['values']['book1']
-	/*******************************************************/
-	/* if ($form_state['values']['book2']) {
-	/*$result = db_query("INSERT INTO {textbook_companion_preference}
-	(proposal_id, pref_number, book, author, isbn, publisher, edition, year, category, approval_status) VALUES
-	(%d, %d, '%s', '%s', '%s', '%s', '%s', '%s', %d, %d)",
-	$proposal_id,
-	1,
-	ucwords(strtolower($form_state['values']['book1'])),
-	ucwords(strtolower($form_state['values']['author1'])),
-	$form_state['values']['isbn1'],
-	ucwords(strtolower($form_state['values']['publisher1'])),
-	$form_state['values']['edition1'],
-	$form_state['values']['year1'],
-	0,
-	0
-	);*/
-	/**$bk2 = trim($form_state['values']['book2']);
-	$auth2 = trim($form_state['values']['author2']);
-	$pref_id = NULL;
-	$directory_name = _dir_name($bk2, $auth2, $pref_id);
-	$query = "INSERT INTO {textbook_companion_preference}
-	(proposal_id, pref_number, book, author, isbn, publisher, edition, year, category, approval_status, directory_name) VALUES (:proposal_id, :pref_number, :book, :author, :isbn, :publisher, :edition, :year, :category, :approval_status, :directory_name)
-	";
-	$args = array(
-	":proposal_id" => $proposal_id,
-	
-	
-	":pref_number" => 2,
-	":book" => trim(ucwords(strtolower($form_state['values']['book2']))),
-	":author" => trim(ucwords(strtolower($form_state['values']['author2']))),
-	":isbn" => trim($form_state['values']['isbn2']),
-	":publisher" => trim(ucwords(strtolower($form_state['values']['publisher2']))),
-	":edition" => trim($form_state['values']['edition2']),
-	":year" => trim($form_state['values']['year2']),
-	":category" => 0,
-	":approval_status" => 0,
-	":directory_name" => $form_state['values']['dir_name2']
-	);
-	$result = db_query($query, $args, array(
-	'return' => Database::RETURN_INSERT_ID
-	));
-	if (!$result) {
-	drupal_set_message(t('Error receiving your second book preference.'), 'error');
-	}
-	}**/
-	/*******************************************************/
-	/**if ($form_state['values']['book3']) {
-	/*$result = db_query("INSERT INTO {textbook_companion_preference}
-	(proposal_id, pref_number, book, author, isbn, publisher, edition, year, category, approval_status) VALUES
-	(%d, %d, '%s', '%s', '%s', '%s', '%s', '%s', %d, %d)",
-	$proposal_id,
-	1,
-	ucwords(strtolower($form_state['values']['book1'])),
-	ucwords(strtolower($form_state['values']['author1'])),
-	$form_state['values']['isbn1'],
-	ucwords(strtolower($form_state['values']['publisher1'])),
-	$form_state['values']['edition1'],
-	$form_state['values']['year1'],
-	0,
-	0
-	);*/
-	/** $bk3 = trim($form_state['values']['book3']);
-	$auth3 = trim($form_state['values']['author3']);
-	$pref_id = NULL;
-	$directory_name = _dir_name($bk3, $auth3, $pref_id);
-	$query = "INSERT INTO {textbook_companion_preference}
-	(proposal_id, pref_number, book, author, isbn, publisher, edition, year, category, approval_status, directory_name) VALUES (:proposal_id, :pref_number, :book, :author, :isbn, :publisher, :edition, :year, :category, :approval_status, :directory_name)
-	";
-	$args = array(
-	":proposal_id" => $proposal_id,
-	":pref_number" => 3,
-	":book" => trim(ucwords(strtolower($form_state['values']['book3']))),
-	":author" => trim(ucwords(strtolower($form_state['values']['author3']))),
-	":isbn" => trim($form_state['values']['isbn3']),
-	":publisher" => trim(ucwords(strtolower($form_state['values']['publisher3']))),
-	":edition" => trim($form_state['values']['edition3']),
-	":year" => trim($form_state['values']['year3']),
-	":category" => 0,
-	":approval_status" => 0,
-	":directory_name" => $form_state['values']['dir_name3']
-	);
-	$result = db_query($query, $args, array(
-	'return' => Database::RETURN_INSERT_ID
-	));
-	if (!$result) {
-	drupal_set_message(t('Error receiving your third book preference.'), 'error');
-	}
-	
-	}**/
-	/*******************************************************/
 	/* sending email */
 	$email_to = $user->mail;
 	$from = variable_get('textbook_companion_from_email', '');
@@ -4422,7 +3478,7 @@ function book_proposal_nonaicte_form_submit($form, &$form_state)
 			":publisher" => ucwords(strtolower($form_state['values']['publisher1'])),
 			":edition" => $form_state['values']['edition1'],
 			":year" => $form_state['values']['year1'],
-			":category" => 0,
+			":category" => $form_state['values']['category'],
 			":approval_status" => 0,
 			":nonaicte_book" => 1
 		);
@@ -4520,41 +3576,23 @@ function _list_of_cities()
 	} //$city_list_data = $city_list->fetchObject()
 	return $city;
 }
-/*
-function  _tbc_list_of_main_categories()
+
+function _tbc_list_of_main_categories()
 {
-	$maincategory = array();
+	$maincategory = array(
+        0 => 'Please select ...'
+    );
+	//$maincategory = array();
 	$query = db_select('tbc_maincategory');
 	$query->fields('tbc_maincategory');
 	$query->orderBy('id', 'ASC');
 	$maincategory_list = $query->execute();
 	while ($maincategory_list_data = $maincategory_list->fetchObject())
 	{
-		$maincategory[$maincategory_list_data->maincategory_name] = $maincategory_list_data->maincategory_name;
+		$maincategory[$maincategory_list_data->id] = $maincategory_list_data->maincategory_name;
 	} //$software_version_list_data = $software_version_list->fetchObject()
 	return $maincategory;
 }
-
-function  _tbc_list_of_sub_categories()
-{
-	$maincategory = array();
-	$query = db_select('tbc_maincategory');
-	$query->fields('tbc_maincategory');
-	$query->orderBy('id', 'ASC');
-	$maincategory_list = $query->execute();
-	$maincategory_id = $maincategory_list->fetchObject()->id;
-	$subcategory = array();
-	$query = db_select('tbc_subcategory');
-	$query->fields('tbc_subcategory');
-	$query->condition('maincategory_id', $maincategory_id);
-	$query->orderBy('id', 'ASC');
-	$subcategory_list = $query->execute();
-	while ($subcategory_list_data = $subcategory_list->fetchObject())
-	{
-		$subcategory[$subcategory_list_data->subcategory_name] = $subcategory_list_data->subcategory_name;
-	} //$software_version_list_data = $software_version_list->fetchObject()
-	return $subcategory;
-} */
 
 /*************************************************************************/
 /***** Function To convert only first charater of string in uppercase ****/

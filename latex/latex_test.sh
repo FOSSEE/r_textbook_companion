@@ -41,7 +41,7 @@ colB4=${colB4/&/\\&};
 colB5=${colB5/&/\\&};
 colB6=${colB6/&/\\&};
 colB7=${colB7/&/\\&};
-echo \\title\{Scilab Textbook Companion \for "\\\\"$colB1"\\\\"by $colB2"\\footnote{Funded by a grant from the National Mission on Education through ICT, http://spoken-tutorial.org/NMEICT-Intro. This Textbook Companion and Scilab codes written in it can be downloaded from the \"Textbook Companion Project\" section at the website http://scilab.in}}" >>$CURDIR/TEX
+echo \\title\{R Textbook Companion \for "\\\\"$colB1"\\\\"by $colB2"\\footnote{Funded by a grant from the National Mission on Education through ICT, http://spoken-tutorial.org/NMEICT-Intro. This Textbook Companion and R codes written in it can be downloaded from the \"Textbook Companion Project\" section at the website http://R.in}}" >>$CURDIR/TEX
 
 echo \\author\{ Created by \\\\$col1\\\\$col2\\\\$col3\\\\$col4\\\\ College Teacher\\\\$col5\\\\Cross\-Checked by \\\\$col6\\\\$col8}>>$CURDIR/TEX
 
@@ -66,13 +66,13 @@ echo >> $CURDIR/TEX
 echo \\newpage >> $CURDIR/TEX
 echo \\vspace*{3cm}>>$CURDIR/TEX
 
-echo Scilab numbering policy used in this document and the relation to the above book.>>$CURDIR/TEX
+echo R numbering policy used in this document and the relation to the above book.>>$CURDIR/TEX
 echo \\begin{description}>>$CURDIR/TEX 
 echo \\item[Exa]  Example \(Solved example\)>>$CURDIR/TEX 
 echo \\item[Eqn]  Equation \(Particular equation of the above book\)>>$CURDIR/TEX
-echo \\item[AP]   Appendix to Example\(Scilab Code that is an Appednix to a particular Example of the above book\)>>$CURDIR/TEX
+echo \\item[AP]   Appendix to Example\(R Code that is an Appednix to a particular Example of the above book\)>>$CURDIR/TEX
 echo \\end{description}>>$CURDIR/TEX
-echo "For example, Exa~3.51 means solved example 3.51 of this book. Sec~2.3 means a scilab code whose theory is explained in Section 2.3 of the book.">>$CURDIR/TEX
+echo "For example, Exa~3.51 means solved example 3.51 of this book. Sec~2.3 means a R code whose theory is explained in Section 2.3 of the book.">>$CURDIR/TEX
 echo>>$CURDIR/TEX
 
 echo \\tableofcontents >>$CURDIR/TEX
@@ -132,7 +132,7 @@ fi
 
 if [ $col7 = X ]
 then
-echo This code can be downloaded from the website wwww.scilab.in >> $CURDIR/TEX
+echo This code can be downloaded from the website wwww.R.in >> $CURDIR/TEX
 fi
 
 if [ $col7 =  R  ]
@@ -154,7 +154,6 @@ j=$col1
 done < database_sort
 #rm Figure_files
 
-
 if [  -s $Dep_dat ]
 then
 
@@ -173,7 +172,7 @@ echo >> $CURDIR/TEX
 let "i+=1"
 done < $Dep_dat
 
-fi
+fi 
 
 cat Initial_body  TEX  > TEX_final.tex
 echo \\end{document} >> $CURDIR/TEX_final.tex
