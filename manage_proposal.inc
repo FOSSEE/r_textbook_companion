@@ -124,7 +124,7 @@ function _proposal_all()
     $proposal_header = array(
         'Date of Submission',
         'Title of the Book',
-        'Contributor Name',        
+        'Contributor Name',
         'Actual Date of Completion',
         'Proposed Date of Completion',
         'Status',
@@ -133,76 +133,6 @@ function _proposal_all()
     $output = theme('table', array(
         'header' => $proposal_header,
         'rows' => $proposal_rows
-    ));
-    return $output;
-}
-function _category_all()
-{
-    /* get pending proposals to be approved */
-    $preference_rows = array();
-    $query = db_select('textbook_companion_preference');
-    $query->fields('textbook_companion_preference');
-    $query->condition('approval_status', 1);
-    $query->orderBy('id', 'DESC');
-    $preference_q = $query->execute();
-    while ($preference_data = $preference_q->fetchObject()) {
-        switch ($preference_data->category) {
-            case 0:
-                $category_data = 'Not Selected';
-                break;
-            case 1:
-                $category_data = 'Statistics';
-                break;
-            case 2:
-                $category_data = 'Engineering';
-                break;
-            case 3:
-                $category_data = 'Business Management';
-                break;
-            case 4:
-                $category_data = 'Economics';
-                break;
-            case 5:
-                $category_data = 'Psychology';
-                break;
-            case 6:
-                $category_data = 'Business Statistics';
-                break;
-            case 7:
-                $category_data = 'Medical';
-                break;
-            case 8:
-                $category_data = 'Bio Science';
-                break;
-            case 9:
-                $category_data = 'Mathematics';
-                break;
-            default:
-                $category_data = 'Unknown';
-                break;
-        }
-        $preference_rows[] = array(
-            $preference_data->book . "<br> <i>by " . $preference_data->author . "</i>",
-            $preference_data->isbn,
-            $preference_data->publisher,
-            $preference_data->edition,
-            $preference_data->year,
-            $category_data,
-            l('Edit', 'textbook-companion/manage-proposal/category/edit/' . $preference_data->id)
-        );
-    }
-    $preference_header = array(
-        'Book',
-        'ISBN',
-        'Publisher',
-        'Edition',
-        'Year',
-        'Category',
-        'Status'
-    );
-    $output = theme('table', array(
-        'header' => $preference_header,
-        'rows' => $preference_rows
     ));
     return $output;
 }
@@ -369,6 +299,11 @@ function proposal_approval_form($form, &$form_state)
             '#markup' => l('Download Sample Code', 'textbook-companion/download/samplecode/' . $proposal_id) . "<br><br>"
         );
     }
+    $form['category'] = array(
+        '#type' => 'item',
+        '#markup' => _user_selected_category($proposal_id),
+        '#title' => t('User selected category')
+    );
     $form['disapprove'] = array(
         '#type' => 'checkbox',
         '#title' => t('Disapprove all the above book preferences')
@@ -1808,4 +1743,39 @@ function RenameDir($preference_id, $dir_name)
         return;
     }
     return;
+}
+
+function _get_main_category($id)
+{
+    $maincategory = array(
+        0 => 'Please select ...'
+    );
+    //$maincategory = array();
+    $query = db_select('list_of_category');
+    $query->fields(' list_of_category');
+    $query->condition('category_id', $id);
+    $maincategory_list = $query->execute();
+    while ($maincategory_list_data = $maincategory_list->fetchObject())
+    {
+        $maincategory[$maincategory_list_data->category_id] = $maincategory_list_data->maincategory;
+    } //$software_version_list_data = $software_version_list->fetchObject()
+    return $maincategory;
+}
+
+function _user_selected_category($prop_id)
+{
+    $query = "
+            SELECT  loc.maincategory
+            FROM list_of_category loc
+            JOIN textbook_companion_preference tcp
+            ON  loc.category_id = tcp.category
+            WHERE tcp.proposal_id = :prop_id
+            ";
+    $args = array(
+        ':prop_id' => $prop_id,
+    );
+    $category_list = db_query($query, $args);
+    $category_list_data = $category_list->fetchObject();
+    $category = $category_list_data->maincategory;
+    return "* ". $category;
 }
