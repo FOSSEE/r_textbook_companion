@@ -236,6 +236,6 @@ function textbook_companion_delete_book()
     $book_id = arg(2);
     del_book_pdf($book_id);
     drupal_set_message(t('Book schedule for regeneration.'), 'status');
-    drupal_goto('code_approval/bulk');
+    drupal_goto('textbook-companion/code-approval/bulk');
     return;
 }
