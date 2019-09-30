@@ -863,7 +863,11 @@ function textbook_companion_permission()
 		"download books to review" => array(
 			"title" => t("download books to review"),
 			"description" => t("Download books to review.")
-		)
+		),
+		"display books in progress" => array(
+			"title" => t("Book display books in progress"),
+			"description" => t("display books in progress.")
+		),
 	);
 }
 function textbook_companion_aicte_proposal_all()
