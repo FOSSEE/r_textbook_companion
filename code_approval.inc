@@ -291,14 +291,14 @@ function bulk_approval_form($form, &$form_state)
         '#type' => 'item',
         '#markup' => '<div id="ajax_selected_book"></div>'
     );
-    /*$form['download_pdf'] = array(
+    $form['download_pdf'] = array(
     '#type' => 'item',
     '#markup' => '<div id="ajax_selected_book_pdf"></div>',
     );
     $form['regenrate_book'] = array(
     '#type' => 'item',
     '#markup' => '<div id="ajax_selected_book_regenerate_pdf"></div>',
-    );*/
+    );
     $form['notes_book'] = array(
         '#type' => 'item',
         '#markup' => '<div id="ajax_selected_book_notes"></div>'
@@ -1211,7 +1211,7 @@ function ajax_bulk_chapter_list_callback($form, $form_state)
     if ($book_default_value > 0) {
         $commands[] = ajax_command_html('#ajax_selected_book', l('Download', 'textbook-companion/full-download/book/' . $book_default_value) . ' ' . t('(Download all the approved and unapproved examples of the entire book)'));
         $commands[] = ajax_command_html('#ajax_selected_book_pdf', l('Download PDF', 'textbook-companion/generate-book/' . $book_default_value . '/1') . ' ' . t('(Download PDF of all the approved and unapproved examples of the entire book)'));
-        $commands[] = ajax_command_html('#ajax_selected_book_regenerate_pdf', l('Regenerate PDF', 'textbook_companion/delete_book/' . $book_default_value) . ' ' . t('(Manually Regenerate PDF of the entire book)'));
+        $commands[] = ajax_command_html('#ajax_selected_book_regenerate_pdf', l('Regenerate PDF', 'textbook-companion/delete-book/' . $book_default_value) . ' ' . t('(Manually Regenerate PDF of the entire book)'));
         /*$commands[] = ajax_command_html('#ajax_selected_book_notes', l('Notes for Reviewers', 'code_approval/notes/' . $book_default_value));*/
         $form['book_actions']['#options'] = _bulk_list_book_actions();
         $commands[] = ajax_command_replace('#ajax_selected_book_action', drupal_render($form['book_actions']));
