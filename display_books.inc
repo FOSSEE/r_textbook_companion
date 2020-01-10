@@ -140,7 +140,7 @@ function tbc_completed_books_all()
     $output .= "</h4></div>";
     $result_count = db_query("SELECT pe.book FROM {textbook_companion_preference} pe LEFT JOIN textbook_companion_proposal po ON pe.proposal_id = po.id WHERE po.proposal_status =3 AND pe.approval_status =1");
     $row_count = $result_count->rowCount();
-    $output .= "<p style='clear: both;'>Total number of completed books : &nbsp;" . $row_count . " </p>";
+    $output .= "<p style='clear: both;'>Total number of completed books : &nbsp;" . $row_count . " </p><br><span style='color:red;'>The list below is not the books as named but only are the solved example for R</span>";
     $output .= "<hr style='background-color: #abb2b8;' />";
     $result_category = db_query("SELECT * FROM {list_of_category} WHERE category_id !=0");
     $row_category_count = $result_category->rowCount();
@@ -174,7 +174,7 @@ function tbc_books_display_new_category_form($form, &$form_state)
     $book_count = $count_row->c;
     $form['completed_book_count'] = array(
         '#type' => 'item',
-        '#markup' => "Total number of completed books: " . $book_count,
+        '#markup' => "Total number of completed books: " . $book_count . "<br><span style='color:red;'>The list below is not the books as named but only are the solved example for R</span>",
     );
     $form['category'] = array(
         '#type' => 'select',
