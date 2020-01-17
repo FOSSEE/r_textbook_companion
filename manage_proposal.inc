@@ -299,11 +299,11 @@ function proposal_approval_form($form, &$form_state)
             '#markup' => l('Download Sample Code', 'textbook-companion/download/samplecode/' . $proposal_id) . "<br><br>"
         );
     }
-    $form['category'] = array(
+    /*$form['category'] = array(
         '#type' => 'item',
         '#markup' => _user_selected_category($proposal_id),
         '#title' => t('User selected category')
-    );
+    );*/
     $form['disapprove'] = array(
         '#type' => 'checkbox',
         '#title' => t('Disapprove all the above book preferences')
@@ -1107,7 +1107,7 @@ function proposal_edit_form($form, &$form_state)
         '#default_value' => $proposal_id
     );
     //var_dump($preference1_data->category);die;
-    $form['main_category'] = array(
+    /*$form['main_category'] = array(
         '#type' => 'select',
         '#title' => t('Select the main category'),
         '#default_value' => $preference1_data->category,
@@ -1135,7 +1135,7 @@ function proposal_edit_form($form, &$form_state)
                 )
             )
         )
-    );
+    );*/
     /* hidden fields */
     $form['submit'] = array(
         '#type' => 'submit',
@@ -1147,10 +1147,10 @@ function proposal_edit_form($form, &$form_state)
     );
     return $form;
 }
-function ajax_subcategory_list_callback($form, &$form_state)
+/*function ajax_subcategory_list_callback($form, &$form_state)
 {
     return $form['subcategory'];
-}
+}*/
 
 function proposal_edit_form_validate($form, &$form_state)
 {
@@ -1193,11 +1193,11 @@ function proposal_edit_form_validate($form, &$form_state)
             form_set_error('older', t('Please provide valid version'));
         }
     }
-    if ($form_state['values']['subcategory'])
+   /* if ($form_state['values']['subcategory'])
     {
         $subcategory = implode("| ", $_POST['subcategory']);
         $form_state['values']['subcategory'] = trim($subcategory);
-    } 
+    } */
     return;
 }
 function proposal_edit_form_submit($form, &$form_state)
@@ -1253,8 +1253,6 @@ function proposal_edit_form_submit($form, &$form_state)
             'publisher' => $form_state['values']['publisher1'],
             'edition' => $form_state['values']['edition1'],
             'year' => $form_state['values']['year1'],
-            'category' => $form_state['values']['main_category'],
-            'subcategory' => $form_state['values']['subcategory'],
             'directory_name' => $form_state['values']['dir_name1']
         ));
         $query->condition('id', $preference1_id);
@@ -1262,7 +1260,7 @@ function proposal_edit_form_submit($form, &$form_state)
     }
     drupal_set_message(t('Proposal Updated'), 'status');
 }
-function default_value_for_selections($id)
+/*function default_value_for_selections($id)
 {
     $subcategory_list_data = new stdClass();
     $query = db_select('textbook_companion_preference');
@@ -1287,7 +1285,7 @@ function default_value_for_selections($id)
     }
     //var_dump($subcategory);die;
     return $subcategory;
-}
+}*/
 /******************************************************************************/
 /**************************** CATEGORY EDIT FORM ******************************/
 /******************************************************************************/
@@ -1372,7 +1370,7 @@ function default_value_for_selections($id)
     return $form;
 }*/
 
-function _tbc_list_of_subcategories($maincategory_id)
+/*function _tbc_list_of_subcategories($maincategory_id)
 {
     $subcategory = array();
     $query = db_select('tbc_subcategory');
@@ -1745,7 +1743,7 @@ function RenameDir($preference_id, $dir_name)
     return;
 }
 
-function _get_main_category($id)
+/*function _get_main_category($id)
 {
     $maincategory = array(
         0 => 'Please select ...'
@@ -1761,8 +1759,8 @@ function _get_main_category($id)
     } //$software_version_list_data = $software_version_list->fetchObject()
     return $maincategory;
 }
-
-function _user_selected_category($prop_id)
+*/
+/*function _user_selected_category($prop_id)
 {
     $query = "
             SELECT  loc.maincategory
@@ -1778,4 +1776,4 @@ function _user_selected_category($prop_id)
     $category_list_data = $category_list->fetchObject();
     $category = $category_list_data->maincategory;
     return "* ". $category;
-}
+}*/
