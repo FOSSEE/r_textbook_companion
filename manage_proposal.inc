@@ -276,7 +276,7 @@ function proposal_approval_form($form, &$form_state)
     $query->orderBy('pref_number', 'ASC');
     $preference_q = $query->execute();
     while ($preference_data = $preference_q->fetchObject()) {
-        $preference_rows[$preference_data->id] = $preference_data->book . ' (Written by ' . $preference_data->author . ')';
+        $preference_rows[$preference_data->id] = $preference_data->book . ' (Written by ' . $preference_data->author . ') - Edition: ' . $preference_data->edition;
     }
     if ($row->proposal_type == 1) {
         $form['book_preference'] = array(
