@@ -55,4 +55,3 @@
 
 \newcommand{\coderef}[1]{Exa~\ref{#1}}
 \newcommand{\figref}[1]{Fig.~\ref{#1}}
-
