@@ -72,7 +72,7 @@ echo \\item[Exa]  Example \(Solved example\)>>$CURDIR/TEX
 echo \\item[Eqn]  Equation \(Particular equation of the above book\)>>$CURDIR/TEX
 #echo \\item[AP]   Appendix to Example\(R Code that is an Appednix to a particular Example of the above book\)>>$CURDIR/TEX
 echo \\end{description}>>$CURDIR/TEX
-echo "For example, Exa~3.51 means solved example 3.51 of this book. Sec~2.3 means a R code whose theory is explained in Section 2.3 of the book.">>$CURDIR/TEX
+echo "For example, Exa~3.51 means solved example 3.51 of this book. Sec~2.3 means an R code whose theory is explained in Section 2.3 of the book.">>$CURDIR/TEX
 echo>>$CURDIR/TEX
 
 echo \\tableofcontents >>$CURDIR/TEX
@@ -122,18 +122,18 @@ then
  echo >>$CURDIR/TEX
 fi
 
-if [ $col7 =  D ]
-then
-#echo check Appendix \\ref{AP:$col9} for dependency \$$col5\$ >> $CURDIR/TEX
-echo check Appendix \\ref{AP:$col9} for dependency:  {\\begin{alltt} \\hspace{2mm}  $col5 \\end{alltt}} >> $CURDIR/TEX
-echo  >> $CURDIR/TEX
-fi
+# if [ $col7 =  D ]
+# then
+# #echo check Appendix \\ref{AP:$col9} for dependency \$$col5\$ >> $CURDIR/TEX
+# echo check Appendix \\ref{AP:$col9} for dependency:  {\\begin{alltt} \\hspace{2mm}  $col5 \\end{alltt}} >> $CURDIR/TEX
+# echo  >> $CURDIR/TEX
+# fi
 
 
-if [ $col7 = X ]
-then
-echo This code can be downloaded from the website wwww.R.in >> $CURDIR/TEX
-fi
+# if [ $col7 = X ]
+# then
+# echo This code can be downloaded from the website wwww.r.fossee.in >> $CURDIR/TEX
+# fi
 
 if [ $col7 =  R  ]
 then 
