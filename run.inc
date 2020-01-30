@@ -51,7 +51,7 @@ function textbook_companion_run_form($form, &$form_state)
             '#type' => 'item',
             '#markup' => '<div id="ajax-download-book-replace">' . l('Download', 'textbook-companion/download/book/' . $book_default_value) . ' ' . t('(Download the R codes for all the solved examples)') . '</div>'
         );
-      /*  $form['download_pdf'] = array(
+        $form['download_pdf'] = array(
             '#type' => 'item',
             '#markup' => '<div id="ajax-download-book-pdf-replace">' . l('Download PDF', 'textbook-companion/generate-book/' . $book_default_value) . ' ' . t('(Download the PDF file containing R codes for all the solved examples)') . '</div>'
         );
