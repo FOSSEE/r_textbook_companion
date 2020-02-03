@@ -114,12 +114,14 @@ fi
   
 if [ $col7 = S ]
 then
- echo \\curlable{Exa~$col3} >> $CURDIR/TEX
- echo \\begin{code} >> $CURDIR/TEX
- echo \\tcaption{$col4}{$col4} >> $CURDIR/TEX
- echo \\lstinputlisting{../$col6}  >> $CURDIR/TEX
- echo \\end{code} >> $CURDIR/TEX
- echo >>$CURDIR/TEX
+	if [[ $col6 != *".zip"* ]]; then
+		 echo \\curlable{Exa~$col3} >> $CURDIR/TEX
+		 echo \\begin{code} >> $CURDIR/TEX
+		 echo \\tcaption{$col4}{$col4} >> $CURDIR/TEX
+		 echo \\lstinputlisting{../$col6}  >> $CURDIR/TEX
+		 echo \\end{code} >> $CURDIR/TEX
+		 echo >>$CURDIR/TEX
+	fi
 fi
 
 # if [ $col7 =  D ]
