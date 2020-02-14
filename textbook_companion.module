@@ -1363,6 +1363,7 @@ function book_proposal_form($form, &$form_state)
 	$form['completion_date'] = array(
 		'#type' => 'textfield',
 		'#title' => t('Expected Date of Completion'),
+		'#required' => TRUE,
 		'#description' => t('Input date format should be DD-MM-YYYY. Eg: 23-03-2011'),
 		'#size' => 10,
 		'#maxlength' => 10
@@ -1483,7 +1484,7 @@ function book_proposal_form($form, &$form_state)
 	);
 	$form['samplefile'] = array(
 		'#type' => 'fieldset',
-		'#title' => t('Sample Source Files'),
+		'#title' => t('Sample Source Files <span style="color:red;">*</span>'),
 		'#collapsible' => FALSE,
 		'#collapsed' => FALSE
 	);
