@@ -1156,12 +1156,35 @@ function book_proposal_form($form, &$form_state)
 		'#required' => TRUE
 	);
 	$form['course'] = array(
+		'#type' => 'select',
+		'#title' => t('Course'),
+		'#options' => _tbc_list_of_courses(),
+		'#required' => TRUE,
+		'#tree' => TRUE,
+	);
+	$form['other_course'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Enter your Course'),
+		'#size' => 50,
+		'#attributes' => array(
+			'placeholder' => t('Enter your Course name')
+		),
+		'#description' => t('<span style="color:red;">Maximum character limit for course name is 50 characters</span>'),
+		'#states' => array(
+			'visible' => array(
+				':input[name="course"]' => array(
+					'value' => 'Others'
+				)
+			)
+		)
+	);
+	/*$form['course'] = array(
 		'#type' => 'textfield',
 		'#title' => t('Course'),
 		'#size' => 30,
 		'#maxlength' => 50,
 		'#required' => TRUE
-	);
+	);*/
 	$form['branch'] = array(
 		'#type' => 'select',
 		'#title' => t('Department/Branch'),
@@ -1340,6 +1363,7 @@ function book_proposal_form($form, &$form_state)
 	$form['completion_date'] = array(
 		'#type' => 'textfield',
 		'#title' => t('Expected Date of Completion'),
+		'#required' => TRUE,
 		'#description' => t('Input date format should be DD-MM-YYYY. Eg: 23-03-2011'),
 		'#size' => 10,
 		'#maxlength' => 10
@@ -1460,7 +1484,7 @@ function book_proposal_form($form, &$form_state)
 	);
 	$form['samplefile'] = array(
 		'#type' => 'fieldset',
-		'#title' => t('Sample Source Files'),
+		'#title' => t('Sample Source Files <span style="color:red;">*</span>'),
 		'#collapsible' => FALSE,
 		'#collapsed' => FALSE
 	);
@@ -1546,6 +1570,16 @@ function book_proposal_form_validate($form, &$form_state)
 			form_set_error('other_branch',t('The maximum character limit is 100'));
 		}
 	}
+	if($form_state['values']['course'] == 'Others') {
+		if (strlen($form_state['values']['other_course']) == '')
+		{
+			form_set_error('other_course',t('Please enter the course name'));
+		}
+		else if (strlen($form_state['values']['other_course'])>50) 
+		{
+			form_set_error('other_course',t('The maximum character limit is 50'));
+		}
+	}
 	if (isset($_FILES['files']))
 	{
 		/* check if atleast one source or result file is uploaded */
@@ -1610,6 +1644,9 @@ function book_proposal_form_submit($form, &$form_state, $directory_name = NULL)
 	} //$form_state['values']['version'] == 'Other version'
 	if($form_state['values']['branch'] == 'Others') {
 		$form_state['values']['branch'] =$form_state['values']['other_branch'];
+	}
+	if($form_state['values']['course'] == 'Others') {
+		$form_state['values']['course'] =$form_state['values']['other_course'];
 	}
 	if ($form_state['values']['country'] == 'Others')
 	{
@@ -3536,6 +3573,19 @@ function _list_of_software_version()
 		$software_version[$software_version_list_data->r_version] = $software_version_list_data->r_version;
 	} //$software_version_list_data = $software_version_list->fetchObject()
 	return $software_version;
+}
+function _tbc_list_of_courses()
+{
+	$courses = array();
+	$query = db_select('list_of_courses');
+	$query->fields('list_of_courses');
+	//$query->orderBy('id', 'DESC');
+	$courses_list = $query->execute();
+	while ($courses_list_data = $courses_list->fetchObject())
+	{
+		$courses[$courses_list_data->course] = $courses_list_data->course;
+	} //$courses_list_data = $department_list->fetchObject()
+	return $courses;
 }
 function _list_of_departments()
 {
