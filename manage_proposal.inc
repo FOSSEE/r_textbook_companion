@@ -70,35 +70,53 @@ function _proposal_all()
             $query->fields('textbook_companion_preference');
             $query->condition('proposal_id', $proposal_data->id);
             $query->condition('pref_number', 1);
-            //$query->condition('approval_status', 0);        
+            //$query->condition('approval_status', 0);
             $query->range(0, 1);
             $preference_q = $query->execute();
             $preference_data = $preference_q->fetchObject();
         }
+        $code_submission_status = '';
+        switch ($preference_data->submited_all_examples_code) {
+            case 0:
+                $code_submission_status = "<span style='color:red;'>In progress</span>";
+                break;
+            case 1:
+                $code_submission_status = "<span style='color:blue;'>All code submitted</span>";
+                break;
+            case 2:
+                $code_submission_status = "<span style='color:green;'>All code approved</span>";
+                break;
+            default:
+                $code_submission_status = 'Unknown';
+                break;
+        }
+
         $proposal_status = '';
         switch ($proposal_data->proposal_status) {
             case 0:
-                $proposal_status = 'Pending';
+                $proposal_status = "<span style='color:white;'>Pending</span>";
                 break;
             case 1:
-                $proposal_status = 'Approved';
+                $proposal_status = "<span style='color:red;'>Approved</span>";
                 break;
             case 2:
-                $proposal_status = 'Dis-approved';
+                $proposal_status = "<span style='color:black;'>Dis-approved</span>";
+                $code_submission_status= "-----";
                 break;
             case 3:
-                $proposal_status = 'Completed';
+                $proposal_status = "<span style='color:green;'>Completed</span>";
                 break;
             case 4:
-                $proposal_status = 'External';
+                $proposal_status = "<span style='color:gray;'>External</span>";
                 break;
             case 5:
-                $proposal_status = 'Submitted all codes';
+                $proposal_status = "<span style='color:yellow;'>Submitted all codes</span>";
                 break;
             default:
-                $proposal_status = 'Unknown';
+                $proposal_status = "<span style='color:black;'>Unknown</span>";
                 break;
         }
+
         if($proposal_data->proposed_completion_date != 0){
         $proposed_completion_date = date('d-m-Y', $proposal_data->proposed_completion_date);
         }
@@ -113,6 +131,7 @@ function _proposal_all()
             date('d-m-Y', $proposal_data->completion_date),
             $proposed_completion_date,
             $proposal_status,
+            t($code_submission_status),
             l('Status', 'textbook-companion/manage-proposal/status/' . $proposal_data->id) . ' | ' . l('Edit', 'textbook-companion/manage-proposal/edit/' . $proposal_data->id) . _tbc_ext($proposal_status, $preference_data->id)
         );
     }
@@ -128,6 +147,7 @@ function _proposal_all()
         'Actual Date of Completion',
         'Proposed Date of Completion',
         'Status',
+        'Is all code submitted',
         'Action'
     );
     $output = theme('table', array(

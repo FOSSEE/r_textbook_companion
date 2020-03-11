@@ -72,7 +72,7 @@ case 5:
     );
 $form['book_details']['pref_id'] = array(
     '#type' => 'hidden',
-    '#value' => $preference_data->id,    
+    '#value' => $preference_data->id,
   );
     $form['book_details']['book'] = array(
         '#type' => 'item',
@@ -94,7 +94,7 @@ $form['book_details']['pref_id'] = array(
     $form['number'] = array(
     '#type' => 'select',
     '#title' => t('Chapter No'),
-    '#options' => $options,   
+    '#options' => $options,
     '#multiple' => FALSE,
     '#size' => 1,
     '#required' => TRUE,  
