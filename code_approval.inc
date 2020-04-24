@@ -158,7 +158,9 @@ function code_approval_form($form, &$form_state)
             )
         );
         $form['example_details'][$example_data->id]['message'] = array(
-            '#type' => 'textfield',
+            '#type' => 'textarea',
+            '#size' => 255,
+            '#maxlength' => 255,
             '#title' => t('Reason for dis-approval')
         );
         $form['example_details'][$example_data->id]['example_id'] = array(
