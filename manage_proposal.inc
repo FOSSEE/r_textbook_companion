@@ -277,21 +277,11 @@ function proposal_approval_form($form, &$form_state)
         '#markup' => $row->r_version,
         '#title' => t('R Version')
     );
-    if($proposal_data->reference == 'NA'){
-     $form['reference'] = array(
-        '#type' => 'item',
-        '#markup' => 'NA',
-        '#title' => t('References')
-    );
-    }
-    else
-    {
     $form['reference'] = array(
         '#type' => 'item',
-        '#markup' => l($proposal_data->reference, $proposal_data->reference),
+        '#markup' => $proposal_data->reference,
         '#title' => t('References')
     );
-    }
     $form['book_download_link'] = array(
         '#type' => 'item',
         '#markup' => l($row->book_download_link, $row->book_download_link),
@@ -629,21 +619,11 @@ function proposal_status_form($from, $form_state)
         '#markup' => $preference_html,
         '#title' => t('Book Preferences')
     );
-    if($proposal_data->reference == 'NA'){
-     $form['reference'] = array(
-        '#type' => 'item',
-        '#markup' => 'NA',
-        '#title' => t('References')
-    );
-    }
-    else
-    {
     $form['reference'] = array(
         '#type' => 'item',
-        '#markup' => l($proposal_data->reference, $proposal_data->reference),
+        '#markup' => $proposal_data->reference,
         '#title' => t('References')
     );
-    }
     $form['book_download_link'] = array(
         '#type' => 'item',
         '#markup' => l($proposal_data->book_download_link, $proposal_data->book_download_link),
