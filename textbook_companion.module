@@ -282,6 +282,17 @@ function textbook_companion_menu()
 		'file' => 'general.inc',
 		'weight' => 1
 	);
+	/*$items['textbook-companion/code/upload-codable-examples'] = array(
+        'title' => 'Upload Codable Examples',
+        'description' => 'Upload Codable Examples',
+        'page callback' => 'upload_codable_examples',
+        'access arguments' => array(
+            'upload code'
+        ),
+        'type' => MENU_LOCAL_TASK,
+        'file' => 'code.inc',
+        'weight' => 2
+    );*/
 	$items['textbook-companion/code/upload'] = array(
 		'title' => 'Code Submission',
 		'description' => 'Code Submission',
@@ -1408,13 +1419,14 @@ function book_proposal_form($form, &$form_state)
 	);
 	$form['book_download_link'] = array(
 		'#type' => 'textarea',
-		'#title' => t('Input download link for the proposed textbook'),
+		'#title' => t('Download link for the proposed textbook'),
 		'#required' => TRUE,
 		'#size' => 500,
 		'#maxlength' => 500,
 		'#attributes' => array(
 			'placeholder' => 'Please add a link to download the proposed textbook from an online source. In case of a hard copy, kindly create a pdf of the entire textbook along with the cover and back page using a mobile application like CamScanner or some other method of choice. Then upload the pdf on google drive and enter the download link here.'
-		)
+		),
+		'#description' => t('<span style="color:red">For eg: https://r.fossee.in/ (add link in http or https format)</span>')
 	);
 	$form['reference'] = array(
 		'#type' => 'textarea',
@@ -1424,7 +1436,8 @@ function book_proposal_form($form, &$form_state)
 		'#maxlength' => 500,
 		'#attributes' => array(
 			'placeholder' => 'Please mention link(s) of the syllabus where this book has been recommended by University/ College/ Institute'
-		)
+		),
+		'#description' => t('<span style="color:red">For eg: https://r.fossee.in/ (add link in http or https format)</span>')
 	);
 	$form['form_type'] = array(
 		'#type' => 'hidden',
