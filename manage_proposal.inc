@@ -279,7 +279,7 @@ function proposal_approval_form($form, &$form_state)
     );
     $form['reference'] = array(
         '#type' => 'item',
-        '#markup' => $proposal_data->reference,
+        '#markup' => $row->reference,
         '#title' => t('References')
     );
     $form['book_download_link'] = array(
