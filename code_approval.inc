@@ -30,11 +30,16 @@ function code_approval()
         $query = db_select('textbook_companion_preference');
         $query->fields('textbook_companion_preference');
         $query->condition('id', $row->c_preference_id);
+        $query->condition('submited_all_examples_code', 1);
         $result = $query->execute();
         $preference_data = $result->fetchObject();
         /* get proposal data */
         /*$proposal_q = db_query("SELECT * FROM {textbook_companion_proposal} WHERE id = %d", $preference_data->proposal_id);
         $proposal_data = db_fetch_object($proposal_q);*/
+        if(!$preference_data){
+            drupal_set_message('No data found.', 'status');
+        }
+        else{
         $query = db_select('textbook_companion_proposal');
         $query->fields('textbook_companion_proposal');
         $query->condition('id', $preference_data->proposal_id);
@@ -49,6 +54,7 @@ function code_approval()
             l('Edit', 'textbook-companion/code-approval/approve/' . $row->c_id)
         );
     }
+}
     /* check if there are any pending proposals */
     if (!$rows) {
         drupal_set_message(t('There are no pending proposals'), 'status');
@@ -1595,4 +1601,196 @@ function edit_code_submission_form_submit($form, $form_state)
             drupal_goto('textbook-companion/code-approval/edit-code-submission');
         }
     }
+}
+
+function codable_example_approval()
+{
+        $query = db_select('textbook_companion_preference');
+        $query->fields('textbook_companion_preference');
+        $query->condition('submitted_codable_examples_file', 1);
+        $query->condition('submited_all_examples_code', 0);
+        $result = $query->execute();
+        $preference_data = $result->fetchObject();
+        if(!$preference_data){
+            drupal_set_message('No data found.', 'status');
+            drupal_goto('textbook-companion/code-approval');
+        }
+        /* get proposal data */
+        /*$proposal_q = db_query("SELECT * FROM {textbook_companion_proposal} WHERE id = %d", $preference_data->proposal_id);
+        $proposal_data = db_fetch_object($proposal_q);*/
+        $query = db_select('textbook_companion_proposal');
+        $query->fields('textbook_companion_proposal');
+        $query->condition('id', $preference_data->proposal_id);
+        $result = $query->execute();
+        $proposal_data = $result->fetchObject();
+        /* setting table row information */
+        $rows[] = array(
+            $preference_data->book,
+            $proposal_data->full_name,
+            l('Edit', 'textbook-companion/code-approval/approve-codable-examples/' . $preference_data->id)
+        );
+    
+    /* check if there are any pending proposals */
+    if (!$rows) {
+        drupal_set_message(t('There are no pending proposals'), 'status');
+        return '';
+    }
+    $header = array(
+        'Title of the Book',
+        'Contributor Name',
+        'Actions'
+    );
+    $output = theme('table', array(
+        'header' => $header,
+        'rows' => $rows
+    ));
+    return $output;
+}
+
+function codable_examples_approval_form($form, &$form_state)
+{
+    /* get a list of unapproved chapters */
+    $pref_id = arg(3);
+    
+        $query = db_select('textbook_companion_preference');
+        $query->fields('textbook_companion_preference');
+        $query->condition('id', $pref_id);
+        $result = $query->execute();
+        $preference_data = $result->fetchObject();
+        //var_dump($preference_data);die;
+        /* get proposal data */
+        /*$proposal_q = db_query("SELECT * FROM {textbook_companion_proposal} WHERE id = %d", $preference_data->proposal_id);
+        $proposal_data = db_fetch_object($proposal_q);*/
+        $query = db_select('textbook_companion_proposal');
+        $query->fields('textbook_companion_proposal');
+        $query->condition('id', $preference_data->proposal_id);
+        $result = $query->execute();
+        $proposal_data = $result->fetchObject();
+
+    $form['#tree'] = TRUE;
+    $form['contributor'] = array(
+        '#type' => 'item',
+        '#markup' => $proposal_data->full_name,
+        '#title' => t('Contributor Name')
+    );
+    $form['book_details']['book'] = array(
+        '#type' => 'item',
+        '#markup' => $preference_data->book,
+        '#title' => t('Title of the Book')
+    );
+    
+    /* get example data */
+    /*$example_q = db_query("SELECT * FROM {textbook_companion_example} WHERE chapter_id = %d AND approval_status = 0", $chapter_id);*/
+    $query = db_select('textbook_companion_codable_example_files');
+    $query->fields('textbook_companion_codable_example_files');
+    $query->condition('proposal_id', $preference_data->proposal_id);
+    //$query->condition('approval_status', 0);
+    $example_q = $query->execute();
+    $example_data = $example_q->fetchObject();
+        /*$form['example_details'][$example_data->id] = array(
+            '#type' => 'fieldset',
+            '#collapsible' => FALSE,
+            '#collapsed' => TRUE
+        );*/
+        $form['download_file'] = array(
+            '#type' => 'item',
+            '#title' => t('Click to download the file with list of codable examples'),
+            '#markup' => l('Download Example', 'textbook-companion/download/codable-example/' . $example_data->proposal_id)
+        );
+        $form['status_of_codable_example'] = array(
+            '#type' => 'radios',
+            '#options' => array(
+                'Approved',
+                'Dis-approved'
+            )
+        );
+        $form['message'] = array(
+            '#type' => 'textarea',
+            '#size' => 255,
+            '#maxlength' => 255,
+            '#title' => t('Reason for dis-approval')
+        );
+        $form['proposal_id'] = array(
+            '#type' => 'hidden',
+            '#value' => $example_data->proposal_id
+        );
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => t('Submit')
+    );
+    $form['back_to_list'] = array(
+        '#type' => 'item',
+        '#markup' => l('Back to Code Approval List', 'textbook-companion/code-approval/codable-examples')
+    );
+    return $form;
+}
+
+function codable_examples_approval_form_submit($form, &$form_state){
+    global $user;
+    $ex_data = $form_state['values'];
+    if ($ex_data['status_of_codable_example'] == "0") {
+            /*db_query("UPDATE {textbook_companion_example} SET approval_status = 1, approver_uid = %d, approval_date = %d WHERE id = %d", $user->uid, time(), $ex_data['example_id']);*/
+            $query = db_update('textbook_companion_preference');
+            $query->fields(array(
+                'submited_all_examples_code' => 1,
+            ));
+            $query->condition('proposal_id', $ex_data['proposal_id']);
+            $num_updated = $query->execute();
+            /* sending email */
+            /*$email_to = $user_data->mail;
+            $from = variable_get('textbook_companion_from_email', '');
+            $bcc = variable_get('textbook_companion_emails', '');
+            $cc = variable_get('textbook_companion_cc_emails', '');
+            $param['example_approved']['example_id'] = $ex_data['proposal_id'];
+            $param['example_approved']['user_id'] = $user_data->uid;
+            $param['example_approved']['headers'] = array(
+                'From' => $from,
+                'MIME-Version' => '1.0',
+                'Content-Type' => 'text/plain; charset=UTF-8; format=flowed; delsp=yes',
+                'Content-Transfer-Encoding' => '8Bit',
+                'X-Mailer' => 'Drupal',
+                'Cc' => $cc,
+                'Bcc' => $bcc
+            );*/
+            drupal_set_message('File approved.', 'status');
+            drupal_goto('textbook-companion/code-approval/codable-examples');
+            /*if (!drupal_mail('textbook_companion', 'codable_example_approved', $email_to, language_default(), $param, $from, TRUE))
+                drupal_set_message('Error sending email message.', 'error');*/
+        } else if ($ex_data['status_of_codable_example'] == "1") {
+            
+                /* sending email */
+                $query = db_update('textbook_companion_preference');
+            $query->fields(array(
+                'submitted_codable_examples_file' => 0,
+                'submited_all_examples_code' => 0,
+            ));
+            $query->condition('proposal_id', $ex_data['proposal_id']);
+            $num_updated = $query->execute();
+                /*$email_to = $user_data->mail;
+                $from = variable_get('textbook_companion_from_email', '');
+                $bcc = variable_get('textbook_companion_emails', '');
+                $cc = variable_get('textbook_companion_cc_emails', '');
+                $param['example_disapproved']['preference_id'] = $chapter_data->preference_id;
+                $param['example_disapproved']['chapter_id'] = $example_data->chapter_id;
+                $param['example_disapproved']['example_number'] = $example_data->number;
+                $param['example_disapproved']['example_caption'] = $example_data->caption;
+                $param['example_disapproved']['user_id'] = $user_data->uid;
+                $param['example_disapproved']['message'] = $ex_data['message'];
+                $param['example_disapproved']['headers'] = array(
+                    'From' => $from,
+                    'MIME-Version' => '1.0',
+                    'Content-Type' => 'text/plain; charset=UTF-8; format=flowed; delsp=yes',
+                    'Content-Transfer-Encoding' => '8Bit',
+                    'X-Mailer' => 'Drupal',
+                    'Cc' => $cc,
+                    'Bcc' => $bcc
+                );*/
+                /*if (!drupal_mail('textbook_companion', 'example_disapproved', $email_to, language_default(), $param, $from, TRUE))
+                    drupal_set_message('Error sending email message.', 'error');*/
+                drupal_set_message('File disapproved and user has been notified of the changes.', 'status');
+                drupal_goto('textbook-companion/code-approval/codable-examples');
+            }
+            else {
+                drupal_set_message('Error in updating the status. Please contact administrator.', 'error');
+            }
 }

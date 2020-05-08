@@ -22,6 +22,32 @@ function textbook_companion_download_example_file()
     ob_clean();
     readfile($root_path . $example_file_data->directory_name . '/' . $example_file_data->filepath);
   }
+
+function textbook_companion_download_codable_example_file()
+  {
+    $proposal_id = arg(3);
+    $root_path = textbook_companion_path();
+    $query = db_select('textbook_companion_preference');
+    $query->fields('textbook_companion_preference');
+    $query->condition('proposal_id', $proposal_id);
+    $query->range(0, 1);
+    $result = $query->execute();
+    $proposal_data = $result->fetchObject();
+    $query = db_select('textbook_companion_codable_example_files');
+    $query->fields('textbook_companion_codable_example_files');
+    $query->condition('proposal_id', $proposal_id);
+    $query->range(0, 1);
+    $result = $query->execute();
+    $example_file_data = $result->fetchObject();
+    $filename = $example_file_data->filename;
+    ob_clean();
+    header('Content-Type: ' . $example_file_data->filemime);
+    header('Content-disposition: attachment; filename="' . $filename . '"');
+    header('Content-Length: ' . filesize($root_path . $proposal_data->directory_name . '/' . $example_file_data->filepath));
+    
+    readfile($root_path . $proposal_data->directory_name . '/' . $example_file_data->filepath);
+  }
+
 function textbook_companion_download_sample_code()
   {
     $proposal_id = arg(3);
