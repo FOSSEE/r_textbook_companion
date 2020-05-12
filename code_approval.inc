@@ -30,8 +30,8 @@ function code_approval()
         $query = db_select('textbook_companion_preference');
         $query->fields('textbook_companion_preference');
         $query->condition('id', $row->c_preference_id);
-        $query->condition('submited_all_examples_code', 1);
-        //$query->condition('submitted_codable_examples_file', 1);
+        $query->condition('approved_codable_example_files', 1);
+        $query->condition('submitted_codable_examples_file', 1);
         $result = $query->execute();
         $preference_data = $result->fetchObject();
         /* get proposal data */
@@ -1611,7 +1611,8 @@ function codable_example_approval()
         $query = db_select('textbook_companion_preference');
         $query->fields('textbook_companion_preference');
         $query->condition('approved_codable_example_files', 0);
-        //$query->condition('submited_all_examples_code', 1);
+        $query->condition('submited_all_examples_code', 1);
+        $query->condition('submitted_codable_examples_file', 1);
         $result = $query->execute();
         $preference_data = $result->fetchObject();
         if(!$preference_data){
