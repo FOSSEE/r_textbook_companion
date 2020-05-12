@@ -314,7 +314,7 @@ function all_example_submitted_check_form($form,&$form_state,$preference_id){
                 )
             )
         ),
-        '#title' => t('Upload the file containing a list of codable examples<span style="color:red">*</span>'),
+        '#title' => t('Upload a document file containing a list of codable examples as shown in the template <a href="https://static.fossee.in/r/manuals/Template.docx" target="_blank">here</a><span style="color:red">*</span>'),
         '#description' => t('Separate filenames with underscore. No spaces or any special characters allowed in filename.') . '<br />' . t('<span style="color:red;">Allowed file extensions : ') . variable_get('textbook_companion_codable_examples_extensions', '') . '</span>',
         );
         $form['hidden_preference_id'] = array(
@@ -439,9 +439,20 @@ $proposal_directory = $preference_data->directory_name;
                     if (file_exists($root_path . $dest_path . '/' . $_FILES['files']['name'][$file_form_name]))
                       {
                         move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . '/' . $_FILES['files']['name'][$file_form_name]);
-                        drupal_set_message(t("Error uploading file. File !filename already exists.", array(
+                        drupal_set_message(t("File !filename already exists hence overwirtten the exisitng file ", array(
                             '!filename' => $_FILES['files']['name'][$file_form_name]
-                        )), 'error');
+                        )), 'status');
+                        $query = "UPDATE {textbook_companion_codable_example_files} SET filename = :filename, filepath=:filepath, filemime=:filemime, filesize=:filesize, timestamp=:timestamp WHERE proposal_id = :proposal_id";
+                            $args = array(
+                                ":filename" => $_FILES['files']['name'][$file_form_name],
+                                ":filepath" => $filepath . $_FILES['files']['name'][$file_form_name],
+                                ":filemime" => mime_content_type($root_path . $dest_path . '/' . $_FILES['files']['name'][$file_form_name]),
+                                ":filesize" => $_FILES['files']['size'][$file_form_name],
+                                ":timestamp" => time(),
+                                ":proposal_id" => $preference_data->proposal_id
+                            );
+                            db_query($query, $args);
+                        db_query('UPDATE textbook_companion_preference SET submitted_codable_examples_file = 1 WHERE id = :preference_id',array(':preference_id' => $preference_data->id));
                         return;
                       }
                     /* uploading file */

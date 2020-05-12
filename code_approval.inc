@@ -31,13 +31,16 @@ function code_approval()
         $query->fields('textbook_companion_preference');
         $query->condition('id', $row->c_preference_id);
         $query->condition('submited_all_examples_code', 1);
+        //$query->condition('submitted_codable_examples_file', 1);
         $result = $query->execute();
         $preference_data = $result->fetchObject();
         /* get proposal data */
         /*$proposal_q = db_query("SELECT * FROM {textbook_companion_proposal} WHERE id = %d", $preference_data->proposal_id);
         $proposal_data = db_fetch_object($proposal_q);*/
         if(!$preference_data){
-            drupal_set_message('No data found.', 'status');
+           //drupal_set_message('No data found.', 'status');
+            //drupal_goto('textbook-companion/code-approval');
+        //return;
         }
         else{
         $query = db_select('textbook_companion_proposal');
@@ -101,7 +104,7 @@ function code_approval_form($form, &$form_state)
         $proposal_data = $result->fetchObject();
     } else {
         drupal_set_message(t('Invalid chapter selected.'), 'error');
-        drupal_goto('textbook-companion/code-approval');
+        //drupal_goto('textbook-companion/code-approval');
         return;
     }
     $form['#tree'] = TRUE;
