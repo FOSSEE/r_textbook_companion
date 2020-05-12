@@ -55,7 +55,7 @@ function list_chapters()
     $query->range(0, 1);
     $result = $query->execute();
     $preference_data = $result->fetchObject();
-    if ($preference_data->submitted_codable_examples_file == 1)
+    if ($preference_data->submited_all_examples_code == 1)
       {
       drupal_set_message(t('You have submited your all codes for this book to review, hence you can not upload more code, for any query please write us.'), 'status');
                 drupal_goto('');
@@ -296,6 +296,13 @@ function list_examples()
   }
 function all_example_submitted_check_form($form,&$form_state,$preference_id){
     //$form = array();
+    $query = db_select('textbook_companion_preference');
+    $query->fields('textbook_companion_preference');
+    $query->condition('id', $preference_id);
+    $query->condition('approval_status', 1);
+    $query->range(0, 1);
+    $result = $query->execute();
+    $preference_data = $result->fetchObject();
     $form['#attributes'] = array(
         'enctype' => "multipart/form-data"
     );
@@ -305,6 +312,8 @@ function all_example_submitted_check_form($form,&$form_state,$preference_id){
             '#description' => 'Once you have submited this option you are not able to upload more examples.',
             '#required' => TRUE,
     );
+    //var_dump($preference_data->approved_codable_example_files);die;
+    if($preference_data->approved_codable_example_files == 0){
     $form['upload_codable_examples'] = array(
         '#type' => 'file',
         '#states' => array(
@@ -317,6 +326,7 @@ function all_example_submitted_check_form($form,&$form_state,$preference_id){
         '#title' => t('Upload a document file containing a list of codable examples as shown in the template <a href="https://static.fossee.in/r/manuals/Template.docx" target="_blank">here</a><span style="color:red">*</span>'),
         '#description' => t('Separate filenames with underscore. No spaces or any special characters allowed in filename.') . '<br />' . t('<span style="color:red;">Allowed file extensions : ') . variable_get('textbook_companion_codable_examples_extensions', '') . '</span>',
         );
+    }
         $form['hidden_preference_id'] = array(
         '#type' => 'hidden',
         '#value' => $preference_id
@@ -419,6 +429,7 @@ $query = db_select('textbook_companion_proposal');
         drupal_goto('');
         return;
       }
+      if($preference_data->approved_codable_example_files == 0){
 $root_path = textbook_companion_path();
 $proposal_directory = $preference_data->directory_name;
     $dest_path = $proposal_directory . '/';
@@ -452,7 +463,7 @@ $proposal_directory = $preference_data->directory_name;
                                 ":proposal_id" => $preference_data->proposal_id
                             );
                             db_query($query, $args);
-                        db_query('UPDATE textbook_companion_preference SET submitted_codable_examples_file = 1 WHERE id = :preference_id',array(':preference_id' => $preference_data->id));
+                        db_query('UPDATE textbook_companion_preference SET submited_all_examples_code = 1, submitted_codable_examples_file = 1 WHERE id = :preference_id',array(':preference_id' => $preference_data->id));
                         return;
                       }
                     /* uploading file */
@@ -494,13 +505,17 @@ $proposal_directory = $preference_data->directory_name;
                             db_query($query, $args);
                             drupal_set_message($file_name . ' file updated successfully.', 'status');
                       }
-                    db_query('UPDATE textbook_companion_preference SET submitted_codable_examples_file = 1 WHERE id = :preference_id',array(':preference_id' => $preference_data->id));
+                    db_query('UPDATE textbook_companion_preference SET submited_all_examples_code = 1, submitted_codable_examples_file = 1 WHERE id = :preference_id',array(':preference_id' => $preference_data->id));
                   }
                     else
                       {
                         drupal_set_message('Error uploading file : ' . $dest_path . '/' . $file_name, 'error');
                       }
           }  
+      }
+      else{
+        db_query('UPDATE textbook_companion_preference SET submited_all_examples_code = 1 WHERE id = :preference_id',array(':preference_id' => $preference_data->id));
+      }
     //drupal_set_message('File uploaded successfully.', 'status');
  /* sending email */
  $query = ("SELECT proposal_id FROM textbook_companion_preference WHERE id= :preference_id");

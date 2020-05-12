@@ -1610,8 +1610,8 @@ function codable_example_approval()
 {
         $query = db_select('textbook_companion_preference');
         $query->fields('textbook_companion_preference');
-        $query->condition('submitted_codable_examples_file', 1);
-        $query->condition('submited_all_examples_code', 0);
+        $query->condition('approved_codable_example_files', 0);
+        //$query->condition('submited_all_examples_code', 1);
         $result = $query->execute();
         $preference_data = $result->fetchObject();
         if(!$preference_data){
@@ -1735,7 +1735,7 @@ function codable_examples_approval_form_submit($form, &$form_state){
             /*db_query("UPDATE {textbook_companion_example} SET approval_status = 1, approver_uid = %d, approval_date = %d WHERE id = %d", $user->uid, time(), $ex_data['example_id']);*/
             $query = db_update('textbook_companion_preference');
             $query->fields(array(
-                'submited_all_examples_code' => 1,
+                'approved_codable_example_files' => 1,
             ));
             $query->condition('proposal_id', $ex_data['proposal_id']);
             $num_updated = $query->execute();
