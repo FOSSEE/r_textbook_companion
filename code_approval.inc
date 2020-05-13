@@ -1731,6 +1731,18 @@ function codable_examples_approval_form($form, &$form_state)
 
 function codable_examples_approval_form_submit($form, &$form_state){
     global $user;
+    $proposal_id = $form_state['values']['proposal_id'];
+    $query = db_select('textbook_companion_preference');
+        $query->fields('textbook_companion_preference');
+        $query->condition('proposal_id', $proposal_id);
+        $result = $query->execute();
+        $preference_data = $result->fetchObject();
+     $query = db_select('textbook_companion_proposal');
+        $query->fields('textbook_companion_proposal');
+        $query->condition('id', $preference_data->proposal_id);
+        $result = $query->execute();
+        $proposal_data = $result->fetchObject();
+    $user_data = user_load($proposal_data->uid);
     $ex_data = $form_state['values'];
     if ($ex_data['status_of_codable_example'] == "0") {
             /*db_query("UPDATE {textbook_companion_example} SET approval_status = 1, approver_uid = %d, approval_date = %d WHERE id = %d", $user->uid, time(), $ex_data['example_id']);*/
