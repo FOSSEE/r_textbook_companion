@@ -1741,13 +1741,13 @@ function codable_examples_approval_form_submit($form, &$form_state){
             $query->condition('proposal_id', $ex_data['proposal_id']);
             $num_updated = $query->execute();
             /* sending email */
-            /*$email_to = $user_data->mail;
+            $email_to = $user_data->mail;
             $from = variable_get('textbook_companion_from_email', '');
             $bcc = variable_get('textbook_companion_emails', '');
             $cc = variable_get('textbook_companion_cc_emails', '');
-            $param['example_approved']['example_id'] = $ex_data['proposal_id'];
-            $param['example_approved']['user_id'] = $user_data->uid;
-            $param['example_approved']['headers'] = array(
+            $param['codable_example_approved']['proposal_id'] = $ex_data['proposal_id'];
+            $param['codable_example_approved']['user_id'] = $user_data->uid;
+            $param['codable_example_approved']['headers'] = array(
                 'From' => $from,
                 'MIME-Version' => '1.0',
                 'Content-Type' => 'text/plain; charset=UTF-8; format=flowed; delsp=yes',
@@ -1755,11 +1755,11 @@ function codable_examples_approval_form_submit($form, &$form_state){
                 'X-Mailer' => 'Drupal',
                 'Cc' => $cc,
                 'Bcc' => $bcc
-            );*/
+            );
+            if (!drupal_mail('textbook_companion', 'codable_example_approved', $email_to, language_default(), $param, $from, TRUE))
+                drupal_set_message('Error sending email message.', 'error');
             drupal_set_message('File approved.', 'status');
             drupal_goto('textbook-companion/code-approval/codable-examples');
-            /*if (!drupal_mail('textbook_companion', 'codable_example_approved', $email_to, language_default(), $param, $from, TRUE))
-                drupal_set_message('Error sending email message.', 'error');*/
         } else if ($ex_data['status_of_codable_example'] == "1") {
             
                 /* sending email */
@@ -1767,20 +1767,18 @@ function codable_examples_approval_form_submit($form, &$form_state){
             $query->fields(array(
                 'submitted_codable_examples_file' => 0,
                 'submited_all_examples_code' => 0,
+                'approved_codable_example_files' => 0,
             ));
             $query->condition('proposal_id', $ex_data['proposal_id']);
             $num_updated = $query->execute();
-                /*$email_to = $user_data->mail;
+                $email_to = $user_data->mail;
                 $from = variable_get('textbook_companion_from_email', '');
                 $bcc = variable_get('textbook_companion_emails', '');
                 $cc = variable_get('textbook_companion_cc_emails', '');
-                $param['example_disapproved']['preference_id'] = $chapter_data->preference_id;
-                $param['example_disapproved']['chapter_id'] = $example_data->chapter_id;
-                $param['example_disapproved']['example_number'] = $example_data->number;
-                $param['example_disapproved']['example_caption'] = $example_data->caption;
-                $param['example_disapproved']['user_id'] = $user_data->uid;
-                $param['example_disapproved']['message'] = $ex_data['message'];
-                $param['example_disapproved']['headers'] = array(
+                $param['codable_example_approved']['proposal_id'] = $ex_data['proposal_id'];
+                $param['codable_example_approved']['user_id'] = $user_data->uid;
+                $param['codable_example_disapproved']['message'] = $ex_data['message'];
+                $param['codable_example_disapproved']['headers'] = array(
                     'From' => $from,
                     'MIME-Version' => '1.0',
                     'Content-Type' => 'text/plain; charset=UTF-8; format=flowed; delsp=yes',
@@ -1788,9 +1786,9 @@ function codable_examples_approval_form_submit($form, &$form_state){
                     'X-Mailer' => 'Drupal',
                     'Cc' => $cc,
                     'Bcc' => $bcc
-                );*/
-                /*if (!drupal_mail('textbook_companion', 'example_disapproved', $email_to, language_default(), $param, $from, TRUE))
-                    drupal_set_message('Error sending email message.', 'error');*/
+                );
+                if (!drupal_mail('textbook_companion', 'codable_example_disapproved', $email_to, language_default(), $param, $from, TRUE))
+                    drupal_set_message('Error sending email message.', 'error');
                 drupal_set_message('File disapproved and user has been notified of the changes.', 'status');
                 drupal_goto('textbook-companion/code-approval/codable-examples');
             }
