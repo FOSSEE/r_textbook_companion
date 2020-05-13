@@ -2508,6 +2508,7 @@ FOSSEE, IIT Bombay', array(
 Dear ' . $proposal_data->full_name . ',
 
 Congratulations! Your codable examples document has been approved. As you have now coded all of the codable solved examples of your proposed textbook, we shall begin with reviewing your TBC codes.
+
 Best Wishes,
 
 !site_name Team,
