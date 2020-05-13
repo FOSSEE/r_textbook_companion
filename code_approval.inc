@@ -1775,8 +1775,8 @@ function codable_examples_approval_form_submit($form, &$form_state){
                 $from = variable_get('textbook_companion_from_email', '');
                 $bcc = variable_get('textbook_companion_emails', '');
                 $cc = variable_get('textbook_companion_cc_emails', '');
-                $param['codable_example_approved']['proposal_id'] = $ex_data['proposal_id'];
-                $param['codable_example_approved']['user_id'] = $user_data->uid;
+                $param['codable_example_disapproved']['proposal_id'] = $ex_data['proposal_id'];
+                $param['codable_example_disapproved']['user_id'] = $user_data->uid;
                 $param['codable_example_disapproved']['message'] = $ex_data['message'];
                 $param['codable_example_disapproved']['headers'] = array(
                     'From' => $from,
