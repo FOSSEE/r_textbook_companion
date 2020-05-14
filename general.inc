@@ -295,13 +295,38 @@ function list_examples()
     return $return_html;
   }
 function all_example_submitted_check_form($form,&$form_state,$preference_id){
-    $form = array();
+    //$form = array();
+    $query = db_select('textbook_companion_preference');
+    $query->fields('textbook_companion_preference');
+    $query->condition('id', $preference_id);
+    $query->condition('approval_status', 1);
+    $query->range(0, 1);
+    $result = $query->execute();
+    $preference_data = $result->fetchObject();
+    $form['#attributes'] = array(
+        'enctype' => "multipart/form-data"
+    );
     $form['all_example_submitted'] = array(
             '#type' => 'checkbox',
             '#title' => t('I have submitted codes for all the examples'),
             '#description' => 'Once you have submited this option you are not able to upload more examples.',
             '#required' => TRUE,
+    );
+    //var_dump($preference_data->approved_codable_example_files);die;
+    if($preference_data->approved_codable_example_files == 0){
+    $form['upload_codable_examples'] = array(
+        '#type' => 'file',
+        '#states' => array(
+            'visible' => array(
+                ':input[name="all_example_submitted"]' => array(
+                    'checked' => True
+                )
+            )
+        ),
+        '#title' => t('Upload a document file containing a list of codable examples as shown in the template <a href="https://static.fossee.in/r/manuals/Template.docx" target="_blank">here</a><span style="color:red">*</span>'),
+        '#description' => t('Separate filenames with underscore. No spaces or any special characters allowed in filename.') . '<br />' . t('<span style="color:red;">Allowed file extensions : ') . variable_get('textbook_companion_codable_examples_extensions', '') . '</span>',
         );
+    }
         $form['hidden_preference_id'] = array(
         '#type' => 'hidden',
         '#value' => $preference_id
@@ -316,13 +341,182 @@ function all_example_submitted_check_form_validate($form,&$form_state){
 if ($form_state['values']['all_example_submitted'] != 1) {
     form_set_error('all_example_submitted', t('Please check the field if you are intrested to submit the all uploaded examples for review!'));
   }
+if (isset($_FILES['files']))
+    {
+        /* check if atleast one source or result file is uploaded */
+        if (!($_FILES['files']['name']['upload_codable_examples']))
+            form_set_error('upload_codable_examples', t('Please upload the file containing a list of codable examples.'));
+        /* check for valid filename extensions */
+        foreach ($_FILES['files']['name'] as $file_form_name => $file_name)
+        {
+            if ($file_name)
+            {
+                /* checking file type */
+                $allowed_extensions_str = variable_get('textbook_companion_codable_examples_extensions', '');
+                $allowed_extensions = explode(',', $allowed_extensions_str);
+                $fnames = explode('.', strtolower($_FILES['files']['name'][$file_form_name]));
+                $temp_extension = end($fnames);
+                if (!in_array($temp_extension, $allowed_extensions))
+                    form_set_error($file_form_name, t('Only file with ' . $allowed_extensions_str . ' extensions can be uploaded.'));
+                if ($_FILES['files']['size'][$file_form_name] <= 0)
+                    form_set_error($file_form_name, t('File size cannot be zero.'));
+                /* check if valid file name */
+                if (!textbook_companion_check_valid_filename($_FILES['files']['name'][$file_form_name]))
+                    form_set_error($file_form_name, t('Invalid file name specified. Only alphabets and numbers are allowed as a valid filename.'));
+            } //$file_name
+        } //$_FILES['files']['name'] as $file_form_name => $file_name
+    } 
   return;
 }
 
 function all_example_submitted_check_form_submit($form,&$form_state){
 global $user;
-if ($form_state['values']['all_example_submitted'] == 1) {
-db_query('UPDATE textbook_companion_preference SET submited_all_examples_code = 1 WHERE id = :preference_id',array(':preference_id' => $form_state['values']['hidden_preference_id']));
+/*if ($form_state['values']['all_example_submitted'] == 1) {
+db_query('UPDATE textbook_companion_preference SET submited_all_examples_code = 1 WHERE id = :preference_id',array(':preference_id' => $form_state['values']['hidden_preference_id']));*/
+$query = db_select('textbook_companion_proposal');
+    $query->fields('textbook_companion_proposal');
+    $query->condition('uid', $user->uid);
+    $query->orderBy('id', 'DESC');
+    $query->range(0, 1);
+    $result = $query->execute();
+    $proposal_data = $result->fetchObject();
+    if (!$proposal_data)
+      {
+        drupal_set_message("Please submit a " . l('proposal', 'textbook-companion/proposal') . ".", 'error');
+        drupal_goto('');
+      }
+    if ($proposal_data->proposal_status != 1 && $proposal_data->proposal_status != 4)
+      {
+        switch ($proposal_data->proposal_status)
+        {
+            case 0:
+                drupal_set_message(t('We have already received your proposal. We will get back to you soon.'), 'status');
+                drupal_goto('');
+                return;
+                break;
+            case 2:
+                drupal_set_message(t('Your proposal has been dis-approved. Please create another proposal ' . l('here', 'textbook-companion/proposal') . '.'), 'error');
+                drupal_goto('');
+                return;
+                break;
+            case 3:
+                drupal_set_message(t('Congratulations! You have completed your last book proposal. You have to create another proposal ' . l('here', 'textbook-companion/proposal') . '.'), 'status');
+                drupal_goto('');
+                return;
+                break;
+            case 5:
+                drupal_set_message(t('You have submmited your all codes'), 'status');
+                drupal_goto('');
+                return;
+                break;
+            default:
+                drupal_set_message(t('Invalid proposal state. Please contact site administrator for further information.'), 'error');
+                drupal_goto('');
+                return;
+                break;
+        }
+      }
+    $query = db_select('textbook_companion_preference');
+    $query->fields('textbook_companion_preference');
+    $query->condition('proposal_id', $proposal_data->id);
+    $query->condition('approval_status', 1);
+    $query->range(0, 1);
+    $result = $query->execute();
+    $preference_data = $result->fetchObject();
+    if (!$preference_data)
+      {
+        drupal_set_message(t('Invalid Book Preference status. Please contact site administrator for further information.'), 'error');
+        drupal_goto('');
+        return;
+      }
+      if($preference_data->approved_codable_example_files == 0){
+$root_path = textbook_companion_path();
+$proposal_directory = $preference_data->directory_name;
+    $dest_path = $proposal_directory . '/';
+    if (!is_dir($root_path . $dest_path)){   
+        if(!mkdir($root_path . $dest_path))
+        {
+        drupal_set_message(t('You cannot upload your code. Error in creating directory'), 'error');
+        }
+     }   
+    /* creating directories */
+    $dest_path .= 'codable_example_file';
+    if (!is_dir($root_path . $dest_path))
+        mkdir($root_path . $dest_path);
+    //var_dump($root_path . $dest_path);die;
+    $filepath = 'codable_example_file/';
+    foreach ($_FILES['files']['name'] as $file_form_name => $file_name)
+      {
+                    if (file_exists($root_path . $dest_path . '/' . $_FILES['files']['name'][$file_form_name]))
+                      {
+                        move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . '/' . $_FILES['files']['name'][$file_form_name]);
+                        drupal_set_message(t("File !filename already exists hence overwirtten the exisitng file ", array(
+                            '!filename' => $_FILES['files']['name'][$file_form_name]
+                        )), 'status');
+                        $query = "UPDATE {textbook_companion_codable_example_files} SET filename = :filename, filepath=:filepath, filemime=:filemime, filesize=:filesize, timestamp=:timestamp WHERE proposal_id = :proposal_id";
+                            $args = array(
+                                ":filename" => $_FILES['files']['name'][$file_form_name],
+                                ":filepath" => $filepath . $_FILES['files']['name'][$file_form_name],
+                                ":filemime" => mime_content_type($root_path . $dest_path . '/' . $_FILES['files']['name'][$file_form_name]),
+                                ":filesize" => $_FILES['files']['size'][$file_form_name],
+                                ":timestamp" => time(),
+                                ":proposal_id" => $preference_data->proposal_id
+                            );
+                            db_query($query, $args);
+                        db_query('UPDATE textbook_companion_preference SET submited_all_examples_code = 1, submitted_codable_examples_file = 1 WHERE id = :preference_id',array(':preference_id' => $preference_data->id));
+                        return;
+                      }
+                    /* uploading file */
+                    else if (move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . '/' . $_FILES['files']['name'][$file_form_name]))
+                      {
+                        $query_codable_examples_file = "SELECT * FROM textbook_companion_codable_example_files WHERE proposal_id = :proposal_id";
+                        $args_query_codable_examples_file = array(
+                            ":proposal_id" => $preference_data->proposal_id
+                        );
+                        $query_codable_examples_file_result = db_query($query_codable_examples_file, $args_query_codable_examples_file)->fetchObject();
+                        if(!$query_codable_examples_file_result){
+                        $query = "INSERT INTO {textbook_companion_codable_example_files} (proposal_id, filename, filepath,filemime, filesize, filetype, timestamp) VALUES (:proposal_id, :filename ,:filepath,:filemime, :filesize, :filetype, :timestamp)";
+                        $args = array(
+                                ":proposal_id" => $preference_data->proposal_id,
+                                ":filename" => $_FILES['files']['name'][$file_form_name],
+                                ":filepath" => $filepath . $_FILES['files']['name'][$file_form_name],
+                                ":filemime" => mime_content_type($root_path . $dest_path . '/' . $_FILES['files']['name'][$file_form_name]),
+                                ":filesize" => $_FILES['files']['size'][$file_form_name],
+                                ":filetype" => 'C',
+                                ":timestamp" => time()
+                        );
+                        $result = db_query($query, $args, array(
+                            'return' => Database::RETURN_INSERT_ID
+                        ));
+                        drupal_set_message('File uploaded successfully.', 'status');
+                      }
+                      else
+                      {
+                            unlink($root_path . $dest_path . '/' . $query_codable_examples_file_result->filename);
+                            $query = "UPDATE {textbook_companion_codable_example_files} SET filename = :filename, filepath=:filepath, filemime=:filemime, filesize=:filesize, timestamp=:timestamp WHERE proposal_id = :proposal_id";
+                            $args = array(
+                                ":filename" => $_FILES['files']['name'][$file_form_name],
+                                ":filepath" => $filepath . $_FILES['files']['name'][$file_form_name],
+                                ":filemime" => mime_content_type($root_path . $dest_path . '/' . $_FILES['files']['name'][$file_form_name]),
+                                ":filesize" => $_FILES['files']['size'][$file_form_name],
+                                ":timestamp" => time(),
+                                ":proposal_id" => $preference_data->proposal_id
+                            );
+                            db_query($query, $args);
+                            drupal_set_message($file_name . ' file updated successfully.', 'status');
+                      }
+                    db_query('UPDATE textbook_companion_preference SET submited_all_examples_code = 1, submitted_codable_examples_file = 1 WHERE id = :preference_id',array(':preference_id' => $preference_data->id));
+                  }
+                    else
+                      {
+                        drupal_set_message('Error uploading file : ' . $dest_path . '/' . $file_name, 'error');
+                      }
+          }  
+      }
+      else{
+        db_query('UPDATE textbook_companion_preference SET submited_all_examples_code = 1 WHERE id = :preference_id',array(':preference_id' => $preference_data->id));
+      }
+    //drupal_set_message('File uploaded successfully.', 'status');
  /* sending email */
  $query = ("SELECT proposal_id FROM textbook_companion_preference WHERE id= :preference_id");
  $args = array(":preference_id" => $form_state['values']['hidden_preference_id']);
@@ -347,4 +541,4 @@ db_query('UPDATE textbook_companion_preference SET submited_all_examples_code = 
     if (!drupal_mail('textbook_companion', 'all_code_submitted', $email_to, language_default(), $param, $from, TRUE))
         drupal_set_message('Error sending email message.', 'error');
 }
-}
+

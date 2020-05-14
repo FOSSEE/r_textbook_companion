@@ -182,6 +182,31 @@ function textbook_companion_menu()
 		'weight' => 1,
 		'file' => 'code_approval.inc'
 	);
+	$items['textbook-companion/code-approval/codable-examples'] = array(
+		'title' => 'Manage Codable Examples',
+		'description' => 'Manage Codable Examples',
+		'page callback' => 'codable_example_approval',
+		'access arguments' => array(
+			'approve code'
+		),
+		'type' => MENU_LOCAL_TASK,
+		'weight' => 2,
+		'file' => 'code_approval.inc'
+	);
+	$items['textbook-companion/code-approval/approve-codable-examples'] = array(
+		'title' => 'Approve codable examples',
+		'description' => 'Approve codable examples',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array(
+			'codable_examples_approval_form'
+		),
+		'access arguments' => array(
+			'approve code'
+		),
+		//'weight' => 3,
+		'type' => MENU_NORMAL_ITEM,
+		'file' => 'code_approval.inc'
+	);
 	$items['textbook-companion/code-approval/bulk'] = array(
 		'title' => 'Bulk Manage',
 		'description' => 'Bulk Mangage',
@@ -193,7 +218,7 @@ function textbook_companion_menu()
 			'bulk manage code'
 		),
 		'type' => MENU_LOCAL_TASK,
-		'weight' => 2,
+		'weight' => 3,
 		'file' => 'code_approval.inc'
 	);
 	/* $items['textbook-companion/code-approval/edit-code-submission'] = array(
@@ -282,17 +307,6 @@ function textbook_companion_menu()
 		'file' => 'general.inc',
 		'weight' => 1
 	);
-	/*$items['textbook-companion/code/upload-codable-examples'] = array(
-        'title' => 'Upload Codable Examples',
-        'description' => 'Upload Codable Examples',
-        'page callback' => 'upload_codable_examples',
-        'access arguments' => array(
-            'upload code'
-        ),
-        'type' => MENU_LOCAL_TASK,
-        'file' => 'code.inc',
-        'weight' => 2
-    );*/
 	$items['textbook-companion/code/upload'] = array(
 		'title' => 'Code Submission',
 		'description' => 'Code Submission',
@@ -530,6 +544,16 @@ function textbook_companion_menu()
 		'title' => 'Code Download',
 		'description' => 'Code Download',
 		'page callback' => 'textbook_companion_download_example',
+		'access arguments' => array(
+			'download code'
+		),
+		'type' => MENU_CALLBACK,
+		'file' => 'download.inc'
+	);
+	$items['textbook-companion/download/codable-example'] = array(
+		'title' => 'Code Download',
+		'description' => 'Code Download',
+		'page callback' => 'textbook_companion_download_codable_example_file',
 		'access arguments' => array(
 			'download code'
 		),
@@ -2442,6 +2466,89 @@ Example number: ' . $params['example_disapproved']['example_number'] . '
 Caption: ' . $params['example_disapproved']['example_caption'] . '
 
 Reason for dis-approval: ' . $params['example_disapproved']['message'] . '
+
+Best Wishes,
+
+!site_name Team,
+FOSSEE, IIT Bombay', array(
+					'!site_name' => variable_get('site_name', ''),
+					'!user_name' => $user_data->name
+				))
+			);
+			break;
+		case 'codable_example_approved':
+			
+			/*$example_q = db_query("SELECT * FROM {textbook_companion_example} WHERE id = %d LIMIT 1", $params['codable_example_approved']['example_id']);
+			$example_data = db_fetch_object($example_q);*/
+			$query = db_select('textbook_companion_codable_example_files');
+			$query->fields('textbook_companion_codable_example_files');
+			$query->condition('proposal_id', $params['codable_example_approved']['proposal_id']);
+			$query->range(0, 1);
+			$result = $query->execute();
+			$codable_example_data = $result->fetchObject();
+			$query = db_select('textbook_companion_preference');
+			$query->fields('textbook_companion_preference');
+			$query->condition('proposal_id', $codable_example_data->proposal_id);
+			$query->range(0, 1);
+			$result = $query->execute();
+			$preference_data = $result->fetchObject();
+			$query = db_select('textbook_companion_proposal');
+			$query->fields('textbook_companion_proposal');
+			$query->condition('id', $preference_data->proposal_id);
+			$query->range(0, 1);
+			$result = $query->execute();
+			$proposal_data = $result->fetchObject();
+			$user_data = user_load($params['codable_example_approved']['user_id']);
+			$message['headers'] = $params['codable_example_approved']['headers'];
+			$message['subject'] = t('[!site_name][Textbook Companion] Your codable solved examples document has been approved', array(
+				'!site_name' => variable_get('site_name', '')
+			));
+			$message['body'] = array(
+				'body' => t('
+Dear ' . $proposal_data->full_name . ',
+
+Congratulations! Your codable examples document has been approved. As you have now coded all of the codable solved examples of your proposed textbook, we shall begin with reviewing your TBC codes.
+
+Best Wishes,
+
+!site_name Team,
+FOSSEE, IIT Bombay', array(
+					'!site_name' => variable_get('site_name', ''),
+					'!user_name' => $user_data->name
+				))
+			);
+			break;
+		case 'codable_example_disapproved':
+			$user_data = user_load($params['codable_example_disapproved']['user_id']);
+			$query = db_select('textbook_companion_codable_example_files');
+			$query->fields('textbook_companion_codable_example_files');
+			$query->condition('proposal_id', $params['codable_example_disapproved']['proposal_id']);
+			$query->range(0, 1);
+			$result = $query->execute();
+			$codable_example_data = $result->fetchObject();
+			$query = db_select('textbook_companion_preference');
+			$query->fields('textbook_companion_preference');
+			$query->condition('proposal_id', $codable_example_data->proposal_id);
+			$query->range(0, 1);
+			$result = $query->execute();
+			$preference_data = $result->fetchObject();
+			$query = db_select('textbook_companion_proposal');
+			$query->fields('textbook_companion_proposal');
+			$query->condition('id', $preference_data->proposal_id);
+			$query->range(0, 1);
+			$result = $query->execute();
+			$proposal_data = $result->fetchObject();
+			$message['headers'] = $params['codable_example_disapproved']['headers'];
+			$message['subject'] = t('[!site_name][Textbook Companion] Your codable solved examples document has been disapproved', array(
+				'!site_name' => variable_get('site_name', '')
+			));
+			$message['body'] = array(
+				'body' => t('
+Dear ' . $proposal_data->full_name . ',
+
+Unfortunately, it seems like you have not coded all of the codable solved examples from your proposed textbook. Kindly address the below-mentioned comments and reupload the document after making necessary changes.
+
+Reason for dis-approval: ' . $params['codable_example_disapproved']['message'] . '
 
 Best Wishes,
 
