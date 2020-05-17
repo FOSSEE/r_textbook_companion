@@ -1614,29 +1614,24 @@ function codable_example_approval()
         $query->condition('submited_all_examples_code', 1);
         $query->condition('submitted_codable_examples_file', 1);
         $result = $query->execute();
-        $preference_data = $result->fetchObject();
-        if(!$preference_data){
-            drupal_set_message('No data found.', 'status');
-            drupal_goto('textbook-companion/code-approval');
-        }
-        /* get proposal data */
-        /*$proposal_q = db_query("SELECT * FROM {textbook_companion_proposal} WHERE id = %d", $preference_data->proposal_id);
-        $proposal_data = db_fetch_object($proposal_q);*/
-        $query = db_select('textbook_companion_proposal');
-        $query->fields('textbook_companion_proposal');
-        $query->condition('id', $preference_data->proposal_id);
-        $result = $query->execute();
-        $proposal_data = $result->fetchObject();
+        $rows = array();
+        while ($preference_data = $result->fetchObject()) {
+        $query_pro = db_select('textbook_companion_proposal');
+        $query_pro->fields('textbook_companion_proposal');
+        $query_pro->condition('id', $preference_data->proposal_id);
+        $result_pro = $query_pro->execute();
+        $proposal_data = $result_pro->fetchObject();
         /* setting table row information */
         $rows[] = array(
             $preference_data->book,
             $proposal_data->full_name,
             l('Edit', 'textbook-companion/code-approval/approve-codable-examples/' . $preference_data->id)
         );
+        }
     
     /* check if there are any pending proposals */
     if (!$rows) {
-        drupal_set_message(t('There are no pending proposals'), 'status');
+        drupal_set_message(t('There are no proposals with codable example file'), 'status');
         return '';
     }
     $header = array(
