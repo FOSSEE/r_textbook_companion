@@ -168,8 +168,8 @@ function code_approval_form($form, &$form_state)
         );
         $form['example_details'][$example_data->id]['message'] = array(
             '#type' => 'textarea',
-            '#size' => 255,
-            '#maxlength' => 255,
+            '#size' => 500,
+            '#maxlength' => 500,
             '#title' => t('Reason for dis-approval')
         );
         $form['example_details'][$example_data->id]['example_id'] = array(
@@ -1705,8 +1705,8 @@ function codable_examples_approval_form($form, &$form_state)
         );
         $form['message'] = array(
             '#type' => 'textarea',
-            '#size' => 255,
-            '#maxlength' => 255,
+            '#size' => 2500,
+            '#maxlength' => 2500,
             '#title' => t('Reason for dis-approval')
         );
         $form['proposal_id'] = array(
