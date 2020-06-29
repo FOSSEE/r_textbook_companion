@@ -142,8 +142,8 @@ function generate_pdf()
     $pdf->Cell(228, 8, $UniqueString, '0', '1', 'R');
     $pdf->SetY(148);
     $pdf->SetX(222);
-    $pdf->Image($sign, $pdf->GetX()-130, $pdf->GetY()+6, 60, 0);
-    $pdf->Image($pngAbsoluteFilePath, $pdf->GetX(), $pdf->GetY()+1, 30, 0);
+    $pdf->Image($sign, $pdf->GetX()-130, $pdf->GetY(), 85, 0);
+    $pdf->Image($pngAbsoluteFilePath, $pdf->GetX(), $pdf->GetY()-5, 30, 0);
     //$name = $data3->full_name;
     //$certificate_name = str_replace(' ', '_', $name);
     //$pdf->Output($certificate_name . '_R_TBC_Certificate.pdf', 'D');
