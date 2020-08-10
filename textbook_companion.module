@@ -3688,7 +3688,12 @@ function del_book_pdf($book_id)
 {
 	$root_path = textbook_companion_path();
 	$dir_path = $root_path . "latex/";
-	$pdf_filename = "book_" . $book_id . ".pdf";
+	$query = db_select('textbook_companion_preference');
+	$query->fields('textbook_companion_preference');
+	$query->condition('id', $book_id);
+	$query_pre_data = $query->execute();
+	$result = $query_pre_data->fetchObject();
+	$pdf_filename = "book_" . $result->directory_name . ".pdf";
 	if (file_exists($dir_path . $pdf_filename))
 		unlink($dir_path . $pdf_filename);
 }
