@@ -43,7 +43,7 @@ function _latex_generate_files($preference_id, $full_book = FALSE)
         del_book_pdf($preference_data->id);
     /* check if book already generated */
     //var_dump(file_exists($dir_path . "book_" . $preference_data->id . ".pdf"));die;
-    if (file_exists($dir_path . "book_" . $preference_data->id . ".pdf"))
+    if (file_exists($dir_path . "book_" . $preference_data->directory_name . ".pdf"))
     {
         /* download PDF file */
         ob_clean();
@@ -54,14 +54,14 @@ function _latex_generate_files($preference_id, $full_book = FALSE)
         header("Content-Description: File Transfer");
         header('Content-Type: application/pdf');
         header('Content-disposition: attachment; filename="' . $preference_data->book . '_' . $preference_data->author . '.pdf"');
-        header('Content-Length: ' . filesize($dir_path . "book_" . $preference_data->id . ".pdf"));
+        header('Content-Length: ' . filesize($dir_path . "book_" . $preference_data->directory_name . ".pdf"));
         //header("Content-Transfer-Encoding: binary");
         //header('Expires: 0');
         //header('Pragma: no-cache');
         //ob_end_flush();
         //ob_clean();
         //flush();
-        readfile($dir_path . "book_" . $preference_data->id . ".pdf");
+        readfile($dir_path . "book_" . $preference_data->directory_name . ".pdf");
         return;
     } //file_exists($dir_path . "book_" . $preference_data->id . ".pdf")
     $proposal_q = db_query("SELECT * FROM {textbook_companion_proposal} WHERE id = :id", array(
