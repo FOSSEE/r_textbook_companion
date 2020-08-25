@@ -130,7 +130,7 @@ function generate_pdf()
     else {
         $UniqueString = $DBString;
     }
-    $codeContents        = "https://r.fossee.in/certificates/verify/" . $UniqueString;
+    $codeContents        = "https://r.fossee.in/textbook-companion/certificates/verify/" . $UniqueString;
     $fileName            = 'generated_qrcode.png';
     $pngAbsoluteFilePath = $tempDir . $fileName;
     $urlRelativeFilePath = $path . "/pdf/temp_prcode/" . $fileName;
