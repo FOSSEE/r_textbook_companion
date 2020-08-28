@@ -913,12 +913,35 @@ function proposal_edit_form($form, &$form_state)
         '#required' => TRUE,
         '#default_value' => $proposal_data->course
     );
+    if(in_array($proposal_data->branch, _list_of_departments()))
+    {
+        $branch = $proposal_data->branch;
+    }
+    else{
+        $branch ='Others';
+    }
     $form['branch'] = array(
         '#type' => 'select',
         '#title' => t('Department/Branch'),
         '#options' => _list_of_departments(),
         '#required' => TRUE,
-        '#default_value' => $proposal_data->branch
+        '#default_value' => $branch
+    );
+    $form['other_branch'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Enter your Department/Branch name'),
+        '#size' => 50,
+        '#attributes' => array(
+            'placeholder' => t('Enter your Department/Branch name')
+        ),
+        '#default_value' => $proposal_data->branch,
+        '#states' => array(
+            'visible' => array(
+                ':input[name="branch"]' => array(
+                    'value' => 'Others'
+                )
+            )
+        )
     );
     $form['university'] = array(
         '#type' => 'textfield',
@@ -1224,6 +1247,16 @@ function proposal_edit_form_validate($form, &$form_state)
             form_set_error('older', t('Please provide valid version'));
         }
     }
+    if($form_state['values']['branch'] == 'Others') {
+        if (strlen($form_state['values']['other_branch'])<10)
+        {
+            form_set_error('other_branch',t('The minimum charater limit is 10'));
+        }
+        else if (strlen($form_state['values']['other_branch'])>100) 
+        {
+            form_set_error('other_branch',t('The maximum character limit is 100'));
+        }
+    }
    /* if ($form_state['values']['subcategory'])
     {
         $subcategory = implode("| ", $_POST['subcategory']);
@@ -1243,6 +1276,9 @@ function proposal_edit_form_submit($form, &$form_state)
     if ($form_state['values']['country'] == 'other') {
         $form_state['values']['country'] = $form_state['values']['other_country'];
         $form_state['values']['all_state'] = $form_state['values']['other_state'];
+    }
+    if($form_state['values']['branch'] == 'Others') {
+        $form_state['values']['branch'] =$form_state['values']['other_branch'];
     }
     $query = db_update('textbook_companion_proposal');
     $query->fields(array(
