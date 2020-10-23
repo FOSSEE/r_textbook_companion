@@ -1390,7 +1390,7 @@ function book_proposal_form($form, &$form_state)
 		'#states' => array(
 			'visible' => array(
 				':input[name="version"]' => array(
-					'value' => 'Other version'
+					'value' => 'Others'
 				)
 			)
 		)
