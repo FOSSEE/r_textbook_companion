@@ -3702,7 +3702,7 @@ function _list_of_software_version()
 	$software_version = array();
 	$query = db_select('r_software_version');
 	$query->fields('r_software_version');
-	$query->orderBy('r_version', 'ASC');
+	//$query->orderBy('r_version', 'ASC');
 	$software_version_list = $query->execute();
 	while ($software_version_list_data = $software_version_list->fetchObject())
 	{
@@ -3809,7 +3809,7 @@ function _dir_name($book, $author, $pref_id)
 		$book_title = ucname($book);
 		$author = ucname($author);
 		$dir_name = $book_title . " " . "by" . " " . $author;
-		$directory_name = str_replace("__", "_", str_replace(" ", "_", $dir_name));
+		$directory_name = str_replace("__", "_", preg_replace('/[^a-zA-Z0-9-_]/', "_", $dir_name));
 		$query = db_select('textbook_companion_preference');
 		$query->fields('textbook_companion_preference');
 		$query->condition('directory_name', $directory_name);
@@ -3827,7 +3827,7 @@ function _dir_name($book, $author, $pref_id)
 		$book_title = ucname($book);
 		$author = ucname($author);
 		$dir_name = $book_title . " " . "by" . " " . $author;
-		$directory_name = str_replace("__", "_", str_replace(" ", "_", $dir_name));
+		$directory_name = str_replace("__", "_", preg_replace('/[^a-zA-Z0-9-_]/', "_", $dir_name));
 		$query = db_select('textbook_companion_preference');
 		$query->fields('textbook_companion_preference');
 		$query->condition('directory_name', $directory_name);
