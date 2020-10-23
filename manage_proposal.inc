@@ -1324,7 +1324,8 @@ function proposal_edit_form_submit($form, &$form_state)
         ));
         $query->condition('id', $preference1_id);
         $num_updated = $query->execute();
-    }
+    }    
+    CreateReadmeFileTextbookCompanion($proposal_id);
     drupal_set_message(t('Proposal Updated'), 'status');
 }
 /*function default_value_for_selections($id)
@@ -1787,17 +1788,20 @@ function RenameDir($preference_id, $dir_name)
         ':preference_id' => $preference_id
     ));
     $result = $query->fetchObject();
+    //var_dump($result->id);die;
     if ($result != NULL) {
         $files = scandir(textbook_companion_path());
-        $files_id_dir = textbook_companion_path() . $result->id;
-        $file_dir = textbook_companion_path() . $result->directory_name;
-        if (is_dir($file_dir)) {
-            $new_directory_name = rename(textbook_companion_path() . $result->directory_name, textbook_companion_path() . $dir_name);
-            CreateReadmeFileTextbookCompanion($result->proposal_id);
+        //$files_id_dir = textbook_companion_path() . $result->id;
+        $old_file_dir = textbook_companion_path() . $result->directory_name;
+        $new_file_dir = textbook_companion_path() . $dir_name;
+        //var_dump('Old dir:' . $old_file_dir . ' New dir' . $new_file_dir);die;
+        if (is_dir($old_file_dir)) {
+            $new_directory_name = rename($old_file_dir, $new_file_dir);
+            //var_dump($new_directory_name);die;
             return $new_directory_name;
         } else if (is_dir($files_id_dir)) {
-            $new_directory_name = rename(textbook_companion_path() . $result->id, textbook_companion_path() . $dir_name);
-            CreateReadmeFileTextbookCompanion($result->proposal_id);
+            $new_directory_name = rename($files_id_dir, textbook_companion_path() . $dir_name);
+            //CreateReadmeFileTextbookCompanion($result->proposal_id);
             return $new_directory_name;
         } else {
             drupal_set_message('Can not rename the directory. If you are editing proposal before approving the proposal directory is not present because the code has been not uploaded yet. For more information please contact to administrator');
