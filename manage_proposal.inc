@@ -1821,7 +1821,7 @@ function RenameDir($preference_id, $dir_name)
     );
     //$maincategory = array();
     $query = db_select('list_of_category');
-    $query->fields(' list_of_category');
+    $query->fields('list_of_category');
     $query->condition('category_id', $id);
     $maincategory_list = $query->execute();
     while ($maincategory_list_data = $maincategory_list->fetchObject())
