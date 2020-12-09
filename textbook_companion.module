@@ -3774,7 +3774,7 @@ function _tbc_list_of_main_categories()
     );
 	//$maincategory = array();
 	$query = db_select('list_of_category');
-	$query->fields(' list_of_category');
+	$query->fields('list_of_category');
 	$query->orderBy('category_id', 'ASC');
 	$maincategory_list = $query->execute();
 	while ($maincategory_list_data = $maincategory_list->fetchObject())
