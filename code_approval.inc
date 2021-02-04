@@ -1706,8 +1706,8 @@ function codable_examples_approval_form($form, &$form_state)
         );
         $form['message'] = array(
             '#type' => 'textarea',
-            '#size' => 2500,
-            '#maxlength' => 2500,
+            '#size' => 5000,
+            '#maxlength' => 5000,
             '#title' => t('Reason for dis-approval')
         );
         $form['proposal_id'] = array(
