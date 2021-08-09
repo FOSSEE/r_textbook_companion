@@ -561,10 +561,15 @@ function proposal_status_form($from, $form_state)
         '#markup' => $proposal_data->pincode,
         '#title' => t('Pincode')
     );
-    $form['state'] = array(
+    $form['all_state'] = array(
         '#type' => 'item',
         '#markup' => $proposal_data->state,
         '#title' => t('State')
+    );
+    $form['country'] = array(
+        '#type' => 'item',
+        '#markup' => $proposal_data->country,
+        '#title' => t('Country')
     );
     $form['faculty'] = array(
         '#type' => 'hidden',
