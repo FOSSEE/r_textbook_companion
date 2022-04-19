@@ -179,7 +179,7 @@ function textbook_companion_menu()
 			'approve code'
 		),
 		'type' => MENU_DEFAULT_LOCAL_TASK,
-		'weight' => 1,
+		'weight' => 2,
 		'file' => 'code_approval.inc'
 	);
 	$items['textbook-companion/code-approval/codable-examples'] = array(
@@ -190,7 +190,7 @@ function textbook_companion_menu()
 			'approve code'
 		),
 		'type' => MENU_LOCAL_TASK,
-		'weight' => 2,
+		'weight' => 1,
 		'file' => 'code_approval.inc'
 	);
 	$items['textbook-companion/code-approval/approve-codable-examples'] = array(

@@ -1455,7 +1455,6 @@ function proposal_edit_form_submit($form, &$form_state)
 function category_edit_form_submit($form, &$form_state)
 {
     /* get current proposal 
-
     $preference_id = (int) arg(4);
     /*$preference_q = db_query("SELECT * FROM {textbook_companion_preference} WHERE id = %d", $preference_id);
     $preference_data = db_fetch_object($preference_q);
