@@ -2144,7 +2144,7 @@ Publisher and Place: ' . $approved_preference_data->publisher . '
 Edition: ' . $approved_preference_data->edition . '
 Year of publication: ' . $approved_preference_data->year . '
 
-You shall be notified after the code is reviewed.
+You shall be notified after the code is reviewed. It may take up to 59 working days.
 
 Best Wishes,
 
