@@ -1529,6 +1529,12 @@ function book_proposal_form($form, &$form_state)
 		'#default_value' => 0,
 		'#required' => TRUE
 	);
+	$form['abstract_sample_file'] = array(
+        '#type' => 'item',
+        '#title' => t('Ideal Sample Source Files Submission'),
+		'#markup' => t('Kindly refer to the following link to know the ideal sample code files submission:') . t('<a href= "https://static.fossee.in/r/Sample_R_Codes/TBC_Sample_Code/Sample_R_Codes.zip" target="_blank"> Click Here</a>')
+        /*'#markup' => l('Click Here ', 'https://r.fossee.in/case-study-project/download/proposal-abstract-files/4')*/
+    );
 	$form['samplefile'] = array(
 		'#type' => 'fieldset',
 		'#title' => t('Sample Source Files <span style="color:red;">*</span>'),
