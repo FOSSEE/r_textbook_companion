@@ -123,13 +123,19 @@ function _proposal_all()
         else{
         $proposed_completion_date = "-----";
         }
+        $completion_date = ' ';
+        if($proposal_data->completion_date == 0){
+            $completion_date = "-----";
+        }
+        else{
+        $completion_date = date('d-m-Y', $proposal_data->completion_date);
+        }
         $proposal_rows[] = array(
             date('d-m-Y', $proposal_data->creation_date),
             "{$preference_data->book} <br> 
 <em>by {$preference_data->author}</em>",
             l($proposal_data->full_name, 'user/' . $proposal_data->uid),
-            date('d-m-Y', $proposal_data->completion_date),
-            $proposed_completion_date,
+            $completion_date,
             $proposal_status,
             t($code_submission_status),
             l('Status', 'textbook-companion/manage-proposal/status/' . $proposal_data->id) . ' | ' . l('Edit', 'textbook-companion/manage-proposal/edit/' . $proposal_data->id) . _tbc_ext($proposal_status, $preference_data->id)
@@ -144,8 +150,7 @@ function _proposal_all()
         'Date of Submission',
         'Title of the Book',
         'Contributor Name',
-        'Actual Date of Completion',
-        'Proposed Date of Completion',
+        'Date of Completion',
         'Status',
         'Is all code submitted',
         'Action'
@@ -576,10 +581,29 @@ function proposal_status_form($from, $form_state)
         '#markup' => $proposal_data->reviewer,
         '#title' => t('Reviewer')
     );
+    if($proposal_data->completion_date == 0){
+        $actual_completion_date = "-----";
+    }
+    else{
+        $actual_completion_date = date('d-m-Y', $proposal_data->completion_date);
+    }
     $form['completion_date'] = array(
         '#type' => 'item',
-        '#markup' => date('d-m-Y', $proposal_data->completion_date),
-        '#title' => t('Expected Date of Completion')
+        '#markup' => $actual_completion_date,
+        '#title' => t('Date of Completion')
+    );
+    if($proposal_data->proposed_completion_date != 0){
+    $proposed_completion_date = date('d-m-Y', $proposal_data->proposed_completion_date);
+        }
+        else{
+        $proposed_completion_date = "-----";
+        }
+        
+     $form['proposed_completion_date'] = array(
+        '#type' => 'item',
+        '#markup' => $proposed_completion_date,
+        
+        '#title' => t('Proposed Date of Completion')
     );
     $form['operating_system'] = array(
         '#type' => 'item',
