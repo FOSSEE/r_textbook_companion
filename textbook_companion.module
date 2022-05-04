@@ -1720,7 +1720,9 @@ function book_proposal_form_submit($form, &$form_state, $directory_name = NULL)
 
 		}
 		$form_state['values']['reason'] = $my_reason;
-	} //isset($_POST['reason'])
+	}
+	$actual_completion_date = 0;
+	//isset($_POST['reason'])
 	$query = "INSERT INTO {textbook_companion_proposal}
     (uid, approver_uid, name_title, full_name, mobile, how_project, course, branch, university,city,pincode,state,country, faculty, reviewer,reference, completion_date, creation_date, approval_date, proposal_status, r_version, operating_system, teacher_email,reason,samplefilepath,proposal_type,proposed_completion_date, book_download_link) VALUES (:uid, :approver_uid, :name_title, :full_name, :mobile, :how_project, :course, :branch, :university, :city,:pincode,:state,:country, :faculty, :reviewer,:reference, :completion_date,
  :creation_date, :approval_date, :proposal_status, :r_version, :operating_system,
@@ -1742,7 +1744,7 @@ function book_proposal_form_submit($form, &$form_state, $directory_name = NULL)
 		":faculty" => ucwords(strtolower($form_state['values']['faculty'])),
 		":reviewer" => $form_state['values']['reviewer'],
 		":reference" => trim($form_state['values']['reference']),
-		":completion_date" => $completion_date_timestamp,
+		":completion_date" => $actual_completion_date,
 		":creation_date" => time(),
 		":approval_date" => 0,
 		":proposal_status" => 0,
@@ -1758,6 +1760,7 @@ function book_proposal_form_submit($form, &$form_state, $directory_name = NULL)
 	$result = db_query($query, $args, array(
 		'return' => Database::RETURN_INSERT_ID
 	));
+	//var_dump($args);die;
 	$dest_path = $result . '/';
 	if (!is_dir($root_path . $dest_path))
 		mkdir($root_path . $dest_path);
