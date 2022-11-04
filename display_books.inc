@@ -293,7 +293,7 @@ function _list_of_all_completed_books($category_default_value = NULL, $subcatego
     $result = db_query("SELECT COUNT( pe.book ) AS book_count FROM {textbook_companion_preference} pe LEFT JOIN textbook_companion_proposal po ON pe.proposal_id = po.id WHERE po.proposal_status =3 AND pe.approval_status =1");
     $row = $result->fetchObject();
     $book_count = $row->book_count;
-    $i = 1;
+    $i = $result->rowCount();
     /* get preference */
     if ($category_default_value <= 0 && $subcategory_default_value == NULL)
     {
@@ -345,7 +345,7 @@ function _list_of_all_completed_books($category_default_value = NULL, $subcatego
             $preference_data->university,
             date("Y", $preference_data->completion_date)
         );
-        $i++;
+        $i--;
     } //$proposal_data = $proposal_q->fetchObject()
     /* check if there are any pending proposals */
     if (!$proposal_rows)
