@@ -17,7 +17,7 @@ ORDER BY po.creation_date DESC
   ";
     $result = db_query($query);
     $proposal_rows = array();
-    $i = 1;
+    $i = $result->rowCount();
     $category_data = _tbc_list_of_category($preference_data->category);
     $output = "<hr>";
     while ($row = $result->fetchObject())
@@ -37,7 +37,7 @@ ORDER BY po.creation_date DESC
             $row->book . "<br><br>[ Author: " . $row->author . ", Publisher: " . $row->publisher . ", Year: " . $row->year . ", Edition: " . $row->edition . ", ISBN: " . $row->isbn . " ]",
             $category
         );
-        $i++;
+        $i--;
     } //$row = $result->fetchObject()
     $preference_header = array(
         'No',
@@ -293,7 +293,7 @@ function _list_of_all_completed_books($category_default_value = NULL, $subcatego
     $result = db_query("SELECT COUNT( pe.book ) AS book_count FROM {textbook_companion_preference} pe LEFT JOIN textbook_companion_proposal po ON pe.proposal_id = po.id WHERE po.proposal_status =3 AND pe.approval_status =1");
     $row = $result->fetchObject();
     $book_count = $row->book_count;
-    $i = 1;
+    $i = $book_count;
     /* get preference */
     if ($category_default_value <= 0 && $subcategory_default_value == NULL)
     {
@@ -345,7 +345,7 @@ function _list_of_all_completed_books($category_default_value = NULL, $subcatego
             $preference_data->university,
             date("Y", $preference_data->completion_date)
         );
-        $i++;
+        $i--;
     } //$proposal_data = $proposal_q->fetchObject()
     /* check if there are any pending proposals */
     if (!$proposal_rows)
