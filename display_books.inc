@@ -17,7 +17,7 @@ ORDER BY po.creation_date DESC
   ";
     $result = db_query($query);
     $proposal_rows = array();
-    $i = 1;
+    $i = $result->rowCount();
     $category_data = _tbc_list_of_category($preference_data->category);
     $output = "<hr>";
     while ($row = $result->fetchObject())
@@ -37,7 +37,7 @@ ORDER BY po.creation_date DESC
             $row->book . "<br><br>[ Author: " . $row->author . ", Publisher: " . $row->publisher . ", Year: " . $row->year . ", Edition: " . $row->edition . ", ISBN: " . $row->isbn . " ]",
             $category
         );
-        $i++;
+        $i--;
     } //$row = $result->fetchObject()
     $preference_header = array(
         'No',
