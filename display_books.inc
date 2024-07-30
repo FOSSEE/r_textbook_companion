@@ -169,7 +169,7 @@ function tbc_books_display_new_category_form($form, &$form_state)
       LEFT JOIN textbook_companion_book_main_subcategories tcbm ON pe.id = tcbm.pref_id
       LEFT JOIN list_of_category loc ON tcbm.main_category = loc.category_id
       WHERE po.proposal_status = 3 AND pe.approval_status = 1
-      AND pe.id = tcbm.pref_id ORDER BY pe.book");
+      AND pe.id = tcbm.pref_id ORDER BY po.completion_date");
     $count_row = $countresult->fetchObject();
     $book_count = $count_row->c;
     $form['completed_book_count'] = array(
@@ -305,7 +305,7 @@ function _list_of_all_completed_books($category_default_value = NULL, $subcatego
       LEFT JOIN textbook_companion_book_main_subcategories tcbm ON pe.id = tcbm.pref_id
       LEFT JOIN list_of_category loc ON tcbm.main_category = loc.category_id
       WHERE po.proposal_status = 3 AND pe.approval_status = 1 
-      AND pe.id = tcbm.pref_id GROUP BY pe.id having c >= 1 ORDER BY pe.book");
+      AND pe.id = tcbm.pref_id GROUP BY pe.id having c >= 1 ORDER BY po.completion_date");
     } //$category_default_value <= 0 && $subcategory_default_value == NULL
     elseif ($category_default_value > 0 && $subcategory_default_value == NULL)
     {
@@ -317,7 +317,7 @@ function _list_of_all_completed_books($category_default_value = NULL, $subcatego
       LEFT JOIN textbook_companion_book_main_subcategories tcbm ON pe.id = tcbm.pref_id
       LEFT JOIN list_of_category loc ON tcbm.main_category = loc.category_id
       WHERE po.proposal_status = 3 AND pe.approval_status = 1 
-      AND pe.id = tcbm.pref_id AND loc.category_id= :category_id GROUP BY pe.id having c >= 1 ORDER BY pe.book", array(
+      AND pe.id = tcbm.pref_id AND loc.category_id= :category_id GROUP BY pe.id having c >= 1 ORDER BY po.completion_date", array(
             "category_id" => $category_default_value
         ));
     } //$category_default_value > 0 && $subcategory_default_value == NULL
@@ -331,7 +331,7 @@ function _list_of_all_completed_books($category_default_value = NULL, $subcatego
       LEFT JOIN textbook_companion_book_main_subcategories tcbm ON pe.id = tcbm.pref_id
       LEFT JOIN list_of_category loc ON tcbm.main_category = loc.category_id
       WHERE po.proposal_status = 3 AND pe.approval_status = 1 
-      AND pe.id = tcbm.pref_id AND loc.category_id= :category_id AND tcbm.sub_category = :sub_category", array(
+      AND pe.id = tcbm.pref_id AND loc.category_id= :category_id AND tcbm.sub_category = :sub_category ORDER BY po.completion_date", array(
             "category_id" => $category_default_value,
             ":sub_category" => $subcategory_default_value
         ));
