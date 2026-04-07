@@ -1,0 +1,17 @@
+textbook_companion._proposal_pending_tab:
+  route_name: textbook_companion._proposal_pending
+  title: 'Pending Proposals'
+  base_route: textbook_companion._proposal_pending
+  weight: 1
+
+textbook_companion._proposal_all_tab:
+  route_name: textbook_companion._proposal_all
+  title: 'All Proposals'
+  base_route: textbook_companion._proposal_pending
+  weight: 2
+
+textbook_companion._failed_all_tab:
+  route_name: textbook_companion._failed_all
+  title: 'Failed Proposals'
+  base_route: textbook_companion._proposal_pending
+  weight: 3
