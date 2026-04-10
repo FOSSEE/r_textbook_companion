@@ -7,6 +7,7 @@
 
 namespace Drupal\textbook_companion\Form;
 
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
@@ -435,6 +436,7 @@ class UploadExamplesAdminEditForm extends FormBase {
         }
       }
     }
+    $file_caption = substr((string) $form_state->getValue('example_caption'), 0, 100);
     foreach ($_FILES['files']['name'] as $file_form_name => $file_name) {
       if ($file_name) {
         /* checking file type */
@@ -466,6 +468,7 @@ class UploadExamplesAdminEditForm extends FormBase {
                   'filemime' => 'application/R',
                   'filesize' => $_FILES['files']['size'][$file_form_name],
                   'filetype' => $file_type,
+                  'caption' => $file_caption,
                   'timestamp' => time(),
                 ])
                 ->execute();
@@ -492,6 +495,7 @@ class UploadExamplesAdminEditForm extends FormBase {
                   'filemime' => 'application/csv',
                   'filesize' => $_FILES['files']['size'][$file_form_name],
                   'filetype' => $file_type,
+                  'caption' => $file_caption,
                   'timestamp' => time(),
                 ])
                 ->execute();
@@ -518,6 +522,12 @@ class UploadExamplesAdminEditForm extends FormBase {
     if (empty($result['result'])) {
       $this->messenger()->addError($this->t('Error sending email message.'));
     }
+    Cache::invalidateTags([
+      'textbook_companion:example_list',
+      "textbook_companion:chapter:{$chapter_data->id}",
+      "textbook_companion:preference:{$preference_data->id}",
+      "textbook_companion:proposal:{$proposal_data->id}",
+    ]);
     $this->messenger()->addStatus($this->t('Example successfully udpated.'));
     $form_state->setRedirect('textbook_companion.bulk_approval_form');
   }

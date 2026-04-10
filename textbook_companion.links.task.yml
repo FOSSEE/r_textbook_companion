@@ -15,3 +15,21 @@ textbook_companion._failed_all_tab:
   title: 'Failed Proposals'
   base_route: textbook_companion._proposal_pending
   weight: 3
+
+textbook_companion.code_approval_tab:
+  route_name: textbook_companion.code_approval
+  title: 'Code Approval'
+  base_route: textbook_companion.code_approval
+  weight: 1
+
+textbook_companion.codable_example_approval_tab:
+  route_name: textbook_companion.codable_example_approval
+  title: 'Codable Examples'
+  base_route: textbook_companion.code_approval
+  weight: 2
+
+textbook_companion.bulk_approval_tab:
+  route_name: textbook_companion.bulk_approval_form
+  title: 'Bulk Manage'
+  base_route: textbook_companion.code_approval
+  weight: 3

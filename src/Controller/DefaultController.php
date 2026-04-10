@@ -8,10 +8,10 @@ namespace Drupal\textbook_companion\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
-use Drupal\Component\Render\Markup;
 use Drupal\Component\Render\MarkupInterface;
 use Drupal\Core\Cache\Cache;
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Render\Markup;
 use Drupal\textbook_companion\Form\VerifyCertificatesForm;
 use Drupal\textbook_companion\Helper\CertificateHelper;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -1121,7 +1121,6 @@ public function _proposal_pending() {
       }
       /* example files */
       $example_files = '';
-      /*$example_files_q = db_query("SELECT * FROM {textbook_companion_example_files} WHERE example_id = %d ORDER BY filetype", $example_data->id);*/
       $query = \Drupal::database()->select('textbook_companion_example_files');
       $query->fields('textbook_companion_example_files');
       $query->condition('example_id', $example_data->id);

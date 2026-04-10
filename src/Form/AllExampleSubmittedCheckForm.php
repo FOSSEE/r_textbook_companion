@@ -138,7 +138,8 @@ class AllExampleSubmittedCheckForm extends FormBase {
       $proposal_directory = $preference_data->directory_name;
       $dest_path = $proposal_directory . '/codable_example_file';
       $file_system = \Drupal::service('file_system');
-      if (!$file_system->prepareDirectory($root_path . $dest_path, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS)) {
+      $destination_directory = $root_path . $dest_path;
+      if (!$file_system->prepareDirectory($destination_directory, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS)) {
         $this->messenger()->addError($this->t('You cannot upload your code. Error in creating directory.'));
         return;
       }
@@ -149,6 +150,8 @@ class AllExampleSubmittedCheckForm extends FormBase {
           continue;
         }
         $original_name = $file->getClientOriginalName();
+        $file_mime = $file->getMimeType();
+        $file_size = (int) $file->getSize();
         $destination = $root_path . $dest_path . '/' . $original_name;
         if (file_exists($destination)) {
           $file->move($root_path . $dest_path, $original_name);
@@ -168,8 +171,8 @@ class AllExampleSubmittedCheckForm extends FormBase {
           'proposal_id' => $preference_data->proposal_id,
           'filename' => $original_name,
           'filepath' => $filepath . $original_name,
-          'filemime' => $file->getMimeType(),
-          'filesize' => $file->getSize(),
+          'filemime' => $file_mime,
+          'filesize' => $file_size,
           'filetype' => 'C',
           'timestamp' => \Drupal::time()->getRequestTime(),
         ];
@@ -202,11 +205,10 @@ class AllExampleSubmittedCheckForm extends FormBase {
         ->execute();
     }
 
-    $proposal_id = $connection->select('textbook_companion_preference')
-      ->addField('textbook_companion_preference', 'proposal_id')
-      ->condition('id', $form_state->getValue('hidden_preference_id'))
-      ->execute()
-      ->fetchField();
+    $proposal_id_query = $connection->select('textbook_companion_preference');
+    $proposal_id_query->addField('textbook_companion_preference', 'proposal_id');
+    $proposal_id_query->condition('id', $form_state->getValue('hidden_preference_id'));
+    $proposal_id = $proposal_id_query->execute()->fetchField();
     $account = User::load($uid);
     $email_to = $account?->getEmail() ?? '';
     $config = \Drupal::config('textbook_companion.settings');

@@ -57,6 +57,8 @@ textbook_companion._proposal_all:
     _controller: '\Drupal\textbook_companion\Controller\DefaultController::_proposal_all'
   requirements:
     _permission: 'approve book proposal'
+  options:
+    no_cache: TRUE
 textbook_companion._failed_all:
   path: /textbook-companion/manage-proposal/failed
   defaults:
@@ -64,6 +66,8 @@ textbook_companion._failed_all:
     _controller: '\Drupal\textbook_companion\Controller\DefaultController::_failed_all'
   requirements:
     _permission: 'approve book proposal'
+  options:
+    no_cache: TRUE
 textbook_companion._failed_all_confirm:
   path: /textbook-companion/manage-proposal/failed/{preference_id}/{confirm}
   defaults:

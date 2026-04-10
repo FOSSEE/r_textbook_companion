@@ -294,8 +294,9 @@ class UploadExamplesForm extends FormBase {
     $proposal_directory = $preference_data->directory_name;
     $dest_path = $proposal_directory . '/';
     $file_system = \Drupal::service('file_system');
-    if (!is_dir($root_path . $dest_path)) {
-      if (!$file_system->prepareDirectory($root_path . $dest_path, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS)) {
+    $destination_directory = $root_path . $dest_path;
+    if (!is_dir($destination_directory)) {
+      if (!$file_system->prepareDirectory($destination_directory, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS)) {
         $this->messenger()->addError($this->t('You cannot upload your code. Error in creating directory.'));
         return;
       }
@@ -348,12 +349,20 @@ class UploadExamplesForm extends FormBase {
       }
     }
     $dest_path .= 'CH' . $form_state->getValue('number') . '/';
-    if (!is_dir($root_path . $dest_path)) {
-      $file_system->prepareDirectory($root_path . $dest_path, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
+    $destination_directory = $root_path . $dest_path;
+    if (!is_dir($destination_directory)) {
+      if (!$file_system->prepareDirectory($destination_directory, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS)) {
+        $this->messenger()->addError($this->t('You cannot upload your code. Error in creating directory.'));
+        return;
+      }
     }
     $dest_path .= 'EX' . $form_state->getValue('example_number') . '/';
-    if (!is_dir($root_path . $dest_path)) {
-      $file_system->prepareDirectory($root_path . $dest_path, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
+    $destination_directory = $root_path . $dest_path;
+    if (!is_dir($destination_directory)) {
+      if (!$file_system->prepareDirectory($destination_directory, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS)) {
+        $this->messenger()->addError($this->t('You cannot upload your code. Error in creating directory.'));
+        return;
+      }
     }
     $filepath = 'CH' . $form_state->getValue('number') . '/' . 'EX' . $form_state->getValue('example_number') . '/';
     $example_id = $connection->insert('textbook_companion_example')
@@ -368,6 +377,7 @@ class UploadExamplesForm extends FormBase {
       ->execute();
 
     $uploaded_files = \Drupal::request()->files->get('files', []);
+    $file_caption = substr((string) $form_state->getValue('example_caption'), 0, 100);
     foreach ($uploaded_files as $file_form_name => $file) {
       if (!$file instanceof UploadedFile || $file->getClientOriginalName() === '') {
         continue;
@@ -384,6 +394,8 @@ class UploadExamplesForm extends FormBase {
         continue;
       }
       $original_name = $file->getClientOriginalName();
+      $file_mime = $file->getMimeType() ?: $default_mime;
+      $file_size = (int) $file->getSize();
       $destination = $root_path . $dest_path . $original_name;
       if (file_exists($destination)) {
         $this->messenger()->addError($this->t('Error uploading file. File @filename already exists.', ['@filename' => $original_name]));
@@ -395,9 +407,10 @@ class UploadExamplesForm extends FormBase {
           'example_id' => $example_id,
           'filename' => $original_name,
           'filepath' => $filepath . $original_name,
-          'filemime' => $file->getMimeType() ?: $default_mime,
-          'filesize' => $file->getSize(),
+          'filemime' => $file_mime,
+          'filesize' => $file_size,
           'filetype' => $file_type,
+          'caption' => $file_caption,
           'timestamp' => \Drupal::time()->getRequestTime(),
         ])
         ->execute();

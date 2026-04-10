@@ -926,14 +926,14 @@ class BulkApprovalForm extends FormBase {
 
     $query = \Drupal::database()->select('textbook_companion_preference', 'pp');
     $query->join('textbook_companion_proposal', 'p', 'pp.proposal_id = p.id');
-    $query->join('users', 'u', 'p.uid = u.uid');
+    $query->join('users_field_data', 'u', 'p.uid = u.uid');
     $query->fields('u', ['name']);
     $query->fields('pp', ['id', 'book', 'author']);
     $or = $query->orConditionGroup()
-      ->condition('approval_status', 1)
-      ->condition('approval_status', 3);
+      ->condition('pp.approval_status', 1)
+      ->condition('pp.approval_status', 3);
     $query->condition($or);
-    $query->orderBy('book', 'ASC');
+    $query->orderBy('pp.book', 'ASC');
 
     $book_titles_q = $query->execute();
     while ($book_titles_data = $book_titles_q->fetchObject()) {

@@ -83,7 +83,7 @@ class ProposalEditForm extends FormBase {
       '#type' => 'textfield',
       '#title' => t('Email'),
       '#size' => 30,
-      '#value' => $user_data->mail,
+      '#value' => $user_data?->getEmail() ?? '',
       '#disabled' => TRUE,
     ];
     $form['mobile'] = [

@@ -7,6 +7,7 @@
 
 namespace Drupal\textbook_companion\Form;
 
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
@@ -25,6 +26,7 @@ class UploadExamplesEditForm extends FormBase {
 
   public function buildForm(array $form, FormStateInterface $form_state, int $example_id = NULL) {
     $user = \Drupal::currentUser();
+    $user_id = (int) $user->id();
     $connection = \Drupal::database();
     $example_id = $example_id ? (int) $example_id : 0;
     if ($example_id <= 0) {
@@ -133,7 +135,7 @@ class UploadExamplesEditForm extends FormBase {
       $form_state->setRedirect('<front>');
       return [];
     }
-    if ($proposal_data->uid != $user->uid) {
+    if ((int) $proposal_data->uid !== $user_id) {
       $this->messenger()->addError($this->t('You do not have permissions to edit this example.'));
       $form_state->setRedirect('<front>');
       return [];
@@ -475,6 +477,7 @@ class UploadExamplesEditForm extends FormBase {
         }
       }
     }
+    $file_caption = substr((string) $form_state->getValue('example_caption'), 0, 100);
     foreach ($_FILES['files']['name'] as $file_form_name => $file_name) {
       if ($file_name) {
         /* checking file type */
@@ -506,6 +509,7 @@ class UploadExamplesEditForm extends FormBase {
                   'filemime' => 'application/R',
                   'filesize' => $_FILES['files']['size'][$file_form_name],
                   'filetype' => $file_type,
+                  'caption' => $file_caption,
                   'timestamp' => time(),
                 ])
                 ->execute();
@@ -532,6 +536,7 @@ class UploadExamplesEditForm extends FormBase {
                   'filemime' => 'application/csv',
                   'filesize' => $_FILES['files']['size'][$file_form_name],
                   'filetype' => $file_type,
+                  'caption' => $file_caption,
                   'timestamp' => time(),
                 ])
                 ->execute();
@@ -569,6 +574,12 @@ class UploadExamplesEditForm extends FormBase {
     if (empty($result['result'])) {
       $this->messenger()->addError($this->t('Error sending email message.'));
     }
+    Cache::invalidateTags([
+      'textbook_companion:example_list',
+      "textbook_companion:chapter:{$chapter_data->id}",
+      "textbook_companion:preference:{$preference_data->id}",
+      "textbook_companion:proposal:{$proposal_data->id}",
+    ]);
     $this->messenger()->addStatus($this->t('Example successfully udpated.'));
     $form_state->setRedirect('textbook_companion.list_chapters');
   }
