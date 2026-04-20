@@ -31,16 +31,10 @@ class TextbookCompanionBookRunForm extends FormBase {
     $category_default_value = 0;
     $subcategory_default_value = 0;
     if ($url_book_pref_id) {
-      $pref = \Drupal::database()->select('textbook_companion_preference', 'p')
-        ->fields('p', ['category', 'sub_category'])
-        ->condition('id', $url_book_pref_id)
-        ->range(0, 1)
-        ->execute()
-        ->fetchObject();
-      if ($pref) {
-        $category_default_value = (int) $pref->category;
-        $subcategory_default_value = (int) $pref->sub_category;
-      }
+      [
+        $category_default_value,
+        $subcategory_default_value,
+      ] = $this->getBookCategoryDefaults($url_book_pref_id);
     }
     if ($url_book_pref_id) {
       $form['category'] = [
@@ -278,6 +272,27 @@ class TextbookCompanionBookRunForm extends FormBase {
     return $form;
   }
 
+  private function getBookCategoryDefaults(int $preference_id): array {
+    $query = \Drupal::database()->select('textbook_companion_preference', 'p');
+    $query->addField('p', 'category', 'preference_category');
+    $query->addExpression('MIN(tcbm.main_category)', 'mapped_category');
+    $query->addExpression('MIN(tcbm.sub_category)', 'mapped_subcategory');
+    $query->leftJoin('textbook_companion_book_main_subcategories', 'tcbm', 'p.id = tcbm.pref_id');
+    $query->condition('p.id', $preference_id);
+    $query->groupBy('p.id');
+    $query->groupBy('p.category');
+    $pref = $query->execute()->fetchObject();
+
+    if (!$pref) {
+      return [0, 0];
+    }
+
+    $category_default_value = (int) ($pref->mapped_category ?? $pref->preference_category ?? 0);
+    $subcategory_default_value = (int) ($pref->mapped_subcategory ?? 0);
+
+    return [$category_default_value, $subcategory_default_value];
+  }
+
   /**
    * {@inheritdoc}
    */
@@ -490,12 +505,12 @@ class TextbookCompanionBookRunForm extends FormBase {
       ":sub_category" => $subcategory_default_value,
       "main_category" => $category_default_value,
     ]);
-    if ($book_titles_q->rowCount() != 0) {
-      while ($book_titles_data = $book_titles_q->fetchObject()) {
-        $book_titles[$book_titles_data->pe_id] = $book_titles_data->book . ' (Written by ' . $book_titles_data->author . ')';
-      }
+    $found_books = FALSE;
+    while ($book_titles_data = $book_titles_q->fetchObject()) {
+      $found_books = TRUE;
+      $book_titles[$book_titles_data->pe_id] = $book_titles_data->book . ' (Written by ' . $book_titles_data->author . ')';
     }
-    else {
+    if (!$found_books) {
       $book_titles[0] = "There are no books availabe in this sub category";
     }
     return $book_titles;

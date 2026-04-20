@@ -357,16 +357,35 @@ function textbook_companion_mail($key, &$message, $params)
 		}
 		return (string) $default;
 	};
-	$get_recipient_name = static function ($proposal_data, $user_data) use ($get_field)
+	$load_proposal_by_uid = static function ($uid)
+	{
+		$uid = (int) $uid;
+		if ($uid <= 0)
+		{
+			return NULL;
+		}
+		$query = \Drupal::database()->select('textbook_companion_proposal');
+		$query->fields('textbook_companion_proposal');
+		$query->condition('uid', $uid);
+		$query->orderBy('id', 'DESC');
+		$query->range(0, 1);
+		return $query->execute()->fetchObject() ?: NULL;
+	};
+	$get_recipient_name = static function ($proposal_data, $user_data) use ($get_field, $load_proposal_by_uid)
 	{
 		$full_name = $get_field($proposal_data, 'full_name');
 		if ($full_name !== '')
 		{
 			return $full_name;
 		}
-		if ($user_data && method_exists($user_data, 'getDisplayName'))
+		if ($user_data && method_exists($user_data, 'id'))
 		{
-			return (string) $user_data->getDisplayName();
+			$proposal_data = $load_proposal_by_uid($user_data->id());
+			$full_name = $get_field($proposal_data, 'full_name');
+			if ($full_name !== '')
+			{
+				return $full_name;
+			}
 		}
 		return 'Contributor';
 	};
@@ -1518,7 +1537,7 @@ function textbook_companion_mail($key, &$message, $params)
 			$message['headers'] = $params['dependency_uploaded']['headers'];
 			$dependency_names = is_array($params['dependency_uploaded']['dependency_names'] ?? NULL) ? $params['dependency_uploaded']['dependency_names'] : array();
 			$dependency_files = $dependency_names ? implode(', ', $dependency_names) : 'N/A';
-			$recipient_name = $user_data && method_exists($user_data, 'getDisplayName') ? (string) $user_data->getDisplayName() : 'Contributor';
+			$recipient_name = $get_recipient_name(NULL, $user_data);
 			$subject = "[{$site_name}] You have uploaded dependency file(s)";
 			$body = "Dear {$recipient_name},\n\n"
 				. "You have uploaded the following dependency files:\n{$dependency_files}\n\n"
@@ -1557,7 +1576,7 @@ function textbook_companion_mail($key, &$message, $params)
 
 			$user_data = \Drupal::entityTypeManager()->getStorage('user')->load($params['feedback_received']['user_id']);
 			$message['headers'] = $params['feedback_received']['headers'];
-			$recipient_name = $user_data && method_exists($user_data, 'getDisplayName') ? (string) $user_data->getDisplayName() : 'Contributor';
+			$recipient_name = $get_recipient_name(NULL, $user_data);
 			$subject = "[{$site_name}][Textbook Companion] We have received your feedback";
 			$body = "Dear {$recipient_name},\n\n"
 				. "We have received your feedback:\n\n"

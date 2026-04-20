@@ -7,9 +7,11 @@
 
 namespace Drupal\textbook_companion\Form;
 
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\textbook_companion\Helper\ProposalHelper;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class BookProposalForm extends FormBase {
 
@@ -675,37 +677,37 @@ class BookProposalForm extends FormBase {
     }
 
     $dest_path = $proposal_id . '/';
-    if (!is_dir($root_path . $dest_path))
-      mkdir($root_path . $dest_path);
+    $destination_directory = $root_path . $dest_path;
+    $file_system = \Drupal::service('file_system');
+    if (!$file_system->prepareDirectory($destination_directory, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS)) {
+      $this->messenger()->addError($this->t('Error preparing upload directory: @path', ['@path' => $dest_path]));
+      return;
+    }
     /* uploading files */
-    foreach ($_FILES['files']['name'] as $file_form_name => $file_name)
-    {
-      if ($file_name)
-      {
-        /* checking file type */
-        $file_type = 'S';
-        if (file_exists($root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
-        {
-          // drupal_set_message($this->t("Error uploading file. File !filename already exists.", array('!filename' => $_FILES['files']['name'][$file_form_name])), 'error');
-          unlink($root_path . $dest_path . $_FILES['files']['name'][$file_form_name]);
-        } //file_exists($root_path . $dest_path . $_FILES['files']['name'][$file_form_name])
-        /* uploading file */
-        if (move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . $_FILES['files']['name'][$file_form_name]))
-        {
-          $query = "UPDATE {textbook_companion_proposal} SET samplefilepath = :samplefilepath WHERE id = :id";
-          $args = array(
-            ":samplefilepath" => $dest_path . $_FILES['files']['name'][$file_form_name],
-            ":id" => $proposal_id
-          );
-          $updateresult = \Drupal::database()->query($query, $args);
-          $this->messenger()->addStatus($file_name . ' uploaded successfully.');
-        } //move_uploaded_file($_FILES['files']['tmp_name'][$file_form_name], $root_path . $dest_path . $_FILES['files']['name'][$file_form_name])
-        else
-        {
-          $this->messenger()->addError('Error uploading file : ' . $dest_path . '/' . $file_name);
-        }
-      } //$file_name
-    } //$_FILES['files']['name'] as $file_form_name => $file_name
+    $uploaded_files = \Drupal::request()->files->get('files', []);
+    foreach ($uploaded_files as $file_form_name => $file) {
+      if (!$file instanceof UploadedFile || $file->getClientOriginalName() === '') {
+        continue;
+      }
+      $file_name = basename((string) $file->getClientOriginalName());
+      if (file_exists($destination_directory . $file_name) && !unlink($destination_directory . $file_name)) {
+        $this->messenger()->addError($this->t('Error replacing existing file: @path', ['@path' => $dest_path . $file_name]));
+        continue;
+      }
+      try {
+        $file->move($destination_directory, $file_name);
+        $query = "UPDATE {textbook_companion_proposal} SET samplefilepath = :samplefilepath WHERE id = :id";
+        $args = array(
+          ":samplefilepath" => $dest_path . $file_name,
+          ":id" => $proposal_id
+        );
+        \Drupal::database()->query($query, $args);
+        $this->messenger()->addStatus($file_name . ' uploaded successfully.');
+      }
+      catch (\Exception $exception) {
+        $this->messenger()->addError($this->t('Error uploading file: @path', ['@path' => $dest_path . $file_name]));
+      }
+    }
     /* inserting first book preference */
     if ($values['book1'])
     {

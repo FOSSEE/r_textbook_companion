@@ -335,7 +335,7 @@ class BulkApprovalForm extends FormBase {
         '@site_name' => $site_name,
       ]);
       $email_body = [
-        $this->t("\n\nDear @user_name,\n\nYour all the uploaded examples for the book have been marked as pending to be reviewed.\nYou will be able to see the examples after they have been approved by one of our reviewers.\n\nTitle of the book : @book\nAuthor name : @author\nISBN No. : @isbn\nPublisher and Place : @publisher\nEdition : @edition\nYear of publication : @year\n\nBest Wishes,\n\n@site_name Team,\nFOSSEE,IIT Bombay", [
+        $this->t("\n\nDear @user_name,\n\nYour all the uploaded examples for the book have been marked as pending to be reviewed.\nYou will be able to see the examples after they have been approved by one of our reviewers.\n\nTitle of the book : @book\nAuthor name : @author\nISBN No. : @isbn\nPublisher and Place : @publisher\nEdition : @edition\nYear of publication : @year\n\nBest Wishes,\n@site_name Team,\nFOSSEE,IIT Bombay", [
           '@site_name' => $site_name,
           '@user_name' => $user_name,
           '@book' => $preference_data->book ?? '',
@@ -779,9 +779,11 @@ class BulkApprovalForm extends FormBase {
       $response->addCommand(new HtmlCommand('#ajax_download_chapter', ''));
       $form['chapter_actions']['#options'] = $this->bulkListChapterActions();
       $response->addCommand(new ReplaceCommand('#ajax_selected_chapter_action', $form['chapter_actions']));
+      $response->addCommand(new HtmlCommand('#ajax_selected_chapter_action', ''));
       $response->addCommand(new HtmlCommand('#ajax_selected_example', ''));
       $form['example_actions']['#options'] = $this->bulkListExampleActions();
       $response->addCommand(new ReplaceCommand('#ajax_selected_example_action', $form['example_actions']));
+      $response->addCommand(new HtmlCommand('#ajax_selected_example_action', ''));
       $response->addCommand(new HtmlCommand('#ajax_download_selected_example', ''));
       $response->addCommand(new HtmlCommand('#ajax_edit_selected_example', ''));
       $form['example_files']['#title'] = '';
@@ -795,14 +797,18 @@ class BulkApprovalForm extends FormBase {
       $response->addCommand(new HtmlCommand('#ajax_selected_book_notes', ''));
       $form['chapter']['#options'] = $this->bulkGetChapterList();
       $response->addCommand(new ReplaceCommand('#ajax_select_chapter_list', $form['chapter']));
+      $response->addCommand(new HtmlCommand('#ajax_select_chapter_list', ''));
       $form['book_actions']['#options'] = $this->bulkListBookActions();
       $response->addCommand(new ReplaceCommand('#ajax_selected_book_action', $form['book_actions']));
+      $response->addCommand(new HtmlCommand('#ajax_selected_book_action', ''));
       $form['chapter_actions']['#options'] = $this->bulkListChapterActions();
       $response->addCommand(new ReplaceCommand('#ajax_selected_chapter_action', $form['chapter_actions']));
+      $response->addCommand(new HtmlCommand('#ajax_selected_chapter_action', ''));
       $response->addCommand(new HtmlCommand('#ajax_download_chapter', ''));
       $response->addCommand(new HtmlCommand('#ajax_selected_example', ''));
       $form['example_actions']['#options'] = $this->bulkListExampleActions();
       $response->addCommand(new ReplaceCommand('#ajax_selected_example_action', $form['example_actions']));
+      $response->addCommand(new HtmlCommand('#ajax_selected_example_action', ''));
       $response->addCommand(new HtmlCommand('#ajax_download_selected_example', ''));
       $response->addCommand(new HtmlCommand('#ajax_edit_selected_example', ''));
       $form['example_files']['#title'] = '';
@@ -827,6 +833,7 @@ class BulkApprovalForm extends FormBase {
       $response->addCommand(new HtmlCommand('#ajax_edit_selected_example', ''));
       $form['example_actions']['#options'] = $this->bulkListExampleActions();
       $response->addCommand(new ReplaceCommand('#ajax_selected_example_action', $form['example_actions']));
+      $response->addCommand(new HtmlCommand('#ajax_selected_example_action', ''));
       $form['example_files']['#title'] = '';
       $form['example_files']['#markup'] = '';
       $response->addCommand(new ReplaceCommand('#ajax_example_files_list', $form['example_files']));
@@ -835,8 +842,10 @@ class BulkApprovalForm extends FormBase {
       $response->addCommand(new HtmlCommand('#ajax_download_chapter', ''));
       $form['chapter_actions']['#options'] = $this->bulkListChapterActions();
       $response->addCommand(new ReplaceCommand('#ajax_selected_chapter_action', $form['chapter_actions']));
+      $response->addCommand(new HtmlCommand('#ajax_selected_chapter_action', ''));
       $form['example']['#options'] = $this->bulkGetExamples();
       $response->addCommand(new ReplaceCommand('#ajax_selected_example', $form['example']));
+      $response->addCommand(new HtmlCommand('#ajax_selected_example', ''));
       $response->addCommand(new HtmlCommand('#ajax_download_selected_example', ''));
       $response->addCommand(new HtmlCommand('#ajax_edit_selected_example', ''));
       $form['example_files']['#title'] = '';
@@ -844,6 +853,7 @@ class BulkApprovalForm extends FormBase {
       $response->addCommand(new ReplaceCommand('#ajax_example_files_list', $form['example_files']));
       $form['example_actions']['#options'] = $this->bulkListExampleActions();
       $response->addCommand(new ReplaceCommand('#ajax_selected_example_action', $form['example_actions']));
+      $response->addCommand(new HtmlCommand('#ajax_selected_example_action', ''));
     }
 
     return $response;
@@ -910,6 +920,7 @@ class BulkApprovalForm extends FormBase {
       $response->addCommand(new ReplaceCommand('#ajax_example_files_list', $form['example_files']));
       $form['example_actions']['#options'] = $this->bulkListExampleActions();
       $response->addCommand(new ReplaceCommand('#ajax_selected_example_action', $form['example_actions']));
+      $response->addCommand(new HtmlCommand('#ajax_selected_example_action', ''));
     }
 
     return $response;

@@ -5,6 +5,8 @@ textbook_companion.tbc_completed_books_display_new_category_all:
     _controller: '\Drupal\textbook_companion\Controller\DefaultController::tbc_completed_books_display_new_category_all'
   requirements:
     _permission: 'display books in progress'
+  options:
+    no_cache: TRUE
 textbook_companion.tbc_books_in_progress_all:
   path: /textbook-companion/books-in-progress
   defaults:
@@ -12,6 +14,8 @@ textbook_companion.tbc_books_in_progress_all:
     _controller: '\Drupal\textbook_companion\Controller\DefaultController::tbc_books_in_progress_all'
   requirements:
     _permission: 'display books in progress'
+  options:
+    no_cache: TRUE
 textbook_companion.book_run_form:
   path: /textbook_run
   defaults:
@@ -124,7 +128,7 @@ textbook_companion.codable_example_approval:
   requirements:
     _permission: 'approve code'
 textbook_companion.codable_examples_approval_form:
-  path: /textbook-companion/code-approval/approve-codable-examples
+  path: /textbook-companion/code-approval/approve-codable-examples/{preference_id}
   defaults:
     _title: 'Approve codable examples'
     _form: \Drupal\textbook_companion\Form\CodableExamplesApprovalForm
