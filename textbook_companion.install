@@ -5,29 +5,28 @@
  */
 function textbook_companion_install()
   {
-    // Create tables.
-    drupal_install_schema('textbook_companion');
-    variable_set('textbook_companion_emails', '');
-    variable_set('textbook_companion_from_email', '');
-    variable_set('textbook_companion_source_extensions', '');
-    variable_set('textbook_companion_dependency_extensions', '');
-    variable_set('textbook_companion_result_extensions', '');
-    variable_set('textbook_companion_xcos_extensions', '');
+    // Tables are created automatically from hook_schema() during install.
+    \Drupal::configFactory()->getEditable('textbook_companion.settings')->set('textbook_companion_emails', '')->save();
+    \Drupal::configFactory()->getEditable('textbook_companion.settings')->set('textbook_companion_from_email', '')->save();
+    \Drupal::configFactory()->getEditable('textbook_companion.settings')->set('textbook_companion_source_extensions', '')->save();
+    \Drupal::configFactory()->getEditable('textbook_companion.settings')->set('textbook_companion_dependency_extensions', '')->save();
+    \Drupal::configFactory()->getEditable('textbook_companion.settings')->set('textbook_companion_result_extensions', '')->save();
+    \Drupal::configFactory()->getEditable('textbook_companion.settings')->set('textbook_companion_xcos_extensions', '')->save();
   }
 /**
  * Implementation of hook_uninstall().
  */
 function textbook_companion_uninstall()
   {
-    // Remove tables.
-    drupal_uninstall_schema('textbook_companion');
     // Remove variables
-    variable_del('textbook_companion_emails');
-    variable_del('textbook_companion_from_email');
-    variable_del('textbook_companion_source_extensions');
-    variable_del('textbook_companion_dependency_extensions');
-    variable_del('textbook_companion_result_extensions');
-    variable_del('textbook_companion_xcos_extensions');
+    $config = \Drupal::configFactory()->getEditable('textbook_companion.settings');
+    $config->clear('textbook_companion_emails');
+    $config->clear('textbook_companion_from_email');
+    $config->clear('textbook_companion_source_extensions');
+    $config->clear('textbook_companion_dependency_extensions');
+    $config->clear('textbook_companion_result_extensions');
+    $config->clear('textbook_companion_xcos_extensions');
+    $config->save();
   }
 /**
  * Implementation of hook_schema().
